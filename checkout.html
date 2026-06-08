@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Checkout | The Twins Coffee®</title>
+  <meta name="description" content="Complete your order — The Twins Coffee® checkout page."/>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Premium Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar scrolled" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
+      <span class="logo-text">THE TWINS COFFEE<sup>®</sup></span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Shop</a></li>
+      <li><a href="index.html#hero-slider-section">Collections</a></li>
+      <li><a href="index.html#about">Our Story</a></li>
+      <li><a href="index.html#guide">Coffee Guide</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="icon-btn" data-action="theme" title="Toggle theme">
+        <span class="theme-icon"></span>
+      </button>
+      <a href="checkout.html" class="icon-btn active" title="Cart">
+        <i data-lucide="shopping-bag"></i>
+        <span class="cart-badge" id="cart-badge">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+
+<!-- ══ CHECKOUT MAIN ══ -->
+<main class="co-page" id="co-main">
+  <!-- Header -->
+  <div style="margin-bottom:1.5rem">
+    <span class="s-label">Order</span>
+    <h1 class="s-title" style="font-size:1.8rem">Checkout</h1>
+  </div>
+
+  <!-- Step Indicator -->
+  <div class="co-steps" id="co-steps">
+    <div class="co-step active" id="step-ind-1">
+      <div class="co-step-num" id="step-num-1">1</div>
+      <span>Cart</span>
+    </div>
+    <div class="co-step-line" id="step-line-1"></div>
+    <div class="co-step" id="step-ind-2">
+      <div class="co-step-num" id="step-num-2">2</div>
+      <span>Details</span>
+    </div>
+    <div class="co-step-line" id="step-line-2"></div>
+    <div class="co-step" id="step-ind-3">
+      <div class="co-step-num" id="step-num-3">3</div>
+      <span>Shipping</span>
+    </div>
+    <div class="co-step-line" id="step-line-3"></div>
+    <div class="co-step" id="step-ind-4">
+      <div class="co-step-num" id="step-num-4">4</div>
+      <span>Confirm</span>
+    </div>
+  </div>
+
+  <!-- Step 1: Cart Review -->
+  <div id="step-1" class="co-step-content">
+    <div class="co-grid">
+      <div>
+        <div class="co-section-title">Cart Items — عناصر السلة</div>
+        <div id="co-items-list"></div>
+        <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
+          <a href="products.html" class="btn btn-ghost btn-sm">← Continue Shopping</a>
+        </div>
+      </div>
+      <div class="co-panel" id="step1-panel">
+        <div class="co-sum">
+          <div class="co-sum-row"><span>Subtotal</span><span id="co-subtotal-1">0 جنيه</span></div>
+          <div class="co-sum-row"><span>Shipping</span><span style="color:var(--txt3)">Calculated next</span></div>
+          <div class="co-sum-row tot"><span>Est. Total</span><span id="co-total-1">0 جنيه</span></div>
+        </div>
+        <button class="check-continue-btn btn-full" id="step1-next" disabled>
+          <div class="cc-icon">✓</div>
+          Check &amp; Continue
+        </button>
+        <p style="font-size:.72rem;color:var(--txt3);text-align:center">Review your cart items above</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Customer Details -->
+  <div id="step-2" class="co-step-content" style="display:none">
+    <div class="co-grid">
+      <div>
+        <div class="co-section-title">Customer Info — بيانات العميل</div>
+        <div style="display:flex;flex-direction:column;gap:.85rem">
+          <div class="form-row">
+            <div class="fg"><label>First Name — الاسم الأول</label><input type="text" id="f-fname" placeholder="Ahmed" required/></div>
+            <div class="fg"><label>Last Name — الاسم الأخير</label><input type="text" id="f-lname" placeholder="Ali"/></div>
+          </div>
+          <div class="fg"><label>Phone — الهاتف</label><input type="tel" id="f-phone" placeholder="+966 5X XXX XXXX" required/></div>
+          <div class="fg"><label>Email — البريد الإلكتروني</label><input type="email" id="f-email" placeholder="you@email.com"/></div>
+          <div class="fg"><label>Address — العنوان</label><input type="text" id="f-addr" placeholder="Street, Building" required/></div>
+          <div class="form-row">
+            <div class="fg"><label>City — المدينة</label><input type="text" id="f-city" placeholder="Riyadh" required/></div>
+            <div class="fg"><label>Zip / Postal</label><input type="text" id="f-zip" placeholder="12345"/></div>
+          </div>
+          <div style="margin-top:.5rem;display:flex;gap:.75rem">
+            <button class="btn btn-ghost btn-sm" id="step2-back">← Back</button>
+          </div>
+        </div>
+      </div>
+      <div class="co-panel">
+        <div class="co-sum">
+          <div class="co-sum-row"><span>Subtotal</span><span id="co-subtotal-2">0 جنيه</span></div>
+          <div class="co-sum-row"><span>Items</span><span id="co-items-count">—</span></div>
+          <div class="co-sum-row tot"><span>Est. Total</span><span id="co-total-2">0 جنيه</span></div>
+        </div>
+        <button class="check-continue-btn btn-full" id="step2-next">
+          <div class="cc-icon">✓</div>
+          Check &amp; Continue
+        </button>
+        <p style="font-size:.72rem;color:var(--txt3);text-align:center">Fill all required fields to continue</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Shipping -->
+  <div id="step-3" class="co-step-content" style="display:none">
+    <div class="co-grid">
+      <div>
+        <div class="co-section-title">Shipping Method — طريقة التوصيل</div>
+        <div id="shipping-opts"></div>
+        <div style="margin-top:1.5rem">
+          <button class="btn btn-ghost btn-sm" id="step3-back">← Back</button>
+        </div>
+      </div>
+      <div class="co-panel">
+        <div class="co-sum">
+          <div class="co-sum-row"><span>Subtotal</span><span id="co-subtotal-3">0 جنيه</span></div>
+          <div class="co-sum-row"><span>Shipping</span><span id="co-ship-price">— جنيه</span></div>
+          <div class="co-sum-row tot"><span>Total</span><span id="co-total-3">0 جنيه</span></div>
+        </div>
+        <button class="check-continue-btn btn-full" id="step3-next" disabled>
+          <div class="cc-icon">✓</div>
+          Check &amp; Continue
+        </button>
+        <p style="font-size:.72rem;color:var(--txt3);text-align:center">Choose a shipping method to continue</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Confirm -->
+  <div id="step-4" class="co-step-content" style="display:none">
+    <div class="co-grid">
+      <div>
+        <div class="co-section-title">Order Review — مراجعة الطلب</div>
+        <div id="co-review-items"></div>
+        <div class="divider"></div>
+        <div style="font-size:.86rem;color:var(--txt2);line-height:1.9" id="co-review-info"></div>
+        <div style="margin-top:1.5rem">
+          <button class="btn btn-ghost btn-sm" id="step4-back">← Back</button>
+        </div>
+      </div>
+      <div class="co-panel">
+        <div class="co-sum">
+          <div class="co-sum-row"><span>Subtotal</span><span id="co-subtotal-4">0 جنيه</span></div>
+          <div class="co-sum-row"><span>Shipping</span><span id="co-ship-final">— جنيه</span></div>
+          <div class="co-sum-row tot"><span>Total</span><span id="co-total-4">0 جنيه</span></div>
+        </div>
+        <button class="btn btn-gold btn-full btn-lg" id="place-order-btn">
+          🛒 Place Order — إرسال الطلب
+        </button>
+        <p style="font-size:.72rem;color:var(--txt3);text-align:center">By placing an order you agree to our terms.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ══ SUCCESS ══ -->
+<div id="co-success" class="hidden" style="padding:calc(var(--nav-h)+3rem) 2rem 5rem">
+  <div class="co-success">
+    <div class="co-success-ico">✓</div>
+    <h2 class="s-title">Order Placed! 🎉</h2>
+    <p>شكراً لطلبك! سنتواصل معك قريباً لتأكيد التوصيل. ☕<br/>Thank you! We'll contact you soon.</p>
+    <div id="co-order-num" style="font-size:.8rem;color:var(--txt3)"></div>
+    <a href="products.html" class="btn btn-gold btn-lg" style="margin-top:1rem">Continue Shopping →</a>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  let currentStep    = 1;
+  let selectedShipId = null;
+
+  /* ── Step navigation ── */
+  function goToStep(n) {
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById(`step-${i}`).style.display = i === n ? '' : 'none';
+      const ind = document.getElementById(`step-ind-${i}`);
+      ind.classList.remove('active','done');
+      if (i < n)  ind.classList.add('done');
+      if (i === n) ind.classList.add('active');
+      const stepNum = document.getElementById(`step-num-${i}`);
+      stepNum.textContent = i < n ? '✓' : i;
+    }
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior:'smooth' });
+    updateSummaryAll();
+  }
+
+  /* ── Summary helpers ── */
+  function updateSummaryAll() {
+    const sub  = cartTotal();
+    const ship = getShipping().find(s => s.id === selectedShipId);
+    const shipPrice = ship ? ship.price : 0;
+    const total = sub + shipPrice;
+
+    ['1','2','4'].forEach(n => {
+      const el = document.getElementById(`co-subtotal-${n}`);
+      if (el) el.textContent = sub.toLocaleString() + ' جنيه';
+      const te = document.getElementById(`co-total-${n}`);
+      if (te) te.textContent = total.toLocaleString() + ' جنيه';
+    });
+    const sub3 = document.getElementById('co-subtotal-3');
+    if (sub3) sub3.textContent = sub.toLocaleString() + ' جنيه';
+
+    document.getElementById('co-ship-price').textContent = ship ? ship.price.toLocaleString() + ' جنيه' : '— جنيه';
+    document.getElementById('co-ship-final').textContent = ship ? ship.price.toLocaleString() + ' جنيه' : '— جنيه';
+
+    const cnt = document.getElementById('co-items-count');
+    if (cnt) cnt.textContent = getCart().reduce((s,i)=>s+i.qty,0) + ' items';
+  }
+
+  /* ── Render cart items ── */
+  function renderItems() {
+    const cart = getCart();
+    const list = document.getElementById('co-items-list');
+    list.innerHTML = '';
+
+    if (cart.length === 0) {
+      list.innerHTML = `<div class="co-empty">
+        <i data-lucide="shopping-bag" style="width: 48px; height: 48px; opacity: 0.3; margin: 0 auto 1rem; display: block;"></i>
+        <p>Your cart is empty. <a href="products.html" style="color:var(--gold)">Shop now →</a></p>
+      </div>`;
+      document.getElementById('step1-next').disabled = true;
+      updateSummaryAll();
+      if (window.lucide) lucide.createIcons();
+      return;
+    }
+
+    cart.forEach(item => {
+      const opts = [item.size, item.type, item.roast, item.color].filter(Boolean).join(' · ');
+      const row  = document.createElement('div');
+      row.className = 'co-item';
+      row.innerHTML = `
+        <div class="co-item-img"><img src="${item.image}" alt="${item.name}" loading="lazy"/></div>
+        <div class="co-item-info">
+          <div class="co-item-name">${item.name}</div>
+          <div class="co-item-opts">${opts}</div>
+        </div>
+        <div class="co-item-qty">
+          <button class="co-qty-btn" data-key="${item.key}" data-delta="-1">−</button>
+          <span class="co-qty-v">${item.qty}</span>
+          <button class="co-qty-btn" data-key="${item.key}" data-delta="1">+</button>
+        </div>
+        <div class="co-item-price">${(item.price * item.qty).toLocaleString()} جنيه</div>
+        <button class="co-remove" data-key="${item.key}" title="Remove">✕</button>`;
+      list.appendChild(row);
+    });
+
+    list.querySelectorAll('.co-qty-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const cart2 = getCart();
+        const item = cart2.find(c => c.key === btn.dataset.key);
+        if (item) { cartSetQty(btn.dataset.key, item.qty + parseInt(btn.dataset.delta)); renderItems(); }
+      });
+    });
+    list.querySelectorAll('.co-remove').forEach(btn => {
+      btn.addEventListener('click', () => { cartRemove(btn.dataset.key); renderItems(); });
+    });
+
+    document.getElementById('step1-next').disabled = false;
+    updateSummaryAll();
+  }
+
+  /* ── Render Shipping ── */
+  function renderShipping() {
+    const ships = getShipping().filter(s => s.active);
+    const wrap  = document.getElementById('shipping-opts');
+    wrap.innerHTML = '';
+    if (ships.length === 0) {
+      wrap.innerHTML = '<p style="font-size:.82rem;color:var(--txt3)">No shipping methods available.</p>';
+      return;
+    }
+    ships.forEach((s, i) => {
+      const opt = document.createElement('label');
+      opt.className = 'ship-opt' + (i === 0 ? ' sel' : '');
+      opt.innerHTML = `
+        <input type="radio" name="shipping" value="${s.id}" ${i===0?'checked':''}/>
+        <div class="ship-opt-info">
+          <div class="ship-opt-name">${s.nameAr} — ${s.name}</div>
+          <div class="ship-opt-days">${s.days}</div>
+        </div>
+        <div class="ship-opt-price">${s.price === 0 ? 'Free' : s.price.toLocaleString() + ' جنيه'}</div>`;
+      opt.querySelector('input').addEventListener('change', () => {
+        document.querySelectorAll('.ship-opt').forEach(o => o.classList.remove('sel'));
+        opt.classList.add('sel');
+        selectedShipId = s.id;
+        updateSummaryAll();
+        document.getElementById('step3-next').disabled = false;
+      });
+      if (i === 0) {
+        selectedShipId = s.id;
+        document.getElementById('step3-next').disabled = false;
+      }
+      wrap.appendChild(opt);
+    });
+  }
+
+  /* ── Render Review ── */
+  function renderReview() {
+    const cart = getCart();
+    const reviewEl = document.getElementById('co-review-items');
+    reviewEl.innerHTML = '';
+    cart.forEach(item => {
+      const opts = [item.size, item.type, item.roast, item.color].filter(Boolean).join(' · ');
+      const row = document.createElement('div');
+      row.className = 'co-item';
+      row.style.pointerEvents = 'none';
+      row.innerHTML = `
+        <div class="co-item-img"><img src="${item.image}" alt="${item.name}" loading="lazy"/></div>
+        <div class="co-item-info">
+          <div class="co-item-name">${item.name}</div>
+          <div class="co-item-opts">${opts}</div>
+        </div>
+        <div class="co-item-price">${item.qty}x — ${(item.price*item.qty).toLocaleString()} جنيه</div>`;
+      reviewEl.appendChild(row);
+    });
+
+    const ship = getShipping().find(s => s.id === selectedShipId);
+    const fname = document.getElementById('f-fname').value;
+    const phone = document.getElementById('f-phone').value;
+    const addr  = document.getElementById('f-addr').value;
+    const city  = document.getElementById('f-city').value;
+
+    document.getElementById('co-review-info').innerHTML = `
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:.4rem 1rem">
+        <span style="color:var(--gold);font-weight:700">Name:</span><span>${fname} ${document.getElementById('f-lname').value}</span>
+        <span style="color:var(--gold);font-weight:700">Phone:</span><span>${phone}</span>
+        <span style="color:var(--gold);font-weight:700">Address:</span><span>${addr}, ${city}</span>
+        <span style="color:var(--gold);font-weight:700">Shipping:</span><span>${ship ? ship.nameAr + ' — ' + ship.name + ' (' + (ship.price?ship.price.toLocaleString()+' جنيه':'Free') + ')' : '—'}</span>
+      </div>`;
+
+    updateSummaryAll();
+  }
+
+  /* ── Step buttons ── */
+  document.getElementById('step1-next').addEventListener('click', () => {
+    if (getCart().length === 0) return;
+    goToStep(2);
+  });
+
+  document.getElementById('step2-back').addEventListener('click', () => goToStep(1));
+  document.getElementById('step2-next').addEventListener('click', () => {
+    const fname = document.getElementById('f-fname').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const addr  = document.getElementById('f-addr').value.trim();
+    const city  = document.getElementById('f-city').value.trim();
+    if (!fname || !phone || !addr || !city) {
+      toast('Please fill: Name, Phone, Address, City', 'error'); return;
+    }
+    goToStep(3);
+  });
+
+  document.getElementById('step3-back').addEventListener('click', () => goToStep(2));
+  document.getElementById('step3-next').addEventListener('click', () => {
+    if (!selectedShipId) { toast('Please select a shipping method', 'error'); return; }
+    renderReview();
+    goToStep(4);
+  });
+
+  document.getElementById('step4-back').addEventListener('click', () => goToStep(3));
+
+  /* ── Place Order ── */
+  document.getElementById('place-order-btn').addEventListener('click', async () => {
+    const fname = document.getElementById('f-fname').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const addr  = document.getElementById('f-addr').value.trim();
+    const city  = document.getElementById('f-city').value.trim();
+    if (!fname || !phone || !addr || !city) { toast('Missing required fields', 'error'); return; }
+
+    const ship  = getShipping().find(s => s.id === selectedShipId);
+    const cart  = getCart();
+    const sub   = cartTotal();
+    const total = sub + (ship ? ship.price : 0);
+
+    const order = {
+      id: genId(), date: formatDate(),
+      customer: { name: fname + ' ' + document.getElementById('f-lname').value.trim(), phone, email: document.getElementById('f-email').value.trim(), address: addr, city, zip: document.getElementById('f-zip').value.trim() },
+      items: cart,
+      shipping: ship ? { name:ship.name, nameAr:ship.nameAr, price:ship.price, days:ship.days } : null,
+      subtotal: sub, total, status:'pending'
+    };
+
+    // Try to send order to backend database
+    const apiPayload = {
+      id: order.id,
+      customerName: order.customer.name,
+      customerPhone: order.customer.phone,
+      customerAddress: order.customer.address,
+      city: order.customer.city,
+      items: order.items,
+      shippingId: selectedShipId,
+      shippingName: order.shipping ? order.shipping.name : '',
+      shippingPrice: order.shipping ? order.shipping.price : 0,
+      subtotal: order.subtotal,
+      total: order.total,
+      notes: ''
+    };
+
+    try {
+      await apiPlaceOrder(apiPayload);
+      toast('Order sent to database!', 'success');
+    } catch (err) {
+      console.warn('API place order failed, saving to localStorage:', err);
+      saveOrder(order);
+    }
+
+    cartClear();
+
+    document.getElementById('co-main').classList.add('hidden');
+    document.getElementById('co-success').classList.remove('hidden');
+    document.getElementById('co-order-num').textContent = 'Order # ' + order.id;
+    window.scrollTo({ top:0, behavior:'smooth' });
+  });
+
+
+
+  /* ── Init ── */
+  renderShipping();
+  renderItems();
+  goToStep(1);
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+});
+</script>
+</body>
+</html>

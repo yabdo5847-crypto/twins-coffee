@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Products | The Twins Coffee®</title>
+  <meta name="description" content="Shop premium Turkish coffee beans and merchandise from The Twins Coffee®. Choose your roast, size, and blend."/>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Premium Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar scrolled" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
+      <span class="logo-text">THE TWINS COFFEE<sup>®</sup></span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html" class="active">Shop</a></li>
+      <li><a href="index.html#hero-slider-section">Collections</a></li>
+      <li><a href="index.html#about">Our Story</a></li>
+      <li><a href="index.html#guide">Coffee Guide</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="icon-btn" data-action="theme" title="Toggle theme">
+        <span class="theme-icon"></span>
+      </button>
+      <a href="checkout.html" class="icon-btn" title="Cart">
+        <i data-lucide="shopping-bag"></i>
+        <span class="cart-badge" id="cart-badge">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ══ PAGE HEADER ══ -->
+<div class="page-header-bg">
+  <span class="s-label">Our Collection</span>
+  <h1 class="s-title">Premium Coffee &amp; Merch</h1>
+  <p class="s-sub" style="max-width:480px;margin:0 auto">100% Arabica Turkish coffee with your choice of roast, type, and size — plus handcrafted merchandise.</p>
+</div>
+
+<!-- ══ PRODUCTS ══ -->
+<section class="products-section" style="padding-top:3rem">
+  <div class="products-container">
+    <div class="filter-row" id="filter-row">
+      <button class="f-btn active" data-cat="all">All</button>
+      <button class="f-btn" data-cat="coffee">Coffee</button>
+      <button class="f-btn" data-cat="merch">Merchandise</button>
+    </div>
+    <div class="cards-grid" id="products-grid"></div>
+    <p id="no-products" class="hidden" style="text-align:center;color:var(--txt2);padding:3rem">No products found.</p>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer" style="margin-top:2rem">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo"><img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/><span class="logo-text">THE TWINS COFFEE<sup>®</sup></span></div>
+      <p>Premium 100% Arabica Turkish Coffee.<br/>Crafted for the perfect cup, every time.</p>
+    </div>
+    <div class="f-col">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="products.html">Shop</a>
+      <a href="index.html#about">About</a>
+    </div>
+    <div class="f-col">
+      <h4>Contact</h4>
+      <p style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem"><i data-lucide="map-pin" style="width:16px;height:16px"></i> Mansoura</p>
+      <p style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem"><i data-lucide="mail" style="width:16px;height:16px"></i> Thetwinseg@outlook.com</p>
+      <p style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem"><i data-lucide="facebook" style="width:16px;height:16px"></i> The Twins Coffee</p>
+      <p style="display:flex;align-items:center;gap:.5rem"><i data-lucide="instagram" style="width:16px;height:16px"></i> @thetwinseg</p>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 The Twins Coffee®. All rights reserved.</p></div>
+</footer>
+
+<script src="api.js"></script>
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  let currentCat = 'all';
+  const grid = document.getElementById('products-grid');
+  const noProducts = document.getElementById('no-products');
+
+  let allProducts = [];
+  try {
+    allProducts = await apiGetProducts();
+  } catch (err) {
+    allProducts = getProducts();
+  }
+
+  function renderProducts() {
+    const products = allProducts.filter(p => p.active);
+    const filtered = currentCat === 'all' ? products : products.filter(p => p.category === currentCat);
+
+    grid.innerHTML = '';
+    if (filtered.length === 0) { noProducts.classList.remove('hidden'); return; }
+    noProducts.classList.add('hidden');
+
+    filtered.forEach(p => {
+      const minPrice = Math.min(...p.sizes.map(s => s.price));
+      const maxPrice = Math.max(...p.sizes.map(s => s.price));
+      const priceStr = minPrice === maxPrice ? `${minPrice.toLocaleString()} جنيه` : `${minPrice.toLocaleString()}–${maxPrice.toLocaleString()} جنيه`;
+      const outOfStock = p.sizes.every(s => s.stock === 0);
+
+      const card = document.createElement('a');
+      card.href = `product-detail.html?id=${p.id}`;
+      card.className = `p-card anim-up${outOfStock ? ' out' : ''}`;
+      card.innerHTML = `
+        <div class="p-card-img">
+          <img src="${p.images[0]}" alt="${p.name}" loading="lazy"/>
+          <span class="p-card-badge tag">${outOfStock ? 'Out of Stock' : p.badge}</span>
+        </div>
+        <div class="p-card-body">
+          <div class="p-card-cat">${p.category === 'coffee' ? 'Coffee · 100% Arabica' : 'Merchandise'}</div>
+          <div class="p-card-name">${p.name}</div>
+          <div class="p-card-desc">${p.description}</div>
+          <div class="p-card-foot">
+            <div class="p-card-price">${priceStr}<br/>
+              <small>${p.sizes.map(s=>s.label).join(' / ')}
+              ${p.hasType ? ' · محوج / ساده' : ''}
+              ${p.hasRoast ? ' · فاتح/وسط/غامق' : ''}</small>
+            </div>
+            <div class="p-card-arrow">
+              <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+            </div>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    setTimeout(() => {
+      initScrollAnim();
+      if (window.lucide) lucide.createIcons();
+    }, 30);
+  }
+
+  // Filter buttons
+  document.querySelectorAll('.f-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCat = btn.dataset.cat;
+      renderProducts();
+    });
+  });
+
+  renderProducts();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>The Twins Coffee® | Premium Turkish Coffee</title>
+  <meta name="description" content="The Twins Coffee® — Premium 100% Arabica Turkish Coffee. Shop house blends, dark and medium roasts, plain and cardamom."/>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Premium Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
+      <span class="logo-text">THE TWINS COFFEE<sup>®</sup></span>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="products.html">Shop</a></li>
+      <li><a href="#hero-slider-section">Collections</a></li>
+      <li><a href="#about">Our Story</a></li>
+      <li><a href="#guide">Coffee Guide</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="icon-btn" data-action="theme" title="Toggle theme">
+        <span class="theme-icon"></span>
+      </button>
+      <a href="checkout.html" class="icon-btn" title="Cart">
+        <i data-lucide="shopping-bag"></i>
+        <span class="cart-badge" id="cart-badge">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="home" style="min-height:calc(100vh - 60px)">
+  <!-- Video Background -->
+  <div class="hero-video-wrap">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="video1.mp4" type="video/mp4"/>
+    </video>
+    <div class="hero-video-overlay"></div>
+  </div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-pill">☕ 100% Arabica · House Blend</div>
+    <h1 class="hero-title">The Art of<br/><span class="gold">Turkish Coffee</span></h1>
+    <p class="hero-sub">Premium coffee beans crafted for those who appreciate the perfect cup. Sourced, roasted, and sealed to perfection.</p>
+    <div class="hero-cta">
+      <a href="products.html" class="btn btn-gold btn-lg">Shop Now</a>
+      <a href="#about" class="btn btn-outline btn-lg">Our Story</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══ PRODUCT SLIDER (peeks below hero) ══ -->
+<div class="hero-slider-section" id="hero-slider-section">
+  <div class="slider-header">
+    <div class="slider-header-left">
+      <span class="slider-eyebrow">☕ Our Collection</span>
+      <span class="slider-title-sm">Shop The Twins Coffee</span>
+    </div>
+    <a href="products.html" class="slider-view-all">View All →</a>
+  </div>
+  <div class="slider-track-wrap" id="slider-wrap">
+    <button class="slider-arrow prev" id="slider-prev" aria-label="Previous">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="slider-track" id="slider-track"></div>
+    <button class="slider-arrow next" id="slider-next" aria-label="Next">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+  <div class="slider-dots" id="slider-dots"></div>
+</div>
+
+<!-- ══ STRIP ══ -->
+<div class="strip">
+  <div class="strip-inner">
+    <div class="strip-item">
+      <!-- Freshly Roasted Daily (Flame Icon) -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.657 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>
+      </svg>
+      <span>Freshly Roasted Daily</span>
+    </div>
+    <div class="strip-item">
+      <!-- 100% Premium Arabica (Premium Badge Icon) -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+      </svg>
+      <span>100% Premium Arabica</span>
+    </div>
+    <div class="strip-item">
+      <!-- Fast Shipping (Lightning Bolt Icon) -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+      </svg>
+      <span>Fast Shipping</span>
+    </div>
+    <div class="strip-item">
+      <!-- Small Batch Crafted (Heart Icon) -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+      </svg>
+      <span>Small Batch Crafted</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FEATURED PRODUCTS ══ -->
+<section class="products-section">
+  <div class="products-container">
+    <div class="s-head anim-up">
+      <span class="s-label">Featured</span>
+      <h2 class="s-title">Our Best Sellers</h2>
+      <p class="s-sub">Handpicked favourites from The Twins Coffee collection.</p>
+    </div>
+    <div class="cards-grid" id="featured-grid"></div>
+    <div style="text-align:center;margin-top:2.5rem;" class="anim-up">
+      <a href="products.html" class="btn btn-outline">View All Products →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section class="about-section" id="about">
+  <div class="about-grid">
+    <div class="about-text anim-up">
+      <span class="s-label">Our Story</span>
+      <h2 class="s-title">Crafted With Passion,<br/>Served With Pride</h2>
+      <p>The Twins Coffee® was born from a deep love of authentic Turkish coffee — the kind that warms your soul and sharpens your senses. We source only the finest 100% Arabica beans, roasted to perfection.</p>
+      <p>Choose your roast level — فاتح (light), وسط (medium), or غامق (dark) — and your blend: محوج (cardamom) or ساده (plain). Every cup tells a story.</p>
+      <div class="about-stats">
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-lbl">Arabica</span></div>
+        <div class="stat"><span class="stat-num">200g</span><span class="stat-lbl">Freshly Sealed</span></div>
+        <div class="stat"><span class="stat-num">3</span><span class="stat-lbl">Roast Levels</span></div>
+      </div>
+    </div>
+    <div class="brand-history anim-up">
+      <div class="bh-header">
+        <span class="bh-icon">☕</span>
+        <span class="bh-label">Our Heritage</span>
+      </div>
+      <div class="bh-timeline">
+        <div class="bh-item">
+          <div class="bh-dot"></div>
+          <div class="bh-content">
+            <span class="bh-year">2020</span>
+            <h4>The Beginning</h4>
+            <p>Twin brothers united by a lifelong passion for Turkish coffee decided to share their family recipe with the world — The Twins Coffee® was born.</p>
+          </div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-dot"></div>
+          <div class="bh-content">
+            <span class="bh-year">2021</span>
+            <h4>First Roast</h4>
+            <p>We sourced our first batch of premium 100% Arabica beans and crafted our signature House Blend — achieving the perfect balance of body, aroma, and foam.</p>
+          </div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-dot"></div>
+          <div class="bh-content">
+            <span class="bh-year">2023</span>
+            <h4>Cardamom Collection</h4>
+            <p>Inspired by Gulf heritage, we introduced the محوج (cardamom) blend — now our best-selling variety, loved for its rich, aromatic depth.</p>
+          </div>
+        </div>
+        <div class="bh-item">
+          <div class="bh-dot active"></div>
+          <div class="bh-content">
+            <span class="bh-year">Today</span>
+            <h4>Growing Legacy</h4>
+            <p>Serving coffee lovers across Egypt and beyond, with three roast levels and two signature blends — every bag sealed fresh, every cup a masterpiece.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COFFEE GUIDE ══ -->
+<section class="guide-section" id="guide">
+  <div class="s-head anim-up">
+    <span class="s-label">Coffee Guide</span>
+    <h2 class="s-title">The Art of Brewing</h2>
+    <p class="s-sub">Discover the perfect brewing methods for our premium Arabica blends.</p>
+  </div>
+  <div class="guide-grid">
+    <div class="guide-card anim-up">
+      <div class="guide-icon"><i data-lucide="coffee"></i></div>
+      <h3>Traditional Cezve</h3>
+      <p>Finely ground coffee boiled slowly with water (and optional sugar) to create a rich, velvety foam. The ultimate authentic Turkish experience.</p>
+    </div>
+    <div class="guide-card anim-up">
+      <div class="guide-icon"><i data-lucide="package"></i></div>
+      <h3>Pour Over</h3>
+      <p>A clean, aromatic brew highlighting the bright, complex citrus and floral notes of our medium roast beans. Perfect for filter coffee lovers.</p>
+    </div>
+    <div class="guide-card anim-up">
+      <div class="guide-icon"><i data-lucide="award"></i></div>
+      <h3>Cold Brew</h3>
+      <p>Steeped for 18 hours in cold water, producing a smooth, low-acid, and naturally sweet iced coffee. Bold and refreshing.</p>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="testimonials-section" id="testimonials">
+  <div class="s-head anim-up">
+    <span class="s-label">Reviews</span>
+    <h2 class="s-title">Trusted by Connoisseurs</h2>
+    <p class="s-sub">What coffee lovers say about the premium taste of The Twins Coffee®.</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card anim-up">
+      <div class="t-stars">
+        <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+      </div>
+      <p class="t-text">"The finest Turkish coffee I have ever tasted outside of Istanbul. The cardamom blend (محوج) is incredibly aromatic, smooth, and has a majestic thick foam. A absolute masterpiece."</p>
+      <div class="t-user">
+        <span class="t-name">Youssef Ali</span>
+        <span class="t-badge"><i data-lucide="shield-check"></i> Verified Buyer</span>
+      </div>
+    </div>
+    <div class="testimonial-card anim-up">
+      <div class="t-stars">
+        <i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i>
+      </div>
+      <p class="t-text">"Absolutely love their travel tumblers! Elegant, matte black, and fits perfectly in my daily life. It keeps my dark roast piping hot for 6 hours. Superior build quality."</p>
+      <div class="t-user">
+        <span class="t-name">Nour El-Din</span>
+        <span class="t-badge"><i data-lucide="shield-check"></i> Verified Buyer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo"><img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/><span class="logo-text">THE TWINS COFFEE<sup>®</sup></span></div>
+      <p>Premium 100% Arabica Turkish Coffee.<br/>Crafted for the perfect cup, every time.</p>
+    </div>
+    <div class="f-col">
+      <h4>Quick Links</h4>
+      <a href="index.html">Home</a>
+      <a href="products.html">Shop</a>
+      <a href="#about">About</a>
+    </div>
+    <div class="f-col">
+      <h4>Contact</h4>
+      <p style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem"><i data-lucide="map-pin" style="width:16px;height:16px"></i> Mansoura</p>
+      <p style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem"><i data-lucide="mail" style="width:16px;height:16px"></i> Thetwinseg@outlook.com</p>
+      <p style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem"><i data-lucide="facebook" style="width:16px;height:16px"></i> The Twins Coffee</p>
+      <p style="display:flex;align-items:center;gap:.5rem"><i data-lucide="instagram" style="width:16px;height:16px"></i> @thetwinseg</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 The Twins Coffee®. All rights reserved. | <a href="admin.html" style="color:var(--txt3)">Admin</a></p>
+  </div>
+</footer>
+
+<script src="api.js"></script>
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+
+  /* ══ FEATURED GRID ══ */
+  let allProducts = [];
+  try {
+    allProducts = await apiGetProducts();
+  } catch {
+    // Fallback to localStorage if server not running
+    allProducts = getProducts();
+  }
+
+  const products = allProducts.filter(p => p.featured && p.active);
+  const grid = document.getElementById('featured-grid');
+  products.forEach(p => {
+    const minPrice = Math.min(...p.sizes.map(s => s.price));
+    const card = document.createElement('a');
+    card.href = `product-detail.html?id=${p.id}`;
+    card.className = 'p-card anim-up';
+    card.innerHTML = `
+      <div class="p-card-img">
+        <img src="${p.images[0]}" alt="${p.name}" loading="lazy"/>
+        <span class="p-card-badge tag">${p.badge}</span>
+      </div>
+      <div class="p-card-body">
+        <div class="p-card-cat">${p.category === 'coffee' ? 'Coffee · 100% Arabica' : 'Merchandise'}</div>
+        <div class="p-card-name">${p.name}</div>
+        <div class="p-card-desc">${p.description}</div>
+        <div class="p-card-foot">
+          <div class="p-card-price">من ${minPrice.toLocaleString()} جنيه<br/><small>${p.sizes.map(s=>s.label).join(' / ')}</small></div>
+          <div class="p-card-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  if (products.length === 0) {
+    grid.innerHTML = '<p style="text-align:center;color:var(--txt2);grid-column:1/-1;padding:2rem">No featured products yet.</p>';
+  }
+
+  /* ══ PRODUCT SLIDER ══ */
+  (async function initSlider() {
+    const all = allProducts.filter(p => p.active);
+    const track  = document.getElementById('slider-track');
+    const dotsEl = document.getElementById('slider-dots');
+    const prevBtn = document.getElementById('slider-prev');
+    const nextBtn = document.getElementById('slider-next');
+    if (!track || all.length === 0) return;
+
+    const CARD_W = 170 + 16; // card width + gap
+    let current = 0;
+    let autoTimer;
+
+    /* Build mini cards */
+    all.forEach(p => {
+      const minPrice = Math.min(...p.sizes.map(s => s.price));
+      const card = document.createElement('a');
+      card.href = `product-detail.html?id=${p.id}`;
+      card.className = 'mini-card';
+      card.draggable = false;
+      card.innerHTML = `
+        <div class="mini-card-img">
+          <img src="${p.images[0]}" alt="${p.name}" loading="lazy" draggable="false"/>
+          <span class="mini-card-badge">${p.badge}</span>
+        </div>
+        <div class="mini-card-body">
+          <div class="mini-card-cat">${p.category === 'coffee' ? 'Coffee' : 'Merch'}</div>
+          <div class="mini-card-name">${p.name}</div>
+          <div class="mini-card-foot">
+            <div class="mini-card-price">${minPrice.toLocaleString()} جنيه</div>
+            <div class="mini-card-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+            </div>
+          </div>
+        </div>`;
+      track.appendChild(card);
+    });
+
+    /* Dots */
+    const visibleDots = Math.ceil(all.length / 3);
+    for (let i = 0; i < visibleDots; i++) {
+      const d = document.createElement('button');
+      d.className = 'slider-dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('aria-label', `Slide ${i+1}`);
+      d.addEventListener('click', () => scrollToSlide(i));
+      dotsEl.appendChild(d);
+    }
+
+    function updateDots(idx) {
+      const dotPage = Math.floor(idx / 3);
+      dotsEl.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === dotPage));
+    }
+
+    function scrollToSlide(page) {
+      current = page * 3;
+      track.scrollTo({ left: current * CARD_W, behavior:'smooth' });
+      updateDots(current);
+    }
+
+    prevBtn.addEventListener('click', () => {
+      current = Math.max(0, current - 3);
+      track.scrollTo({ left: current * CARD_W, behavior:'smooth' });
+      updateDots(current);
+      resetAuto();
+    });
+    nextBtn.addEventListener('click', () => {
+      current = current + 3 >= all.length ? 0 : current + 3;
+      track.scrollTo({ left: current * CARD_W, behavior:'smooth' });
+      updateDots(current);
+      resetAuto();
+    });
+
+    /* Auto-advance every 1s */
+    function autoNext() {
+      current = current + 1 >= all.length ? 0 : current + 1;
+      track.scrollTo({ left: current * CARD_W, behavior:'smooth' });
+      updateDots(current);
+    }
+    function startAuto() { autoTimer = setInterval(autoNext, 1000); }
+    function resetAuto()  { clearInterval(autoTimer); startAuto(); }
+    startAuto();
+    track.addEventListener('mouseenter', () => clearInterval(autoTimer));
+    track.addEventListener('mouseleave', startAuto);
+
+    /* Drag-to-scroll */
+    let isDown = false, startX, scrollLeft;
+    track.addEventListener('mousedown', e => {
+      isDown = true; track.classList.add('dragging');
+      startX = e.pageX - track.offsetLeft;
+      scrollLeft = track.scrollLeft;
+    });
+    track.addEventListener('mouseleave', () => { isDown = false; track.classList.remove('dragging'); });
+    track.addEventListener('mouseup',    () => { isDown = false; track.classList.remove('dragging'); });
+    track.addEventListener('mousemove',  e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - track.offsetLeft;
+      track.scrollLeft = scrollLeft - (x - startX) * 1.5;
+    });
+
+    /* Update dots on manual scroll */
+    track.addEventListener('scroll', () => {
+      const page = Math.round(track.scrollLeft / CARD_W);
+      updateDots(page);
+    }, { passive:true });
+  })();
+
+  /* ══ SCROLL ANIMATIONS ══ */
+  setTimeout(() => initScrollAnim(), 50);
+
+  /* ══ CONTACT FORM ══ */
+  const contactForm = document.getElementById('contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', e => {
+      e.preventDefault();
+      contactForm.classList.add('hidden');
+      const successEl = document.getElementById('c-success');
+      if (successEl) successEl.classList.remove('hidden');
+    });
+  }
+
+  /* ══ SEARCH OVERLAY ══ */
+  const searchBtn = document.getElementById('search-btn');
+  const searchOverlay = document.getElementById('search-overlay');
+  const searchClose = document.getElementById('search-close');
+  const searchInput = document.getElementById('search-input');
+
+  if (searchBtn && searchOverlay && searchClose) {
+    searchBtn.addEventListener('click', () => {
+      searchOverlay.classList.add('active');
+      setTimeout(() => searchInput.focus(), 100);
+    });
+    searchClose.addEventListener('click', () => {
+      searchOverlay.classList.remove('active');
+    });
+    searchOverlay.addEventListener('click', (e) => {
+      if (e.target === searchOverlay) searchOverlay.classList.remove('active');
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') searchOverlay.classList.remove('active');
+    });
+  }
+
+  /* ══ SMOOTH SCROLL ══ */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior:'smooth', block:'start' }); }
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Admin | The Twins Coffee®</title>
+  <meta name="description" content="Admin dashboard — The Twins Coffee®"/>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Premium Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+<!-- ══ LOGIN GATE ══ -->
+<div class="admin-gate" id="admin-gate">
+  <div class="admin-gate-box">
+    <div class="nav-logo" style="justify-content:center;margin-bottom:1.25rem">
+      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
+      <span class="logo-text">THE TWINS COFFEE<sup>®</sup></span>
+    </div>
+    <h2>Admin Login</h2>
+    <p>لوحة تحكم المتجر — Store Dashboard</p>
+    <form id="login-form" style="display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem;text-align:left">
+      <div class="fg"><label>Email</label><input type="email" id="admin-email" placeholder="admin@thetwinscoffee.com" required autocomplete="username"/></div>
+      <div class="fg"><label>Password</label><input type="password" id="admin-pass" placeholder="••••••••" required autocomplete="current-password"/></div>
+      <button type="submit" class="btn btn-gold btn-full btn-lg" id="login-btn">Login →</button>
+      <p id="login-error" style="font-size:.78rem;color:var(--red);display:none;margin-top:.25rem"></p>
+    </form>
+  </div>
+</div>
+
+<!-- ══ ADMIN DASHBOARD ══ -->
+<div class="admin-wrap hidden" id="admin-dash">
+
+  <!-- Sidebar -->
+  <aside class="admin-side">
+    <div class="admin-brand">
+      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img" style="width:32px;height:32px;object-fit:contain"/>
+      <div>
+        <div style="font-size:.72rem;font-weight:800;letter-spacing:.06em">TWINS ADMIN</div>
+        <div class="admin-brand-label">Dashboard v3</div>
+      </div>
+    </div>
+
+    <nav class="adm-nav">
+      <button class="adm-nav-btn active" data-tab="overview" id="nav-overview">
+        <i data-lucide="bar-chart-2"></i> Overview
+      </button>
+      <button class="adm-nav-btn" data-tab="products" id="nav-products">
+        <i data-lucide="package"></i> Products
+      </button>
+      <button class="adm-nav-btn" data-tab="shipping" id="nav-shipping">
+        <i data-lucide="truck"></i> Shipping
+      </button>
+      <button class="adm-nav-btn" data-tab="orders" id="nav-orders">
+        <i data-lucide="shopping-bag"></i> Orders
+      </button>
+    </nav>
+
+    <div class="admin-side-foot">
+      <!-- Theme Toggle -->
+      <button class="adm-theme-row" data-action="theme" id="adm-theme-btn">
+        <span class="adm-theme-icon" id="adm-theme-ico">🌙</span>
+        <span class="adm-theme-label" id="adm-theme-lbl">Light Mode</span>
+        <div class="adm-theme-indicator"></div>
+      </button>
+      <a href="index.html" class="btn btn-ghost btn-sm btn-full">← View Store</a>
+      <button class="btn btn-danger btn-sm btn-full" id="logout-btn">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="admin-main">
+
+    <!-- ─── OVERVIEW TAB ─── -->
+    <div class="adm-tab active" id="tab-overview">
+      <div class="adm-header">
+        <h1>📊 Overview</h1>
+        <span style="font-size:.8rem;color:var(--txt2)" id="ov-date"></span>
+      </div>
+
+      <!-- Stats -->
+      <div class="adm-stats" id="adm-stats"></div>
+
+      <!-- Recent Orders -->
+      <div class="adm-table-wrap">
+        <div style="padding:.9rem 1.1rem;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--txt2)">Recent Orders</span>
+          <button class="btn btn-ghost btn-sm" onclick="switchTab('orders')">View All →</button>
+        </div>
+        <table class="adm-table" id="recent-orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="recent-orders-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── PRODUCTS TAB ─── -->
+    <div class="adm-tab" id="tab-products">
+      <div class="adm-header">
+        <h1>📦 Products</h1>
+        <button class="btn btn-gold btn-sm" id="add-product-btn">+ Add Product</button>
+      </div>
+
+      <div class="adm-table-wrap">
+        <table class="adm-table" id="products-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Sizes &amp; Stock</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="products-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── SHIPPING TAB ─── -->
+    <div class="adm-tab" id="tab-shipping">
+      <div class="adm-header">
+        <h1>🚚 Shipping Methods</h1>
+        <button class="btn btn-gold btn-sm" id="add-ship-btn">+ Add Method</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:.85rem" id="shipping-list"></div>
+    </div>
+
+    <!-- ─── ORDERS TAB ─── -->
+    <div class="adm-tab" id="tab-orders">
+      <div class="adm-header">
+        <h1>🧾 Orders</h1>
+        <button class="btn btn-danger btn-sm" id="clear-orders-btn">Clear All Orders</button>
+      </div>
+
+      <div class="adm-table-wrap">
+        <table class="adm-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Shipping</th>
+              <th>Total</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="orders-body"></tbody>
+        </table>
+        <div id="orders-empty" class="hidden" style="text-align:center;padding:2.5rem;color:var(--txt2);font-size:.88rem">No orders yet.</div>
+      </div>
+    </div>
+
+  </div><!-- /admin-main -->
+</div><!-- /admin-dash -->
+
+<!-- ══ PRODUCT MODAL ══ -->
+<div class="modal-bg" id="product-modal">
+  <div class="modal-box" style="max-width:640px">
+    <div class="modal-head">
+      <h3 id="modal-title">Edit Product</h3>
+      <button class="modal-close" onclick="closeModal('product-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="m-pid"/>
+      <div class="form-row">
+        <div class="fg"><label>Name (EN)</label><input type="text" id="m-name" placeholder="Product name"/></div>
+        <div class="fg"><label>Name (AR) — الاسم</label><input type="text" id="m-name-ar" placeholder="اسم المنتج" dir="rtl"/></div>
+      </div>
+      <div class="fg"><label>Description</label><textarea id="m-desc" rows="3" placeholder="Product description…"></textarea></div>
+      <div class="form-row">
+        <div class="fg">
+          <label>Category</label>
+          <select id="m-cat">
+            <option value="coffee">☕ Coffee</option>
+            <option value="merch">🎁 Merchandise</option>
+          </select>
+        </div>
+        <div class="fg"><label>Badge</label><input type="text" id="m-badge" placeholder="House Blend"/></div>
+      </div>
+      <div class="form-row">
+        <div class="fg">
+          <label>Has Type (محوج/ساده)?</label>
+          <div class="roast-admin-toggle" id="m-has-type-toggle">
+            <button class="roast-admin-btn" data-val="true">Yes — يحتوي</button>
+            <button class="roast-admin-btn sel" data-val="false">No</button>
+          </div>
+        </div>
+        <div class="fg">
+          <label>Has Roast (فاتح/وسط/غامق)?</label>
+          <div class="roast-admin-toggle" id="m-has-roast-toggle">
+            <button class="roast-admin-btn" data-val="true">Yes — يحتوي</button>
+            <button class="roast-admin-btn sel" data-val="false">No</button>
+          </div>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Featured? (Home Page)</label>
+        <div class="roast-admin-toggle" id="m-featured-toggle">
+          <button class="roast-admin-btn" data-val="true">Yes — نعم</button>
+          <button class="roast-admin-btn sel" data-val="false">No</button>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Active (Visible in Store)?</label>
+        <div class="roast-admin-toggle" id="m-active-toggle">
+          <button class="roast-admin-btn sel" data-val="true">Active — نشط</button>
+          <button class="roast-admin-btn" data-val="false">Hidden</button>
+        </div>
+      </div>
+      <!-- Sizes & Stock -->
+      <div class="fg">
+        <label>Sizes, Prices &amp; Stock</label>
+        <div class="size-rows" id="m-size-rows"></div>
+        <button class="btn btn-ghost btn-sm" id="add-size-btn" style="margin-top:.55rem">+ Add Size</button>
+      </div>
+      <!-- Image / Video Upload with Drag & Drop -->
+      <div class="fg">
+        <label>Product Images &amp; Videos</label>
+        <div class="drop-zone" id="m-drop-zone">
+          <div class="drop-zone-icon">📂</div>
+          <div class="drop-zone-text">Drag &amp; drop photos or videos here<br/><span>or click to browse files</span></div>
+          <input type="file" id="m-file-input" multiple accept="image/*,video/*" style="display:none"/>
+        </div>
+        <div class="drop-preview" id="m-drop-preview"></div>
+        <div style="margin-top:.5rem;font-size:.7rem;color:var(--txt3)">Or enter file paths manually (comma-separated):</div>
+        <input type="text" id="m-images" placeholder="img1.jpg, img2.jpg, video.mp4"/>
+      </div>
+      <!-- Merch Color Options (shown only for merch category) -->
+      <div class="fg" id="m-colors-section" style="display:none">
+        <label>Available Colors (Merch)</label>
+        <div class="color-admin-rows" id="m-color-rows"></div>
+        <button class="btn btn-ghost btn-sm" id="add-color-btn" style="margin-top:.55rem">+ Add Color</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('product-modal')">Cancel</button>
+      <button class="btn btn-gold" id="save-product-btn">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SHIPPING MODAL ══ -->
+<div class="modal-bg" id="shipping-modal">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-head">
+      <h3 id="ship-modal-title">Edit Shipping</h3>
+      <button class="modal-close" onclick="closeModal('shipping-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="sm-id"/>
+      <div class="form-row">
+        <div class="fg"><label>Name (EN)</label><input type="text" id="sm-name" placeholder="Standard Delivery"/></div>
+        <div class="fg"><label>Name (AR) — الاسم</label><input type="text" id="sm-name-ar" placeholder="توصيل عادي" dir="rtl"/></div>
+      </div>
+      <div class="form-row">
+        <div class="fg"><label>Price (جنيه)</label><input type="number" id="sm-price" min="0" placeholder="50"/></div>
+        <div class="fg"><label>Delivery Days — المدة</label><input type="text" id="sm-days" placeholder="3-5 أيام"/></div>
+      </div>
+      <div class="fg">
+        <label>Status</label>
+        <div class="roast-admin-toggle" id="sm-active-toggle">
+          <button class="roast-admin-btn sel" data-val="true">Active — نشط</button>
+          <button class="roast-admin-btn" data-val="false">Inactive</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('shipping-modal')">Cancel</button>
+      <button class="btn btn-gold" id="save-ship-btn">Save Method</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ QTY MODAL ══ -->
+<div class="modal-bg" id="qty-modal">
+  <div class="modal-box" style="max-width:420px">
+    <div class="modal-head">
+      <h3>Update Quantity — تعديل الكمية</h3>
+      <button class="modal-close" onclick="closeModal('qty-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="qm-pid"/>
+      <input type="hidden" id="qm-sidx"/>
+      <p style="font-size:.88rem;color:var(--txt2)" id="qm-label"></p>
+      <div class="fg">
+        <label>New Stock Quantity</label>
+        <input type="number" id="qm-stock" min="0" placeholder="0"/>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('qty-modal')">Cancel</button>
+      <button class="btn btn-gold" id="save-qty-btn">Update Stock</button>
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script src="app.js"></script>
+<script>
+/* ══════════════════════════════════════════
+   ADMIN DASHBOARD — Full Script
+══════════════════════════════════════════ */
+
+/* ── Auto-login if token exists ══ */
+if (isLoggedIn()) {
+  document.getElementById('admin-gate').classList.add('hidden');
+  document.getElementById('admin-dash').classList.remove('hidden');
+  initDashboard();
+  updateAdmThemeUI();
+}
+
+/* ── Theme update for admin sidebar ── */
+function updateAdmThemeUI() {
+  const t = getTheme();
+  const ico = document.getElementById('adm-theme-ico');
+  const lbl = document.getElementById('adm-theme-lbl');
+  if (ico) ico.textContent = t === 'dark' ? '☀️' : '🌙';
+  if (lbl) lbl.textContent = t === 'dark' ? 'Light Mode' : 'Dark Mode';
+}
+
+/* ══ Login ══ */
+document.getElementById('login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email    = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-pass').value;
+  const btn      = document.getElementById('login-btn');
+  const errEl    = document.getElementById('login-error');
+  btn.textContent = 'Logging in...';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+  try {
+    await adminLogin(email, password);
+    document.getElementById('admin-gate').classList.add('hidden');
+    document.getElementById('admin-dash').classList.remove('hidden');
+    initDashboard();
+    updateAdmThemeUI();
+  } catch (err) {
+    errEl.textContent = err.message || 'Login failed';
+    errEl.style.display = 'block';
+  } finally {
+    btn.textContent = 'Login →';
+    btn.disabled = false;
+  }
+});
+
+/* ══ Logout ══ */
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  await adminLogout();
+  document.getElementById('admin-dash').classList.add('hidden');
+  document.getElementById('admin-gate').classList.remove('hidden');
+  document.getElementById('admin-pass').value = '';
+  document.getElementById('admin-email').value = '';
+});
+
+/* ── Theme in admin ── */
+document.getElementById('adm-theme-btn').addEventListener('click', () => {
+  toggleTheme();
+  updateAdmThemeUI();
+});
+
+/* ── Tab switching ── */
+function switchTab(tab) {
+  document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.adm-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('nav-' + tab).classList.add('active');
+  if (tab === 'products') renderProducts();
+  if (tab === 'shipping') renderShipping();
+  if (tab === 'orders')   renderOrders();
+  if (tab === 'overview') renderOverview();
+}
+
+document.querySelectorAll('.adm-nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+/* ── Modal helpers ── */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) bg.classList.remove('open'); });
+});
+
+/* ── Toggle helper ── */
+function getToggleVal(id) {
+  const sel = document.querySelector(`#${id} .roast-admin-btn.sel`);
+  return sel ? sel.dataset.val === 'true' : false;
+}
+function setToggleVal(id, val) {
+  document.querySelectorAll(`#${id} .roast-admin-btn`).forEach(btn => {
+    btn.classList.toggle('sel', btn.dataset.val === String(val));
+  });
+}
+function initToggles(containerId) {
+  document.querySelectorAll(`#${containerId} .roast-admin-btn`).forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll(`#${containerId} .roast-admin-btn`).forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    });
+  });
+}
+
+/* ══════════════════════════════════════════
+   OVERVIEW
+═════════════════════════════════════════ */
+async function renderOverview() {
+  document.getElementById('ov-date').textContent = formatDate();
+  let products = [], orders = [], shipping = [];
+  try {
+    [products, orders, shipping] = await Promise.all([
+      apiGetAllProducts(), apiGetOrders(), apiGetAllShipping()
+    ]);
+  } catch(e) {
+    products = getProducts(); orders = getOrders(); shipping = getShipping();
+  }
+  const revenue    = orders.reduce((s, o) => s + (o.total || 0), 0);
+  const totalStock = products.reduce((s,p) => s + p.sizes.reduce((ss,sz) => ss+sz.stock, 0), 0);
+
+  const statsEl = document.getElementById('adm-stats');
+  statsEl.innerHTML = `
+    <div class="adm-stat"><div class="adm-stat-n">${products.filter(p=>p.active).length}</div><div class="adm-stat-l">Active Products</div></div>
+    <div class="adm-stat"><div class="adm-stat-n">${orders.length}</div><div class="adm-stat-l">Total Orders</div></div>
+    <div class="adm-stat"><div class="adm-stat-n">${revenue.toLocaleString()} جنيه</div><div class="adm-stat-l">Total Revenue</div></div>
+    <div class="adm-stat"><div class="adm-stat-n">${totalStock}</div><div class="adm-stat-l">Units in Stock</div></div>
+    <div class="adm-stat"><div class="adm-stat-n">${shipping.filter(s=>s.active).length}</div><div class="adm-stat-l">Active Shipping Methods</div></div>
+    <div class="adm-stat"><div class="adm-stat-n">${orders.filter(o=>o.status==='pending').length}</div><div class="adm-stat-l">Pending Orders</div></div>`;
+
+  const tbody = document.getElementById('recent-orders-body');
+  const recent = orders.slice(0, 5);
+  tbody.innerHTML = recent.length === 0
+    ? '<tr><td colspan="6" style="text-align:center;color:var(--txt2);padding:2rem">No orders yet</td></tr>'
+    : recent.map(o => `
+        <tr>
+          <td><span style="font-size:.75rem;font-family:monospace;color:var(--gold)">${o.id}</span></td>
+          <td>${o.customer?.name || '—'}</td>
+          <td>${o.items?.length || 0} items</td>
+          <td>${(o.total||0).toLocaleString()} جنيه</td>
+          <td>${o.date}</td>
+          <td><span class="s-pill on">Pending</span></td>
+        </tr>`).join('');
+}
+
+/* ══════════════════════════════════════════
+   PRODUCTS
+══════════════════════════════════════════ */
+async function renderProducts() {
+  let products = [];
+  try { products = await apiGetAllProducts(); }
+  catch { products = getProducts(); }
+  const tbody = document.getElementById('products-body');
+  tbody.innerHTML = '';
+
+  products.forEach(p => {
+    const minPrice = Math.min(...p.sizes.map(s => s.price));
+    const maxPrice = Math.max(...p.sizes.map(s => s.price));
+    const priceStr = minPrice === maxPrice ? `${minPrice}` : `${minPrice}–${maxPrice}`;
+    const totalStock = p.sizes.reduce((s, sz) => s + sz.stock, 0);
+
+    const stockBadges = p.sizes.map((sz, si) => `
+      <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.25rem">
+        <span style="font-size:.72rem;font-weight:600;min-width:38px">${sz.label}</span>
+        <div class="qty-inline-wrap">
+          <button class="qty-inline-btn" onclick="adjustStock(${p.id},${si},-1)">−</button>
+          <input class="qty-inline-val" type="number" value="${sz.stock}" min="0"
+            onchange="setStockDirect(${p.id},${si},this.value)" style="width:44px"/>
+          <button class="qty-inline-btn" onclick="adjustStock(${p.id},${si},1)">+</button>
+        </div>
+        <span style="font-size:.7rem;color:var(--txt3)">${sz.price.toLocaleString()} جنيه</span>
+      </div>`).join('');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><div style="width:46px;height:46px;border-radius:var(--r-sm);overflow:hidden;background:var(--surf2)"><img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div></td>
+      <td>
+        <div style="font-weight:700;font-size:.88rem">${p.name}</div>
+        <div style="font-size:.72rem;color:var(--txt2)">${p.nameAr}</div>
+        <div style="font-size:.65rem;color:var(--txt3);margin-top:.15rem">
+          ${p.hasType ? '☕ محوج/ساده' : ''} ${p.hasRoast ? '🔥 فاتح/وسط/غامق' : ''}
+        </div>
+      </td>
+      <td><span class="tag">${p.category === 'coffee' ? '☕ Coffee' : '🎁 Merch'}</span></td>
+      <td>${stockBadges}</td>
+      <td><strong>${priceStr} جنيه</strong></td>
+      <td>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <span class="s-pill ${p.active ? 'on' : 'off'}">${p.active ? '✓ Active' : '✗ Hidden'}</span>
+          ${p.featured ? '<span class="tag" style="font-size:.6rem">⭐ Featured</span>' : ''}
+        </div>
+      </td>
+      <td>
+        <div class="act-row">
+          <button class="btn btn-ghost btn-sm" onclick="openEditProduct(${p.id})">✏️ Edit</button>
+          <button class="btn ${p.active ? 'btn-danger' : 'btn-success'} btn-sm" onclick="toggleProduct(${p.id})">
+            ${p.active ? '🙈 Hide' : '👁 Show'}
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})" title="Delete product permanently">🗑️</button>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ══ Stock inline adjust (now uses API) ══ */
+window.adjustStock = async function(pid, sizeIdx, delta) {
+  try {
+    const products = await apiGetAllProducts().catch(() => getProducts());
+    const p = products.find(p => p.id === pid);
+    if (!p || !p.sizes[sizeIdx]) return;
+    const sz = p.sizes[sizeIdx];
+    const newStock = Math.max(0, sz.stock + delta);
+    if (sz.id) {
+      await apiUpdateStock(pid, sz.id, newStock).catch(() => {});
+    }
+    await renderProducts();
+    toast(`Stock updated: ${p.name} (${sz.label}) → ${newStock}`, 'success');
+  } catch(e) { toast('Stock update failed', 'error'); }
+};
+
+window.setStockDirect = async function(pid, sizeIdx, val) {
+  try {
+    const products = await apiGetAllProducts().catch(() => getProducts());
+    const p = products.find(p => p.id === pid);
+    if (!p || !p.sizes[sizeIdx]) return;
+    const sz = p.sizes[sizeIdx];
+    const newStock = Math.max(0, parseInt(val)||0);
+    if (sz.id) {
+      await apiUpdateStock(pid, sz.id, newStock).catch(() => {});
+    }
+    toast(`Stock set: ${p.name} (${sz.label}) → ${newStock}`, 'info');
+  } catch(e) { toast('Stock update failed', 'error'); }
+};
+
+/* ══ Toggle product active ══ */
+window.toggleProduct = async function(pid) {
+  try {
+    const res = await apiToggleProduct(pid).catch(async () => {
+      const products = getProducts();
+      const p = products.find(p => p.id === pid);
+      if (p) { p.active = !p.active; saveProducts(products); }
+      return p;
+    });
+    await renderProducts();
+    toast(`Product is now ${res?.active ? 'visible' : 'hidden'}`, res?.active ? 'success' : 'info');
+  } catch(e) { toast('Toggle failed', 'error'); }
+};
+
+/* ══ Delete product ══ */
+window.deleteProduct = async function(pid) {
+  const products = await apiGetAllProducts().catch(() => getProducts());
+  const p = products.find(pr => pr.id === pid);
+  if (!p) return;
+  if (!confirm(`حذف "${p.name}" نهائياً؟\nDelete "${p.name}" permanently?`)) return;
+  try {
+    await apiDeleteProduct(pid).catch(() => {
+      const prods = getProducts().filter(pr => pr.id !== pid);
+      saveProducts(prods);
+    });
+    await renderProducts();
+    toast(`تم حذف المنتج: ${p.name}`, 'info');
+  } catch(e) { toast('Delete failed', 'error'); }
+};
+
+/* ══ Open edit product modal ══ */
+window.openEditProduct = async function(pid) {
+  let p = null;
+  if (pid) {
+    try { p = await apiGetProductById(pid); } catch { p = getProductById(pid); }
+  }
+  document.getElementById('modal-title').textContent = p ? `Edit: ${p.name}` : 'Add Product';
+  document.getElementById('m-pid').value         = p ? p.id : '';
+  document.getElementById('m-name').value        = p ? p.name : '';
+  document.getElementById('m-name-ar').value     = p ? p.nameAr : '';
+  document.getElementById('m-desc').value        = p ? p.description : '';
+  document.getElementById('m-cat').value         = p ? p.category : 'coffee';
+  document.getElementById('m-badge').value       = p ? p.badge : '';
+  document.getElementById('m-images').value      = p ? (p.images || []).join(', ') : '';
+  setToggleVal('m-has-type-toggle',  p ? p.hasType  : false);
+  setToggleVal('m-has-roast-toggle', p ? p.hasRoast : false);
+  setToggleVal('m-featured-toggle',  p ? p.featured : false);
+  setToggleVal('m-active-toggle',    p ? p.active   : true);
+  renderSizeRows(p ? p.sizes : [{ label:'200g', price:180, stock:0 }]);
+  document.getElementById('m-drop-preview').innerHTML = '';
+  const isMerch = (p ? p.category : 'coffee') === 'merch';
+  document.getElementById('m-colors-section').style.display = isMerch ? '' : 'none';
+  renderColorRows(p && p.colors ? p.colors : []);
+  openModal('product-modal');
+};
+
+/* ── Size rows in modal ── */
+function renderSizeRows(sizes) {
+  const wrap = document.getElementById('m-size-rows');
+  wrap.innerHTML = '';
+  sizes.forEach((sz, i) => {
+    const row = document.createElement('div');
+    row.className = 'size-row';
+    row.innerHTML = `
+      <span class="size-row-lbl">#${i+1}</span>
+      <div class="fg"><input type="text" placeholder="Label" value="${sz.label}" data-field="label" data-idx="${i}"/></div>
+      <div class="fg"><input type="number" placeholder="Price" value="${sz.price}" min="0" data-field="price" data-idx="${i}"/></div>
+      <div class="fg"><input type="number" placeholder="Stock" value="${sz.stock}" min="0" data-field="stock" data-idx="${i}"/></div>
+      <button onclick="this.closest('.size-row').remove()" style="color:var(--red);font-size:1rem;padding:.25rem;cursor:pointer">✕</button>`;
+    wrap.appendChild(row);
+  });
+}
+
+document.getElementById('add-size-btn').addEventListener('click', () => {
+  const sizes = getSizeRowsData();
+  sizes.push({ label:'', price:0, stock:0 });
+  renderSizeRows(sizes);
+});
+
+function getSizeRowsData() {
+  const rows = document.querySelectorAll('#m-size-rows .size-row');
+  return Array.from(rows).map(row => ({
+    label: row.querySelector('[data-field="label"]').value.trim(),
+    price: parseFloat(row.querySelector('[data-field="price"]').value) || 0,
+    stock: parseInt(row.querySelector('[data-field="stock"]').value) || 0,
+  }));
+}
+
+/* ══ Save product (API) ══ */
+document.getElementById('save-product-btn').addEventListener('click', async () => {
+  const pid    = document.getElementById('m-pid').value;
+  const name   = document.getElementById('m-name').value.trim();
+  const nameAr = document.getElementById('m-name-ar').value.trim();
+  const desc   = document.getElementById('m-desc').value.trim();
+  const cat    = document.getElementById('m-cat').value;
+  const badge  = document.getElementById('m-badge').value.trim();
+  const imgStr = document.getElementById('m-images').value;
+  const images = imgStr.split(',').map(s=>s.trim()).filter(Boolean);
+  const sizes  = getSizeRowsData();
+  const colors = cat === 'merch' ? getColorRowsData() : [];
+
+  if (!name || sizes.length === 0 || images.length === 0) {
+    toast('Fill in Name, at least one size, and an image path', 'error'); return;
+  }
+
+  const payload = {
+    name, nameAr, description:desc, category:cat, badge, images, sizes, colors,
+    hasType: getToggleVal('m-has-type-toggle'), hasRoast: getToggleVal('m-has-roast-toggle'),
+    featured: getToggleVal('m-featured-toggle'), active: getToggleVal('m-active-toggle')
+  };
+
+  try {
+    if (pid) {
+      await apiUpdateProduct(pid, payload);
+    } else {
+      await apiCreateProduct(payload);
+    }
+  } catch(e) {
+    // Fallback to localStorage
+    let products = getProducts();
+    if (pid) {
+      const idx = products.findIndex(p => p.id === +pid);
+      if (idx > -1) {
+        products[idx] = { ...products[idx], ...payload };
+      }
+    } else {
+      const newId = Math.max(...products.map(p=>p.id), 0) + 1;
+      products.push({ id:newId, ...payload });
+    }
+    saveProducts(products);
+  }
+
+  closeModal('product-modal');
+  renderProducts();
+  toast(`Product "${name}" saved!`, 'success');
+});
+
+/* Add product btn */
+document.getElementById('add-product-btn').addEventListener('click', () => openEditProduct(null));
+
+/* ── Category change → show/hide colors ── */
+document.getElementById('m-cat').addEventListener('change', () => {
+  const isMerch = document.getElementById('m-cat').value === 'merch';
+  document.getElementById('m-colors-section').style.display = isMerch ? '' : 'none';
+});
+
+/* ── Color rows ── */
+function renderColorRows(colors) {
+  const wrap = document.getElementById('m-color-rows');
+  wrap.innerHTML = '';
+  colors.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'color-admin-row';
+    row.innerHTML = `
+      <input type="color" value="${c.hex || '#000000'}" data-field="hex" data-idx="${i}" title="Pick color"/>
+      <div class="fg" style="flex:1"><input type="text" placeholder="Color name (e.g. Black)" value="${c.name || ''}" data-field="name" data-idx="${i}"/></div>
+      <button onclick="this.closest('.color-admin-row').remove()" style="color:var(--red);font-size:1rem;padding:.25rem;cursor:pointer;flex-shrink:0">✕</button>`;
+    wrap.appendChild(row);
+  });
+}
+
+function getColorRowsData() {
+  const rows = document.querySelectorAll('#m-color-rows .color-admin-row');
+  return Array.from(rows).map(row => ({
+    hex: row.querySelector('[data-field="hex"]').value,
+    name: row.querySelector('[data-field="name"]').value.trim(),
+  })).filter(c => c.hex || c.name);
+}
+
+document.getElementById('add-color-btn').addEventListener('click', () => {
+  const colors = getColorRowsData();
+  colors.push({ hex:'#000000', name:'' });
+  renderColorRows(colors);
+});
+
+/* ── Drag & Drop Upload ── */
+(function initDropZone() {
+  const zone  = document.getElementById('m-drop-zone');
+  const input = document.getElementById('m-file-input');
+  const preview = document.getElementById('m-drop-preview');
+  const pathInput = document.getElementById('m-images');
+
+  zone.addEventListener('click', () => input.click());
+
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  input.addEventListener('change', () => handleFiles(input.files));
+
+  function handleFiles(files) {
+    preview.innerHTML = '';
+    const names = [];
+    Array.from(files).forEach(file => {
+      names.push(file.name);
+      const isVideo = file.type.startsWith('video/');
+      const item = document.createElement('div');
+      item.className = 'drop-preview-item';
+      if (isVideo) {
+        const v = document.createElement('video');
+        v.src = URL.createObjectURL(file);
+        v.muted = true; v.loop = true; v.autoplay = true;
+        v.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
+        item.appendChild(v);
+      } else {
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
+        item.appendChild(img);
+      }
+      const lbl = document.createElement('div');
+      lbl.className = 'drop-preview-name';
+      lbl.textContent = file.name;
+      item.appendChild(lbl);
+      preview.appendChild(item);
+    });
+    // Append names to the path input
+    const existing = pathInput.value.split(',').map(s=>s.trim()).filter(Boolean);
+    const merged = [...new Set([...existing, ...names])].join(', ');
+    pathInput.value = merged;
+  }
+})();
+
+
+/* ══════════════════════════════════════════
+   SHIPPING (API)
+═════════════════════════════════════════ */
+async function renderShipping() {
+  let ships = [];
+  try { ships = await apiGetAllShipping(); }
+  catch { ships = getShipping(); }
+  const listEl = document.getElementById('shipping-list');
+  listEl.innerHTML = '';
+  const SHIP_ICONS = ['🚶', '🚚', '⚡', '🛵', '✈️', '🏍️'];
+  ships.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = `ship-editor-card ${s.active ? 'active-card' : 'inactive-card'}`;
+    card.innerHTML = `
+      <div class="ship-ed-icon">${SHIP_ICONS[i % SHIP_ICONS.length]}</div>
+      <div class="ship-ed-info">
+        <div class="ship-ed-name">${s.nameAr} — ${s.name}</div>
+        <div class="ship-ed-days">⏱ ${s.days}</div>
+      </div>
+      <div class="ship-ed-price">${s.price === 0 ? 'Free' : s.price.toLocaleString() + ' جنيه'}</div>
+      <div class="ship-ed-actions">
+        <span class="s-pill ${s.active ? 'on' : 'off'}">${s.active ? '✓ Active' : '✗ Off'}</span>
+        <button class="btn btn-ghost btn-sm" onclick="openEditShipping(${s.id})">✏️ Edit</button>
+        <button class="btn ${s.active ? 'btn-danger' : 'btn-success'} btn-sm" onclick="toggleShipping(${s.id})">
+          ${s.active ? 'Disable' : 'Enable'}
+        </button>
+        <button class="btn btn-danger btn-sm" onclick="deleteShipping(${s.id})">🗑</button>
+      </div>`;
+    listEl.appendChild(card);
+  });
+  if (ships.length === 0) {
+    listEl.innerHTML = '<p style="color:var(--txt2);font-size:.88rem;text-align:center;padding:2rem">No shipping methods. Add one above.</p>';
+  }
+}
+
+window.openEditShipping = async function(sid) {
+  let ships = [];
+  try { ships = await apiGetAllShipping(); } catch { ships = getShipping(); }
+  const s = sid ? ships.find(x => x.id === sid) : null;
+  document.getElementById('ship-modal-title').textContent = s ? `Edit: ${s.name}` : 'Add Shipping Method';
+  document.getElementById('sm-id').value      = s ? s.id : '';
+  document.getElementById('sm-name').value    = s ? s.name : '';
+  document.getElementById('sm-name-ar').value = s ? s.nameAr : '';
+  document.getElementById('sm-price').value   = s ? s.price : 0;
+  document.getElementById('sm-days').value    = s ? s.days : '';
+  setToggleVal('sm-active-toggle', s ? s.active : true);
+  openModal('shipping-modal');
+};
+
+window.toggleShipping = async function(sid) {
+  try {
+    let ships = [];
+    try { ships = await apiGetAllShipping(); } catch { ships = getShipping(); }
+    const s = ships.find(x => x.id === sid);
+    if (!s) return;
+    const updated = { ...s, active: !s.active };
+    await apiUpdateShipping(sid, updated).catch(() => {
+      const sh = getShipping();
+      const idx = sh.findIndex(x => x.id === sid);
+      if (idx !== -1) { sh[idx].active = !sh[idx].active; saveShipping(sh); }
+    });
+    await renderShipping();
+    toast(`${s.name} is now ${!s.active ? 'enabled' : 'disabled'}`, !s.active ? 'success' : 'info');
+  } catch(e) { toast('Toggle failed', 'error'); }
+};
+
+window.deleteShipping = async function(sid) {
+  if (!confirm('Delete this shipping method?')) return;
+  try {
+    await apiDeleteShipping(sid).catch(() => {
+      const ships = getShipping().filter(s => s.id !== sid);
+      saveShipping(ships);
+    });
+    await renderShipping();
+    toast('Shipping method deleted', 'info');
+  } catch(e) { toast('Delete failed', 'error'); }
+};
+
+document.getElementById('add-ship-btn').addEventListener('click', () => openEditShipping(null));
+
+document.getElementById('save-ship-btn').addEventListener('click', async () => {
+  const sid    = document.getElementById('sm-id').value;
+  const name   = document.getElementById('sm-name').value.trim();
+  const nameAr = document.getElementById('sm-name-ar').value.trim();
+  const price  = parseFloat(document.getElementById('sm-price').value) || 0;
+  const days   = document.getElementById('sm-days').value.trim();
+  const active = getToggleVal('sm-active-toggle');
+  if (!name || !nameAr || !days) { toast('Fill all fields', 'error'); return; }
+  try {
+    if (sid) {
+      await apiUpdateShipping(sid, { name, nameAr, price, days, active });
+    } else {
+      await apiCreateShipping({ name, nameAr, price, days, active });
+    }
+    closeModal('shipping-modal');
+    await renderShipping();
+    toast(`Shipping "${name}" saved!`, 'success');
+  } catch(err) {
+    const ships = getShipping();
+    if (sid) {
+      const idx = ships.findIndex(s => s.id === +sid);
+      if (idx !== -1) ships[idx] = { ...ships[idx], name, nameAr, price, days, active };
+    } else {
+      ships.push({ id: Math.max(...ships.map(s=>s.id), 0) + 1, name, nameAr, price, days, active });
+    }
+    saveShipping(ships);
+    closeModal('shipping-modal');
+    await renderShipping();
+    toast(`Shipping "${name}" saved (local)!`, 'success');
+  }
+});
+
+/* ══════════════════════════════════════════
+   ORDERS
+══════════════════════════════════════════ */
+function renderOrders() {
+  const orders = getOrders();
+  const tbody  = document.getElementById('orders-body');
+  const emptyEl= document.getElementById('orders-empty');
+  tbody.innerHTML = '';
+
+  if (orders.length === 0) {
+    emptyEl.classList.remove('hidden');
+    return;
+  }
+  emptyEl.classList.add('hidden');
+
+  orders.forEach(o => {
+    const itemsSummary = (o.items||[]).slice(0,2).map(i=>`${i.name} (${i.qty}x)`).join(', ');
+    const moreItems = (o.items||[]).length > 2 ? ` +${o.items.length-2} more` : '';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span style="font-size:.72rem;font-family:monospace;color:var(--gold)">${o.id}</span></td>
+      <td>
+        <div style="font-weight:600;font-size:.86rem">${o.customer?.name || '—'}</div>
+        <div style="font-size:.7rem;color:var(--txt2)">${o.customer?.phone || ''}</div>
+      </td>
+      <td style="font-size:.78rem">${itemsSummary}${moreItems}</td>
+      <td style="font-size:.78rem">${o.shipping?.nameAr || '—'}</td>
+      <td><strong>${(o.total||0).toLocaleString()} جنيه</strong></td>
+      <td style="font-size:.78rem">${o.date}</td>
+      <td><span class="s-pill on">Pending</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('clear-orders-btn').addEventListener('click', () => {
+  if (!confirm('Delete ALL orders? This cannot be undone.')) return;
+  localStorage.removeItem('tc_orders');
+  renderOrders();
+  renderOverview();
+  toast('All orders cleared', 'info');
+});
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+function initDashboard() {
+  renderOverview();
+  // Init all toggles in modals
+  ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-active-toggle','sm-active-toggle'].forEach(id => {
+    initToggles(id);
+  });
+}
+
+// Make switchTab accessible globally
+window.switchTab = switchTab;
+</script>
+</body>
+</html>
