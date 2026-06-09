@@ -325,20 +325,17 @@
 ══════════════════════════════════════════ */
 
 /* ── Auto-login if token exists ══ */
+/* ── Auto-login if token exists ══ */
 if (isLoggedIn()) {
   document.getElementById('admin-gate').classList.add('hidden');
   document.getElementById('admin-dash').classList.remove('hidden');
   initDashboard();
-  updateAdmThemeUI();
 }
 
 /* ── Theme update for admin sidebar ── */
+// Theme removed for strict monochrome
 function updateAdmThemeUI() {
-  const t = getTheme();
-  const ico = document.getElementById('adm-theme-ico');
-  const lbl = document.getElementById('adm-theme-lbl');
-  if (ico) ico.textContent = t === 'dark' ? '☀️' : '🌙';
-  if (lbl) lbl.textContent = t === 'dark' ? 'Light Mode' : 'Dark Mode';
+  // Do nothing
 }
 
 /* ══ Login ══ */
@@ -356,7 +353,6 @@ document.getElementById('login-form').addEventListener('submit', async e => {
     document.getElementById('admin-gate').classList.add('hidden');
     document.getElementById('admin-dash').classList.remove('hidden');
     initDashboard();
-    updateAdmThemeUI();
   } catch (err) {
     errEl.textContent = err.message || 'Login failed';
     errEl.style.display = 'block';
@@ -377,8 +373,7 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
 
 /* ── Theme in admin ── */
 document.getElementById('adm-theme-btn').addEventListener('click', () => {
-  toggleTheme();
-  updateAdmThemeUI();
+  // Theme toggle disabled
 });
 
 /* ── Tab switching ── */
