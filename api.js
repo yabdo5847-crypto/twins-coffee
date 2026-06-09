@@ -98,7 +98,28 @@ async function uploadProductImage(file) {
   if (token) headers['Authorization'] = 'Bearer ' + token;
   const res = await fetch(API_URL + '/upload', { method: 'POST', headers, body: formData });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error);
-  // data.filename is returned by the server, adjust path as needed depending on your server's static mount
-  return '/uploads/' + data.filename;
+  if (!res.ok) throw new Error(data.error || 'Upload failed');
+  return data;
+}
+
+/* ══════════════════════════════════════════════════════════
+   HELPERS & ALIASES (For backward compatibility with admin.html/checkout.html)
+══════════════════════════════════════════════════════════ */
+const apiCreateProduct = apiAddProduct;
+const apiUpdateShipping = apiUpdateShippingOption;
+const apiDeleteShipping = apiDeleteShippingOption;
+const apiCreateShipping = apiAddShippingOption;
+const apiPlaceOrder = apiCreateOrder;
+
+async function apiUpdateStock(pid, sizeId, newStock) {
+  const p = await apiGetProductById(pid);
+  const sz = p.sizes.find(s => s.id === sizeId);
+  if (sz) sz.stock = newStock;
+  return apiUpdateProduct(pid, p);
+}
+
+async function apiToggleProduct(pid) {
+  const p = await apiGetProductById(pid);
+  p.active = !p.active;
+  return apiUpdateProduct(pid, p);
 }
