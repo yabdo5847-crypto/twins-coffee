@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let allProducts = [], categories = [];
   try {
     [allProducts, categories] = await Promise.all([
-      apiGetProducts().catch(() => getProducts()),
+      apiGetAllProducts().catch(() => getProducts()),
       apiGetAllCategories().catch(() => getCategories())
     ]);
   } catch(e) {

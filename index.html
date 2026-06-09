@@ -286,7 +286,7 @@
 
   // Load products
   let allProducts = [];
-  try { allProducts = await apiGetProducts(); }
+  try { allProducts = await apiGetAllProducts(); }
   catch(e) { console.warn('API unavailable, using local fallback:', e.message); allProducts = getProducts(); }
 
   const activeProducts = allProducts.filter(p => p.active);
