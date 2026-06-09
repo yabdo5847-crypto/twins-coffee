@@ -14,6 +14,7 @@ const { generateToken }   = require('./middleware/auth');
 const productsRouter      = require('./routes/products');
 const ordersRouter        = require('./routes/orders');
 const shippingRouter      = require('./routes/shipping');
+const categoriesRouter    = require('./routes/categories');
 const uploadRouter        = require('./routes/upload');
 
 const app  = express();
@@ -32,6 +33,7 @@ app.use('/uploads', express.static(uploadsDir));
 app.use('/api/products', productsRouter);
 app.use('/api/orders',   ordersRouter);
 app.use('/api/shipping', shippingRouter);
+app.use('/api/categories', categoriesRouter);
 app.use('/api/upload',   uploadRouter);
 
 // ─── Auth: Login ─────────────────────────────────────────────

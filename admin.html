@@ -185,12 +185,20 @@
       <div class="form-row">
         <div class="fg">
           <label>Category</label>
-          <select id="m-cat">
+          <select id="m-cat" class="f-input">
             <option value="coffee">☕ Coffee</option>
             <option value="merch">🎁 Merchandise</option>
+            <option value="equipment">🛒 Equipment</option>
+            <option value="cups">☕ Cups & Mugs</option>
           </select>
         </div>
-        <div class="fg"><label>Badge</label><input type="text" id="m-badge" placeholder="House Blend"/></div>
+        <div class="fg">
+          <label>Bestseller?</label>
+          <div class="roast-admin-toggle" id="m-bestseller-toggle">
+            <button class="roast-admin-btn" data-val="true">Yes — نعم</button>
+            <button class="roast-admin-btn sel" data-val="false">No</button>
+          </div>
+        </div>
       </div>
       <div class="form-row">
         <div class="fg">
@@ -587,8 +595,8 @@ window.openEditProduct = async function(pid) {
   document.getElementById('m-name-ar').value     = p ? p.nameAr : '';
   document.getElementById('m-desc').value        = p ? p.description : '';
   document.getElementById('m-cat').value         = p ? p.category : 'coffee';
-  document.getElementById('m-badge').value       = p ? p.badge : '';
   document.getElementById('m-images').value      = p ? (p.images || []).join(', ') : '';
+  setToggleVal('m-bestseller-toggle', p && p.badge === 'Best Seller' ? true : false);
   setToggleVal('m-has-type-toggle',  p ? p.hasType  : false);
   setToggleVal('m-has-roast-toggle', p ? p.hasRoast : false);
   setToggleVal('m-featured-toggle',  p ? p.featured : false);
@@ -640,7 +648,8 @@ document.getElementById('save-product-btn').addEventListener('click', async () =
   const nameAr = document.getElementById('m-name-ar').value.trim();
   const desc   = document.getElementById('m-desc').value.trim();
   const cat    = document.getElementById('m-cat').value;
-  const badge  = document.getElementById('m-badge').value.trim();
+  const isBestseller = getToggleVal('m-bestseller-toggle');
+  const badge  = isBestseller ? 'Best Seller' : null;
   const imgStr = document.getElementById('m-images').value;
   const images = imgStr.split(',').map(s=>s.trim()).filter(Boolean);
   const sizes  = getSizeRowsData();
@@ -663,18 +672,8 @@ document.getElementById('save-product-btn').addEventListener('click', async () =
       await apiCreateProduct(payload);
     }
   } catch(e) {
-    // Fallback to localStorage
-    let products = getProducts();
-    if (pid) {
-      const idx = products.findIndex(p => p.id === +pid);
-      if (idx > -1) {
-        products[idx] = { ...products[idx], ...payload };
-      }
-    } else {
-      const newId = Math.max(...products.map(p=>p.id), 0) + 1;
-      products.push({ id:newId, ...payload });
-    }
-    saveProducts(products);
+    toast('Error saving product: ' + e.message, 'error');
+    return;
   }
 
   closeModal('product-modal');
@@ -738,36 +737,51 @@ document.getElementById('add-color-btn').addEventListener('click', () => {
   });
   input.addEventListener('change', () => handleFiles(input.files));
 
-  function handleFiles(files) {
+  async function handleFiles(files) {
     preview.innerHTML = '';
     const names = [];
-    Array.from(files).forEach(file => {
-      names.push(file.name);
-      const isVideo = file.type.startsWith('video/');
-      const item = document.createElement('div');
-      item.className = 'drop-preview-item';
-      if (isVideo) {
-        const v = document.createElement('video');
-        v.src = URL.createObjectURL(file);
-        v.muted = true; v.loop = true; v.autoplay = true;
-        v.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
-        item.appendChild(v);
-      } else {
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
-        item.appendChild(img);
+    const textEl = zone.querySelector('.drop-zone-text');
+    const origText = textEl.innerHTML;
+    textEl.innerHTML = 'Uploading... Please wait.';
+    
+    try {
+      for (let file of Array.from(files)) {
+        // Preview locally
+        const isVideo = file.type.startsWith('video/');
+        const item = document.createElement('div');
+        item.className = 'drop-preview-item';
+        if (isVideo) {
+          const v = document.createElement('video');
+          v.src = URL.createObjectURL(file);
+          v.muted = true; v.loop = true; v.autoplay = true;
+          v.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
+          item.appendChild(v);
+        } else {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
+          item.appendChild(img);
+        }
+        const lbl = document.createElement('div');
+        lbl.className = 'drop-preview-name';
+        lbl.textContent = 'Uploading...';
+        item.appendChild(lbl);
+        preview.appendChild(item);
+
+        // Upload to Supabase
+        const url = await uploadProductImage(file);
+        names.push(url);
+        lbl.textContent = 'Done!';
       }
-      const lbl = document.createElement('div');
-      lbl.className = 'drop-preview-name';
-      lbl.textContent = file.name;
-      item.appendChild(lbl);
-      preview.appendChild(item);
-    });
-    // Append names to the path input
-    const existing = pathInput.value.split(',').map(s=>s.trim()).filter(Boolean);
-    const merged = [...new Set([...existing, ...names])].join(', ');
-    pathInput.value = merged;
+      // Append URLs to the path input
+      const existing = pathInput.value.split(',').map(s=>s.trim()).filter(Boolean);
+      const merged = [...new Set([...existing, ...names])].join(', ');
+      pathInput.value = merged;
+    } catch (e) {
+      toast('Upload failed: ' + e.message, 'error');
+    } finally {
+      textEl.innerHTML = origText;
+    }
   }
 })();
 
@@ -932,7 +946,7 @@ document.getElementById('clear-orders-btn').addEventListener('click', () => {
 function initDashboard() {
   renderOverview();
   // Init all toggles in modals
-  ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-active-toggle','sm-active-toggle'].forEach(id => {
+  ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-active-toggle','sm-active-toggle','m-bestseller-toggle'].forEach(id => {
     initToggles(id);
   });
 }

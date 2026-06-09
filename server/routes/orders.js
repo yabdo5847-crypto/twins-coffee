@@ -19,6 +19,19 @@ router.post('/', (req, res) => {
 
     const orderId = id || ('ORD-' + Date.now().toString(36).toUpperCase());
 
+    // Securely calculate total from DB
+    let calculatedTotal = 0;
+    if (shippingId) {
+      const ship = db.prepare('SELECT price FROM shipping_options WHERE id=?').get(shippingId);
+      if (ship) calculatedTotal += ship.price;
+    }
+    
+    for (const item of items) {
+      const sizeRow = db.prepare('SELECT price FROM product_sizes WHERE id=? AND product_id=?').get(item.sizeId, item.productId);
+      if (sizeRow) calculatedTotal += (sizeRow.price * (item.quantity || item.qty || 1));
+    }
+    const secureTotal = calculatedTotal > 0 ? calculatedTotal : total;
+
     db.prepare(`
       INSERT INTO orders
         (id, customer_name, customer_phone, customer_address, city,
@@ -26,7 +39,7 @@ router.post('/', (req, res) => {
       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'pending')
     `).run(orderId, customerName, customerPhone||'', customerAddress||'', city||'',
            JSON.stringify(items), shippingId||null, shippingName||'', shippingPrice||0,
-           subtotal, total, notes||'');
+           subtotal, secureTotal, notes||'');
 
     // Decrement stock
     items.forEach(item => {

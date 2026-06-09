@@ -80,6 +80,14 @@ db.exec(`
     created_at    TEXT DEFAULT (datetime('now'))
   );
 
+  CREATE TABLE IF NOT EXISTS categories (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    name_ar     TEXT,
+    slug        TEXT UNIQUE NOT NULL,
+    active      INTEGER DEFAULT 1
+  );
+
   -- Indexes
   CREATE INDEX IF NOT EXISTS idx_products_active   ON products(active);
   CREATE INDEX IF NOT EXISTS idx_products_featured ON products(featured);

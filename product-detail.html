@@ -4,132 +4,126 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Product | The Twins Coffee®</title>
-  <meta name="description" content="Product details — The Twins Coffee® premium Turkish coffee. Choose your size, type, and roast level."/>
+  <meta name="description" content="Product details — The Twins Coffee® premium Turkish coffee."/>
   <link rel="stylesheet" href="style.css"/>
-  <!-- Premium Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+
+<!-- ══ CART DRAWER ══ -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="cart-drawer" id="cart-drawer">
+  <div class="drawer-head"><h3>Your Cart</h3><button class="drawer-close" id="drawer-close">✕</button></div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-foot">
+    <div class="drawer-subtotal"><span>Subtotal</span><span id="drawer-subtotal">0 جنيه</span></div>
+    <a href="checkout.html" class="btn btn-gold btn-full btn-lg" onclick="closeCartDrawer()">Checkout →</a>
+    <div class="drawer-trust"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="13" height="13"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg> Secure Checkout &nbsp;·&nbsp; Free Returns</div>
+  </div>
+</div>
 
 <!-- ══ NAVBAR ══ -->
 <nav class="navbar scrolled" id="navbar">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
-      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
+      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img" style="filter: grayscale(100%) contrast(200%) brightness(0);"/>
       <span class="logo-text">THE TWINS COFFEE<sup>®</sup></span>
     </a>
     <ul class="nav-links" id="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="products.html" class="active">Shop</a></li>
-      <li><a href="index.html#hero-slider-section">Collections</a></li>
-      <li><a href="index.html#about">Our Story</a></li>
-      <li><a href="index.html#guide">Coffee Guide</a></li>
+      <li><a href="index.html#categories">Categories</a></li>
+      <li><a href="index.html#bestsellers">Best Sellers</a></li>
+      <li><a href="products.html">About</a></li>
     </ul>
     <div class="nav-actions">
-      <button class="icon-btn" data-action="theme" title="Toggle theme">
-        <span class="theme-icon"></span>
-      </button>
-      <a href="checkout.html" class="icon-btn" title="Cart">
-        <i data-lucide="shopping-bag"></i>
-        <span class="cart-badge" id="cart-badge">0</span>
+      <a href="products.html" class="icon-btn" title="Search">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       </a>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
+      <a href="admin.html" class="icon-btn" title="Account">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      </a>
+      <button class="icon-btn" data-cart-open title="Cart" style="position:relative">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span class="cart-badge">0</span>
       </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
 </nav>
 
-
 <!-- ══ PRODUCT DETAIL ══ -->
 <main class="pd-page" id="pd-page">
   <a href="products.html" class="pd-back">
-    <i data-lucide="chevron-left" style="width: 16px; height: 16px; margin-right: 4px;"></i>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14" style="display:inline;margin-right:.3rem"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
     Back to Products
   </a>
-
   <div class="pd-grid" id="pd-grid">
-
     <!-- Gallery -->
     <div class="pd-gallery" id="pd-gallery">
-      <div class="pd-main"><img id="pd-main-img" src="" alt="Product"/></div>
+      <div class="pd-main-wrap">
+        <img id="pd-main-img" src="" alt="Product"/>
+      </div>
       <div class="pd-thumbs" id="pd-thumbs"></div>
     </div>
-
     <!-- Info -->
     <div class="pd-info" id="pd-info">
       <div class="pd-badge-row"><span class="tag" id="pd-badge"></span></div>
       <h1 class="pd-name" id="pd-name"></h1>
-      <p class="pd-desc" id="pd-desc"></p>
-
+      <p class="pd-name-ar" id="pd-name-ar"></p>
+      <div class="pd-stars">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <span id="pd-review-count">— Reviews</span>
+      </div>
       <div class="pd-price">
-        <span id="pd-price-num">0</span>
+        <span class="pd-price-num" id="pd-price-num">0</span>
         <span class="pd-price-cur">جنيه</span>
         <span class="pd-price-note" id="pd-price-note"></span>
       </div>
-
       <!-- Options -->
       <div class="pd-options" id="pd-options">
-
         <!-- Size -->
         <div class="opt-group" id="size-group">
           <span class="opt-lbl">الحجم / Size</span>
           <div class="opt-pills" id="size-pills"></div>
         </div>
-
-        <!-- Type: Cardamom / Plain — Toggle Style -->
+        <!-- Type -->
         <div class="opt-group" id="type-group" style="display:none">
-          <span class="opt-lbl">النوع / Type &nbsp;<small style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">اختر محوج أو ساده</small></span>
+          <span class="opt-lbl">النوع / Type</span>
           <div class="type-toggle-row" id="type-pills">
-            <button class="type-toggle-btn" id="type-cardamom" data-type="cardamom">☕ محوج <span style="font-size:.72rem;opacity:.7">(Cardamom)</span></button>
-            <button class="type-toggle-btn" id="type-plain"    data-type="plain">🫘 ساده <span style="font-size:.72rem;opacity:.7">(Plain)</span></button>
+            <button class="type-toggle-btn" id="type-cardamom" data-type="cardamom">☕ محوج <small>(Cardamom)</small></button>
+            <button class="type-toggle-btn" id="type-plain" data-type="plain">🫘 ساده <small>(Plain)</small></button>
           </div>
         </div>
-
-        <!-- Roast: Visual Cards -->
+        <!-- Roast -->
         <div class="opt-group" id="roast-group" style="display:none">
-          <span class="opt-lbl">الحمصة / Roast &nbsp;<small style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">اختر مستوى الحمص</small></span>
+          <span class="opt-lbl">الحمصة / Roast</span>
           <div class="roast-cards" id="roast-cards">
-            <button class="roast-card" data-roast="light">
-              <span class="roast-card-ico">🌤</span>
-              <span class="roast-card-ar">فاتح</span>
-              <span class="roast-card-en">Light</span>
-            </button>
-            <button class="roast-card" data-roast="medium">
-              <span class="roast-card-ico">⚖️</span>
-              <span class="roast-card-ar">وسط</span>
-              <span class="roast-card-en">Medium</span>
-            </button>
-            <button class="roast-card" data-roast="dark">
-              <span class="roast-card-ico">🌑</span>
-              <span class="roast-card-ar">غامق</span>
-              <span class="roast-card-en">Dark</span>
-            </button>
+            <button class="roast-card" data-roast="light"><span class="roast-card-ico">🌤</span><span class="roast-card-ar">فاتح</span><span class="roast-card-en">Light</span></button>
+            <button class="roast-card" data-roast="medium"><span class="roast-card-ico">⚖️</span><span class="roast-card-ar">وسط</span><span class="roast-card-en">Medium</span></button>
+            <button class="roast-card" data-roast="dark"><span class="roast-card-ico">🌑</span><span class="roast-card-ar">غامق</span><span class="roast-card-en">Dark</span></button>
           </div>
         </div>
-
-        <!-- Color Picker -->
+        <!-- Color -->
         <div class="opt-group" id="color-group">
-          <span class="opt-lbl">اللون / Color &nbsp;<small style="opacity:.5;font-weight:400;text-transform:none;letter-spacing:0">اختر لونًا</small></span>
-          <div class="opt-colors" id="color-swatches">
-            <!-- Swatches rendered by JS -->
-          </div>
-          <!-- Custom color picker row -->
+          <span class="opt-lbl">اللون / Color</span>
+          <div class="opt-colors" id="color-swatches"></div>
           <div class="custom-color-row" style="margin-top:.7rem">
-            <input type="color" id="custom-color-input" value="#C8A96E" title="Pick custom color"/>
-            <label for="custom-color-input">اختر لونًا مخصصًا / Pick custom color</label>
+            <input type="color" id="custom-color-input" value="#C89B5E" title="Pick custom color"/>
+            <label for="custom-color-input">Custom Color</label>
             <button class="btn btn-ghost btn-sm" id="apply-custom-color">Apply</button>
           </div>
         </div>
-
-      </div><!-- /pd-options -->
-
-      <!-- Selected Summary -->
+      </div>
+      <!-- Summary -->
       <div class="pd-selected-summary" id="pd-summary" style="display:none">
         <strong>اختيارك / Your Selection:</strong><br/>
         <span id="summary-text"></span>
       </div>
-
       <!-- Quantity -->
       <div class="qty-row">
         <div class="qty-ctrl">
@@ -139,37 +133,63 @@
         </div>
         <span class="qty-lbl" id="qty-stock"></span>
       </div>
-
-      <!-- CTA Buttons -->
+      <!-- CTA -->
       <div class="pd-cta">
-        <button class="btn btn-gold btn-lg" id="add-btn" disabled>Add to Cart ☕</button>
-        <button class="btn btn-outline btn-lg" id="buy-btn" disabled>Buy Now →</button>
+        <button class="btn btn-gold btn-xl" id="add-btn" disabled>Add to Cart ☕</button>
+        <button class="btn btn-dark btn-xl" id="buy-btn" disabled>Buy Now →</button>
       </div>
       <p class="pd-hint" id="pd-hint">Please select all options above to continue.</p>
-
+      <!-- Tabs -->
+      <div class="pd-tabs">
+        <div class="pd-tab-bar">
+          <button class="pd-tab-btn active" data-tab="desc">Description</button>
+          <button class="pd-tab-btn" data-tab="brew">Brewing Guide</button>
+          <button class="pd-tab-btn" data-tab="ship">Shipping</button>
+        </div>
+        <div class="pd-tab-content active" id="tab-desc"><p id="tab-desc-text"></p></div>
+        <div class="pd-tab-content" id="tab-brew">
+          <p><strong>Traditional Cezve:</strong> Add 1 heaped teaspoon per demitasse of cold water. Heat slowly without stirring. Remove just before boiling. Pour gently and let grounds settle before drinking.</p>
+          <p style="margin-top:.85rem"><strong>Serving Tip:</strong> Serve with a glass of cold water to cleanse the palate. Best enjoyed slowly, without rushing.</p>
+        </div>
+        <div class="pd-tab-content" id="tab-ship">
+          <p><strong>Standard Delivery:</strong> 3–5 business days · 50 جنيه</p>
+          <p style="margin-top:.5rem"><strong>Express Delivery:</strong> 1–2 days · 120 جنيه</p>
+          <p style="margin-top:.5rem"><strong>Same Day:</strong> Select cities only · 200 جنيه</p>
+          <p style="margin-top:.85rem">All orders vacuum-sealed for maximum freshness. Free exchange on quality issues.</p>
+        </div>
+      </div>
     </div>
   </div>
 </main>
 
 <!-- Not found -->
-<div id="not-found" class="hidden" style="text-align:center;padding:6rem 2rem;color:var(--txt2)">
+<div id="not-found" class="hidden" style="text-align:center;padding:calc(var(--nav-h)+4rem) 2rem 6rem;color:var(--txt2)">
   <p style="font-size:1.1rem;margin-bottom:1rem">Product not found.</p>
-  <a href="products.html" class="btn btn-gold">Browse Products</a>
+  <a href="products.html" class="btn btn-gold btn-lg">Browse Products</a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="api.js"></script>
 <script src="app.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
-  const params  = new URLSearchParams(location.search);
-  const id      = params.get('id');
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
   let product = null;
   if (id) {
-    try {
-      product = await apiGetProductById(id);
-    } catch (err) {
-      product = getProductById(id);
-    }
+    try { product = await apiGetProductById(id); } catch(e) { console.warn('API unavailable:', e.message); product = getProductById(id); }
+  }
+
+  // Helper: ensure image path includes 'uploads/' prefix
+  function fixImgPath(src) {
+    if (!src) return 'uploads/placeholder.jpeg';
+    if (src.startsWith('uploads/') || src.startsWith('/uploads/') || src.startsWith('http')) return src;
+    return 'uploads/' + src;
+  }
+
+  // Normalize all image paths in product
+  if (product && product.images) {
+    product.images = product.images.map(fixImgPath);
   }
 
   if (!product) {
@@ -180,10 +200,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.title = `${product.name} | The Twins Coffee®`;
 
-  /* ── Gallery ── */
-  const mainImg  = document.getElementById('pd-main-img');
+  // Gallery
+  const mainImg = document.getElementById('pd-main-img');
   const thumbsEl = document.getElementById('pd-thumbs');
-
   mainImg.src = product.images[0];
   mainImg.alt = product.name;
 
@@ -200,97 +219,97 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       thumbsEl.appendChild(t);
     });
-  } else {
-    thumbsEl.style.display = 'none';
-  }
+  } else { thumbsEl.style.display = 'none'; }
 
-  /* ── Static Info ── */
+  // Info
   document.getElementById('pd-badge').textContent = product.badge;
-  document.getElementById('pd-name').textContent  = product.name;
-  document.getElementById('pd-desc').textContent  = product.description;
+  document.getElementById('pd-name').textContent = product.name;
+  document.getElementById('pd-name-ar').textContent = product.nameAr || '';
+  document.getElementById('tab-desc-text').textContent = product.description;
+  const reviewCount = Math.floor(Math.random() * 60 + 40);
+  document.getElementById('pd-review-count').textContent = `(${reviewCount} Reviews)`;
 
-  /* ── State ── */
+  // State
   let selSizeIdx = 0;
-  let selType    = product.hasType  ? null : '';
-  let selRoast   = product.hasRoast ? null : '';
-  let selColor   = null;
-  let qty        = 1;
+  let selType = product.hasType ? null : '';
+  let selRoast = product.hasRoast ? null : '';
+  let selColor = null;
+  let qty = 1;
 
-  /* ── Helpers ── */
-  function currentSize()  { return product.sizes[selSizeIdx]; }
+  function currentSize() { return product.sizes[selSizeIdx]; }
   function currentPrice() { return currentSize().price; }
 
   function updatePrice() {
-    document.getElementById('pd-price-num').textContent = currentPrice();
+    document.getElementById('pd-price-num').textContent = currentPrice().toLocaleString();
     const sz = currentSize();
-    document.getElementById('pd-price-note').textContent = sz.stock === 0 ? '(Out of stock)' : `In stock: ${sz.stock}`;
+    document.getElementById('pd-price-note').textContent = sz.stock === 0 ? '(Out of stock)' : `· ${sz.stock} in stock`;
     document.getElementById('qty-stock').textContent = sz.stock > 0 ? `${sz.stock} available` : 'Out of stock';
   }
 
   function updateSummary() {
     const parts = [];
-    if (currentSize()) parts.push(`الحجم: <strong>${currentSize().label}</strong>`);
-    if (selType)  parts.push(`النوع: <strong>${selType === 'cardamom' ? 'محوج' : 'ساده'}</strong>`);
-    if (selRoast) {
-      const roastLabels = { light:'فاتح 🌤', medium:'وسط ⚖️', dark:'غامق 🌑' };
-      parts.push(`الحمصة: <strong>${roastLabels[selRoast]}</strong>`);
-    }
-    if (selColor) parts.push(`اللون: <strong style="color:${selColor.hex}">${selColor.name}</strong>`);
-
-    const summaryEl = document.getElementById('pd-summary');
-    const summaryText = document.getElementById('summary-text');
-    if (parts.length > 0) {
-      summaryEl.style.display = 'block';
-      summaryText.innerHTML = parts.join(' &nbsp;·&nbsp; ');
-    } else {
-      summaryEl.style.display = 'none';
-    }
+    if (currentSize()) parts.push(`Size: <strong>${currentSize().label}</strong>`);
+    if (selType) parts.push(`Type: <strong>${selType === 'cardamom' ? 'محوج' : 'ساده'}</strong>`);
+    if (selRoast) { const r = {light:'فاتح 🌤',medium:'وسط ⚖️',dark:'غامق 🌑'}; parts.push(`Roast: <strong>${r[selRoast]}</strong>`); }
+    if (selColor) parts.push(`Color: <strong style="color:${selColor.hex}">${selColor.name}</strong>`);
+    const s = document.getElementById('pd-summary');
+    const t = document.getElementById('summary-text');
+    if (parts.length) { s.style.display='block'; t.innerHTML = parts.join(' &nbsp;·&nbsp; '); }
+    else s.style.display='none';
   }
 
   function validate() {
-    const needsType  = product.hasType  && selType  === null;
+    const needsType = product.hasType && selType === null;
     const needsRoast = product.hasRoast && selRoast === null;
-    const allSelected = !needsType && !needsRoast && currentSize().stock > 0;
+    const ok = !needsType && !needsRoast && currentSize().stock > 0;
     const addBtn = document.getElementById('add-btn');
     const buyBtn = document.getElementById('buy-btn');
-    const hint   = document.getElementById('pd-hint');
-    addBtn.disabled = !allSelected;
-    buyBtn.disabled = !allSelected;
-
+    const hint = document.getElementById('pd-hint');
+    addBtn.disabled = !ok;
+    buyBtn.disabled = !ok;
     let hints = [];
-    if (needsType)  hints.push('النوع (محوج/ساده)');
+    if (needsType) hints.push('النوع (محوج/ساده)');
     if (needsRoast) hints.push('الحمصة (فاتح/وسط/غامق)');
-    if (currentSize().stock === 0) hints.push('selected size is out of stock');
-    hint.textContent = hints.length ? `⚠️ اختر: ${hints.join(' و ')}` : '✅ جاهز للإضافة إلى السلة!';
+    if (currentSize().stock === 0) hints.push('size out of stock');
+    hint.textContent = hints.length ? `⚠️ Select: ${hints.join(' & ')}` : '✅ Ready to add to cart!';
     hint.style.color = hints.length ? 'var(--txt3)' : 'var(--green)';
-
-    // Update main image based on Roast or Color/Design
+    // Image update
+    let newImgSrc = null;
     let imgIdx = -1;
-    if (product.hasType && product.hasRoast && selType && selRoast) {
-      if (selType === 'cardamom') {
-        imgIdx = selRoast === 'medium' ? 0 : 1;
-      } else if (selType === 'plain') {
-        imgIdx = selRoast === 'medium' ? 2 : 3;
+
+    // First check variant images if coffee type is selected
+    if (product.hasType && selType && product.variantImages) {
+      if (selType === 'plain' && product.variantImages.plain) {
+        newImgSrc = fixImgPath(product.variantImages.plain);
+      } else if (selType === 'cardamom' && product.variantImages.spiced) {
+        newImgSrc = fixImgPath(product.variantImages.spiced);
       }
-    } else if (product.hasRoast && selRoast) {
-      imgIdx = selRoast === 'medium' ? 0 : 1;
-    } else if (product.category === 'merch' && selColor) {
-      if (selColor.name && (selColor.name.includes('T Logo') || selColor.name.includes('شعار'))) imgIdx = 0;
-      else if (selColor.name && (selColor.name.includes('Signature') || selColor.name.includes('توقيع') || selColor.name.includes('Text'))) imgIdx = 1;
     }
 
-    if (imgIdx !== -1 && product.images[imgIdx]) {
-      mainImg.src = product.images[imgIdx];
-      document.querySelectorAll('.pd-thumb').forEach((th, idx) => {
-        th.classList.toggle('active', idx === imgIdx);
-      });
+    // Fallback to existing logic if no variant image matched
+    if (!newImgSrc) {
+      if (product.hasRoast && selRoast) imgIdx = selRoast === 'medium' ? 0 : 1;
+      else if (String(product.category).toLowerCase().includes('merch') && selColor) {
+        if (selColor.name && (selColor.name.includes('T Logo')||selColor.name.includes('شعار'))) imgIdx = 0;
+        else if (selColor.name && (selColor.name.includes('Signature')||selColor.name.includes('توقيع'))) imgIdx = 1;
+      }
+      if (imgIdx !== -1 && product.images[imgIdx]) {
+        newImgSrc = fixImgPath(product.images[imgIdx]);
+      }
     }
 
+    if (newImgSrc) {
+      mainImg.src = newImgSrc;
+      if (imgIdx !== -1) {
+        document.querySelectorAll('.pd-thumb').forEach((th,i) => th.classList.toggle('active', i === imgIdx));
+      } else {
+        document.querySelectorAll('.pd-thumb').forEach(th => th.classList.remove('active'));
+      }
+    }
     updateSummary();
   }
 
-  /* ── Sizes ── */
-  const sizePillsEl = document.getElementById('size-pills');
+  // Sizes
   product.sizes.forEach((sz, i) => {
     const btn = document.createElement('button');
     btn.className = 'opt-pill' + (i === 0 ? ' sel' : '');
@@ -298,96 +317,66 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (sz.stock === 0) btn.disabled = true;
     btn.addEventListener('click', () => {
       document.querySelectorAll('#size-pills .opt-pill').forEach(p => p.classList.remove('sel'));
-      btn.classList.add('sel');
-      selSizeIdx = i;
-      qty = 1; document.getElementById('qty-val').textContent = 1;
+      btn.classList.add('sel'); selSizeIdx = i; qty = 1;
+      document.getElementById('qty-val').textContent = 1;
       updatePrice(); validate();
     });
-    sizePillsEl.appendChild(btn);
+    document.getElementById('size-pills').appendChild(btn);
   });
 
-  /* ── Type (Toggle) ── */
+  // Type
   if (product.hasType) {
     document.getElementById('type-group').style.display = '';
     document.querySelectorAll('#type-pills .type-toggle-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('#type-pills .type-toggle-btn').forEach(p => p.classList.remove('sel'));
-        btn.classList.add('sel');
-        selType = btn.dataset.type;
-        validate();
+        btn.classList.add('sel'); selType = btn.dataset.type; validate();
       });
     });
   }
 
-  /* ── Roast (Visual Cards) ── */
+  // Roast
   if (product.hasRoast) {
     document.getElementById('roast-group').style.display = '';
     document.querySelectorAll('#roast-cards .roast-card').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('#roast-cards .roast-card').forEach(p => p.classList.remove('sel'));
-        btn.classList.add('sel');
-        selRoast = btn.dataset.roast;
-        validate();
+        btn.classList.add('sel'); selRoast = btn.dataset.roast; validate();
       });
     });
   }
 
-  /* ── Color Swatches ── */
-  // Use admin-defined colors if merch product has them, otherwise fall back to presets
+  // Colors
   const PRESET_COLORS = [
-    { hex: '#C8A96E', name: 'Golden' },
-    { hex: '#1a1a1a', name: 'Black'  },
-    { hex: '#f5f5f5', name: 'White'  },
-    { hex: '#8B4513', name: 'Brown'  },
-    { hex: '#2C5F2E', name: 'Forest' },
-    { hex: '#97BC62', name: 'Sage'   },
-    { hex: '#D4A5A5', name: 'Rose'   },
-    { hex: '#334E68', name: 'Navy'   },
+    {hex:'#C89B5E',name:'Golden'},{hex:'#1a1a1a',name:'Black'},{hex:'#f5f5f5',name:'White'},
+    {hex:'#8B4513',name:'Brown'},{hex:'#2C5F2E',name:'Forest'},{hex:'#334E68',name:'Navy'}
   ];
-
-  const colorSource = (product.category === 'merch' && product.colors && product.colors.length > 0)
-    ? product.colors
-    : (product.category === 'merch' ? PRESET_COLORS : []);
-
-  // Hide color group entirely if no colors and not merch
+  const colorSource = (product.category==='merch' && product.colors && product.colors.length > 0)
+    ? product.colors : (product.category==='merch' ? PRESET_COLORS : []);
   if (colorSource.length === 0 && product.category !== 'merch') {
     document.getElementById('color-group').style.display = 'none';
-  } else {
-    selColor = null; // require selection
-  }
-
+  } else { selColor = null; }
   const swatchesEl = document.getElementById('color-swatches');
   colorSource.forEach(c => {
     const sw = document.createElement('button');
-    sw.className = 'color-swatch';
-    sw.style.background = c.hex;
-    sw.title = c.name;
-    sw.setAttribute('aria-label', c.name);
-    sw.innerHTML = `<span class="color-swatch-label">${c.name}</span>`;
+    sw.className = 'color-swatch'; sw.style.background = c.hex;
+    sw.title = c.name; sw.setAttribute('aria-label', c.name);
     sw.addEventListener('click', () => {
       document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('sel'));
-      sw.classList.add('sel');
-      selColor = c;
-      document.getElementById('custom-color-input').value = c.hex;
-      validate();
+      sw.classList.add('sel'); selColor = c;
+      document.getElementById('custom-color-input').value = c.hex; validate();
     });
     swatchesEl.appendChild(sw);
   });
-
-  // If no colors defined, auto-select null so merch doesn't block add-to-cart
-  if (colorSource.length === 0) { selColor = ''; }
-
-  // Custom color picker
-  const customColorInput = document.getElementById('custom-color-input');
+  if (colorSource.length === 0) selColor = '';
   document.getElementById('apply-custom-color').addEventListener('click', () => {
-    const hex = customColorInput.value;
-    selColor = { hex, name: 'Custom' };
+    const hex = document.getElementById('custom-color-input').value;
+    selColor = {hex, name:'Custom'};
     document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('sel'));
-    validate();
-    toast(`Color set to ${hex}`, 'info');
+    validate(); toast(`Color set to ${hex}`, 'info');
   });
 
-  /* ── Quantity ── */
+  // Quantity
   document.getElementById('qty-minus').addEventListener('click', () => {
     if (qty > 1) { qty--; document.getElementById('qty-val').textContent = qty; }
   });
@@ -395,31 +384,39 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (qty < currentSize().stock) { qty++; document.getElementById('qty-val').textContent = qty; }
   });
 
-  /* ── Build cart item ── */
+  // Build cart item
   function buildCartItem() {
     const sz = currentSize();
-    const typeLabel  = selType  === 'cardamom' ? 'محوج' : selType === 'plain' ? 'ساده' : '';
-    const roastLabel = selRoast === 'light' ? 'فاتح' : selRoast === 'medium' ? 'وسط' : selRoast === 'dark' ? 'غامق' : '';
+    const typeLabel = selType==='cardamom'?'محوج':selType==='plain'?'ساده':'';
+    const roastLabel = selRoast==='light'?'فاتح':selRoast==='medium'?'وسط':selRoast==='dark'?'غامق':'';
     const colorLabel = selColor ? selColor.name : '';
-    return { productId:product.id, name:product.name, image:product.images[0], size:sz.label, type:typeLabel, roast:roastLabel, color:colorLabel, price:sz.price, qty };
+    return { productId:product.id, sizeId:sz.id, name:product.name, image:product.images[0], size:sz.label, type:typeLabel, roast:roastLabel, color:colorLabel, price:sz.price, qty };
   }
 
-  /* ── Add to Cart ── */
+  // Add to cart
   document.getElementById('add-btn').addEventListener('click', () => {
     const item = buildCartItem();
     cartAdd(item);
-    const opts = [item.size, item.type, item.roast, item.color].filter(Boolean).join(' · ');
+    const opts = [item.size,item.type,item.roast,item.color].filter(Boolean).join(' · ');
     toast(`${product.name} (${opts}) added! ☕`, 'success');
-    document.getElementById('cart-badge').parentElement.animate([{transform:'scale(1.3)'},{transform:'scale(1)'}],{duration:300});
+    openCartDrawer();
   });
 
-  /* ── Buy Now ── */
+  // Buy now
   document.getElementById('buy-btn').addEventListener('click', () => {
-    cartAdd(buildCartItem());
-    location.href = 'checkout.html';
+    cartAdd(buildCartItem()); location.href = 'checkout.html';
   });
 
-  /* ── Init ── */
+  // Tabs
+  document.querySelectorAll('.pd-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pd-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.pd-tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
   updatePrice();
   validate();
   if (window.lucide) lucide.createIcons();
