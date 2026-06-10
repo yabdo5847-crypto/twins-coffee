@@ -915,8 +915,8 @@ document.getElementById('add-color-btn').addEventListener('click', () => {
         preview.appendChild(item);
 
         // Upload to Supabase
-        const url = await uploadProductImage(file);
-        names.push(url);
+        const resData = await uploadProductImage(file);
+        names.push(resData.url);
         lbl.textContent = 'Done!';
       }
       // Append URLs to the path input
