@@ -60,8 +60,27 @@ async function apiGetBundleById(id) { return null; }
    CATEGORIES
 ══════════════════════════════════════════════════════════ */
 async function apiGetAllCategories() { return apiFetch('/categories').catch(()=>[]); }
-async function apiAddCategory(catData) { return apiFetch('/categories', { method: 'POST', body: JSON.stringify(catData) }); }
-async function apiUpdateCategory(id, updates) { return apiFetch(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(updates) }); }
+async function apiAddCategory(catData) {
+  const res = await fetch(API_URL + '/categories', {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(catData)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
+
+async function apiUpdateCategory(id, updates) {
+  const res = await fetch(API_URL + '/categories/' + id, {
+    method: 'PUT',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(updates)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
 async function apiDeleteCategory(id) { return apiFetch(`/categories/${id}`, { method: 'DELETE' }); }
 
 /* ══════════════════════════════════════════════════════════

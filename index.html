@@ -120,43 +120,8 @@
       <h2>Categories</h2>
       <p>Explore our luxury collections.</p>
     </div>
-    <div class="categories-grid">
-      <a href="products.html?cat=coffee" class="category-card">
-        <div class="category-img">
-          <img src="uploads/Professional_studio_product_photography_of_202606090156 (1).jpeg" alt="Coffee Beans"/>
-        </div>
-        <div class="category-content">
-          <h3>Coffee Beans</h3>
-          <span>Shop Collection →</span>
-        </div>
-      </a>
-      <a href="products.html?cat=espresso" class="category-card">
-        <div class="category-img">
-          <img src="uploads/Professional_studio_product_photography_of_202606090156 (3).jpeg" alt="Espresso"/>
-        </div>
-        <div class="category-content">
-          <h3>Espresso</h3>
-          <span>Shop Collection →</span>
-        </div>
-      </a>
-      <a href="products.html?cat=ground" class="category-card">
-        <div class="category-img">
-          <img src="uploads/Professional_studio_product_photography_of_202606090156 (2).jpeg" alt="Ground Coffee"/>
-        </div>
-        <div class="category-content">
-          <h3>Ground Coffee</h3>
-          <span>Shop Collection →</span>
-        </div>
-      </a>
-      <a href="products.html?cat=merch" class="category-card">
-        <div class="category-img">
-          <img src="uploads/Professional_studio_product_photography_of_202606090156 (5).jpeg" alt="Accessories"/>
-        </div>
-        <div class="category-content">
-          <h3>Accessories</h3>
-          <span>Shop Collection →</span>
-        </div>
-      </a>
+    <div class="categories-grid" id="dynamic-categories">
+      <!-- loaded by JS -->
     </div>
   </div>
 </section>
@@ -178,7 +143,7 @@
 <footer class="footer">
   <div class="footer-grid container">
     <div class="footer-brand">
-      <div class="nav-logo"><img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img" style="filter: grayscale(100%) contrast(200%) brightness(0);"/><span class="logo-text">THE TWINS COFFEE<sup>®</sup></span></div>
+      <div class="nav-logo"><img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/><span class="logo-text">THE TWINS COFFEE<sup>®</sup></span></div>
       <p>Premium 100% Arabica Turkish Coffee.<br/>Crafted for the perfect cup, every time.</p>
     </div>
     <div class="f-col">
@@ -362,7 +327,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
 
     function startBsAuto() {
       clearInterval(bsAutoTimer);
-      bsAutoTimer = setInterval(bsScrollNext, 2500);
+      bsAutoTimer = setInterval(bsScrollNext, 2000);
     }
 
     if (bsPrev && bsNext) {
@@ -416,6 +381,26 @@ document.getElementById('night-toggle').addEventListener('click', function() {
     });
   }
 
+    // Categories
+    const dynCat = document.getElementById('dynamic-categories');
+    if(dynCat) {
+      apiGetAllCategories().then(cats => {
+        const activeCats = cats.filter(c => c.active);
+        if(activeCats.length === 0) return;
+        dynCat.innerHTML = activeCats.map(c => {
+          const img = c.image ? fixImgPath(c.image) : 'uploads/placeholder.jpeg';
+          return `
+            <a href="products.html?cat=${c.slug}" class="category-card">
+              <div class="category-img"><img src="${img}" alt="${c.name}"/></div>
+              <div class="category-content">
+                <h3>${c.name}</h3>
+                <span>Shop Collection →</span>
+              </div>
+            </a>
+          `;
+        }).join('');
+      }).catch(e => console.log('Failed to load categories', e));
+    }
 })();
 </script>
 </body>

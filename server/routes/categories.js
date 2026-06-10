@@ -15,11 +15,11 @@ router.get('/', async (req, res) => {
 // ─── POST /api/categories — admin ────────────────────────────
 router.post('/', requireAdmin, async (req, res) => {
   try {
-    const { name, name_ar, slug, active = 1 } = req.body;
+    const { name, name_ar, slug, active = 1, image = '' } = req.body;
     const db     = getDb();
     const info   = await db.run(
-      'INSERT INTO categories (name, name_ar, slug, active) VALUES (?,?,?,?)',
-      [name, name_ar, slug, active]
+      'INSERT INTO categories (name, name_ar, slug, active, image) VALUES (?,?,?,?,?)',
+      [name, name_ar, slug, active, image]
     );
     const newCat = await db.get('SELECT * FROM categories WHERE id=?', [info.lastID]);
     res.json(newCat);
@@ -29,11 +29,11 @@ router.post('/', requireAdmin, async (req, res) => {
 // ─── PUT /api/categories/:id — admin ─────────────────────────
 router.put('/:id', requireAdmin, async (req, res) => {
   try {
-    const { name, name_ar, slug, active } = req.body;
+    const { name, name_ar, slug, active, image } = req.body;
     const db = getDb();
     await db.run(
-      'UPDATE categories SET name=?, name_ar=?, slug=?, active=? WHERE id=?',
-      [name, name_ar, slug, active, req.params.id]
+      'UPDATE categories SET name=?, name_ar=?, slug=?, active=?, image=? WHERE id=?',
+      [name, name_ar, slug, active, image, req.params.id]
     );
     const updated = await db.get('SELECT * FROM categories WHERE id=?', [req.params.id]);
     res.json(updated);

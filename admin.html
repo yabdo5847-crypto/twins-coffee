@@ -67,8 +67,8 @@
         <span class="adm-theme-label" id="adm-theme-lbl">Light Mode</span>
         <div class="adm-theme-indicator"></div>
       </button>
-      <a href="index.html" class="btn btn-ghost btn-sm btn-full">← View Store</a>
-      <button class="btn btn-danger btn-sm btn-full" id="logout-btn">Logout</button>
+      <a href="index.html" class="btn btn-ghost btn-sm btn-full" style="display:flex;align-items:center;justify-content:center;gap:0.5rem"><i data-lucide="external-link" style="width:16px;height:16px"></i> View Store</a>
+      <button class="btn btn-danger btn-sm btn-full" id="logout-btn" style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:0.5rem"><i data-lucide="log-out" style="width:16px;height:16px"></i> Logout</button>
     </div>
   </aside>
 
@@ -316,6 +316,15 @@
       <div class="fg">
         <label>Slug (URL friendly)</label>
         <input type="text" id="cm-slug" class="f-input" placeholder="e.g. coffee"/>
+      </div>
+      <div class="fg">
+        <label>Image URL</label>
+        <div style="display:flex;gap:0.5rem;align-items:center">
+          <input type="text" id="cm-image" class="f-input" placeholder="/uploads/img.jpg" style="flex:1"/>
+          <button class="btn btn-outline" style="padding:0.6rem" onclick="document.getElementById('cat-image-upload').click()">Upload</button>
+          <input type="file" id="cat-image-upload" style="display:none" accept="image/*"/>
+        </div>
+        <p id="cat-upload-status" style="font-size:0.75rem;color:var(--txt2);margin-top:0.25rem"></p>
       </div>
       <div class="fg">
         <label>Status</label>
@@ -996,6 +1005,7 @@ window.openEditCategory = async function(id) {
     document.getElementById('cm-name').value = c.name;
     document.getElementById('cm-name-ar').value = c.name_ar || '';
     document.getElementById('cm-slug').value = c.slug || '';
+    document.getElementById('cm-image').value = c.image || '';
     
     setToggleVal('cm-active-toggle', !!c.active);
   } else {
@@ -1003,6 +1013,7 @@ window.openEditCategory = async function(id) {
     document.getElementById('cm-name').value = '';
     document.getElementById('cm-name-ar').value = '';
     document.getElementById('cm-slug').value = '';
+    document.getElementById('cm-image').value = '';
     
     setToggleVal('cm-active-toggle', true);
   }
@@ -1017,6 +1028,7 @@ document.getElementById('save-cat-btn').addEventListener('click', async () => {
     name: document.getElementById('cm-name').value.trim(),
     name_ar: document.getElementById('cm-name-ar').value.trim(),
     slug: document.getElementById('cm-slug').value.trim(),
+    image: document.getElementById('cm-image').value.trim(),
     active: getToggleVal('cm-active-toggle') ? 1 : 0
   };
   if (!payload.name) { toast('Name is required', 'error'); return; }
@@ -1029,6 +1041,20 @@ document.getElementById('save-cat-btn').addEventListener('click', async () => {
     toast('Category saved!', 'success');
   } catch(e) {
     toast('Save failed: ' + e.message, 'error');
+  }
+});
+
+document.getElementById('cat-image-upload').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const lbl = document.getElementById('cat-upload-status');
+  lbl.textContent = 'Uploading...';
+  try {
+    const resData = await uploadProductImage(file);
+    document.getElementById('cm-image').value = resData.url;
+    lbl.textContent = 'Done!';
+  } catch(err) {
+    lbl.textContent = 'Failed: ' + err.message;
   }
 });
 
@@ -1225,6 +1251,7 @@ document.getElementById('clear-orders-btn').addEventListener('click', () => {
 ══════════════════════════════════════════ */
 function initDashboard() {
   renderOverview();
+  if (window.lucide) lucide.createIcons();
 // Init all toggles in modals
   ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-active-toggle','sm-active-toggle','m-bestseller-toggle','cm-active-toggle'].forEach(id => {
     initToggles(id);
