@@ -1,0 +1,9 @@
+{
+  "name": "twins-coffee-root",
+  "version": "1.0.0",
+  "description": "Root package to help Railway build the subfolder server",
+  "scripts": {
+    "postinstall": "cd server && npm install",
+    "start": "cd server && npm start"
+  }
+}
