@@ -155,18 +155,26 @@
 
         <div class="divider"></div>
         <div class="co-section-title" style="margin-top:1.5rem">Payment Method — طريقة الدفع</div>
-        <div style="display:flex;gap:1rem;margin-bottom:1.5rem">
-          <label class="ship-opt sel" style="flex:1;cursor:pointer">
+        <div style="display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:1.5rem">
+          <label class="ship-opt sel" style="flex:1 1 30%;cursor:pointer">
             <input type="radio" name="paymentMethod" value="cod" checked style="display:none"/>
-            <div style="text-align:center;padding:1rem;font-weight:bold">💵<br/>Cash on Delivery</div>
+            <div style="text-align:center;padding:.8rem;font-weight:bold;font-size:.9rem">💵<br/>Cash on Delivery</div>
           </label>
-          <label class="ship-opt" style="flex:1;cursor:pointer">
+          <label class="ship-opt" style="flex:1 1 30%;cursor:pointer">
             <input type="radio" name="paymentMethod" value="card" style="display:none"/>
-            <div style="text-align:center;padding:1rem;font-weight:bold">💳<br/>Credit / Debit Card</div>
+            <div style="text-align:center;padding:.8rem;font-weight:bold;font-size:.9rem">💳<br/>Visa / Mastercard</div>
           </label>
-          <label class="ship-opt" style="flex:1;cursor:pointer">
+          <label class="ship-opt" style="flex:1 1 30%;cursor:pointer">
             <input type="radio" name="paymentMethod" value="fawry" style="display:none"/>
-            <div style="text-align:center;padding:1rem;font-weight:bold">🟡<br/>Fawry Pay</div>
+            <div style="text-align:center;padding:.8rem;font-weight:bold;font-size:.9rem">🟡<br/>Fawry Pay</div>
+          </label>
+          <label class="ship-opt" style="flex:1 1 45%;cursor:pointer">
+            <input type="radio" name="paymentMethod" value="wallet" style="display:none"/>
+            <div style="text-align:center;padding:.8rem;font-weight:bold;font-size:.9rem">📱<br/>Vodafone Cash & Wallets</div>
+          </label>
+          <label class="ship-opt" style="flex:1 1 45%;cursor:pointer">
+            <input type="radio" name="paymentMethod" value="instapay" style="display:none"/>
+            <div style="text-align:center;padding:.8rem;font-weight:bold;font-size:.9rem">⚡<br/>InstaPay</div>
           </label>
         </div>
         <div style="margin-top:1.5rem">
@@ -412,7 +420,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       const res = await apiPlaceOrder(apiPayload); 
       
       // Paymob integration
-      if (paymentMethod === 'card' || paymentMethod === 'fawry') {
+      const paymobMethods = ['card', 'fawry', 'wallet', 'instapay'];
+      if (paymobMethods.includes(paymentMethod)) {
         const btn = document.getElementById('place-order-btn');
         btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:auto"></div>';
         btn.disabled = true;

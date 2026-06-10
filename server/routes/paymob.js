@@ -84,9 +84,13 @@ router.post('/checkout', async (req, res) => {
     const authToken = await getAuthToken();
     const paymobOrderId = await registerOrder(authToken, amountCents, "EGP", order.id, []);
     
-    const integrationId = method === 'fawry' 
-      ? process.env.PAYMOB_INTEGRATION_ID_FAWRY 
-      : process.env.PAYMOB_INTEGRATION_ID_CARD;
+    let integrationId;
+    switch(method) {
+      case 'fawry': integrationId = process.env.PAYMOB_INTEGRATION_ID_FAWRY; break;
+      case 'wallet': integrationId = process.env.PAYMOB_INTEGRATION_ID_WALLET; break;
+      case 'instapay': integrationId = process.env.PAYMOB_INTEGRATION_ID_INSTAPAY; break;
+      default: integrationId = process.env.PAYMOB_INTEGRATION_ID_CARD; break;
+    }
 
     const paymentKey = await getPaymentKey(
       authToken, 
