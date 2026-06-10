@@ -2387,9 +2387,9 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Inter', sans-serif; font-weight: 400; let
 /* 3. Best Sellers Section */
 .bestsellers-section { padding: 8rem 0; background: var(--white); }
 .product-slider-container { position: relative; width: 100%; margin-top: 2rem; }
-.bestsellers-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; gap: 1.5rem; padding-bottom: 2rem; }
+.bestsellers-grid { display: flex; overflow-x: auto; scrollbar-width: none; gap: 1.5rem; padding-bottom: 2rem; }
 .bestsellers-grid::-webkit-scrollbar { display: none; }
-.bestsellers-grid > * { flex: 0 0 calc(25% - 1.125rem); scroll-snap-align: start; min-width: 250px; }
+.bestsellers-grid > * { flex: 0 0 calc(25% - 1.125rem); min-width: 250px; }
 
 .prod-arrow { position: absolute; top: 40%; transform: translateY(-50%); background: var(--white); border: 1px solid var(--brd); color: var(--black); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.3s ease; }
 .prod-arrow:hover { background: var(--black); color: var(--white); border-color: var(--black); }

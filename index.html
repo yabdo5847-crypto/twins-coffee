@@ -311,41 +311,36 @@ document.getElementById('night-toggle').addEventListener('click', function() {
       `;
     });
     
-    // Slider JS — manual arrows + auto-scroll
+    // Slider JS — continuous scroll
     const bsPrev = document.getElementById('bs-prev');
     const bsNext = document.getElementById('bs-next');
     let bsAutoTimer = null;
-
-    function bsScrollNext() {
-      const maxScroll = bsGrid.scrollWidth - bsGrid.clientWidth;
-      if (bsGrid.scrollLeft >= maxScroll - 4) {
-        bsGrid.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        bsGrid.scrollBy({ left: 280, behavior: 'smooth' });
+    let isPaused = false;
+    
+    function scrollMarquee() {
+      if (!isPaused) {
+        bsGrid.scrollLeft += 1.5;
+        const maxScroll = bsGrid.scrollWidth - bsGrid.clientWidth;
+        if (bsGrid.scrollLeft >= maxScroll - 2) {
+          bsGrid.scrollTo({ left: 0, behavior: 'auto' });
+        }
       }
+      bsAutoTimer = requestAnimationFrame(scrollMarquee);
     }
-
-    function startBsAuto() {
-      clearInterval(bsAutoTimer);
-      bsAutoTimer = setInterval(bsScrollNext, 2000);
-    }
+    bsAutoTimer = requestAnimationFrame(scrollMarquee);
 
     if (bsPrev && bsNext) {
       bsPrev.onclick = () => {
         bsGrid.scrollBy({ left: -280, behavior: 'smooth' });
-        startBsAuto(); // reset timer
       };
       bsNext.onclick = () => {
-        bsScrollNext();
-        startBsAuto();
+        bsGrid.scrollBy({ left: 280, behavior: 'smooth' });
       };
     }
 
     // Pause on hover
-    bsGrid.addEventListener('mouseenter', () => clearInterval(bsAutoTimer));
-    bsGrid.addEventListener('mouseleave', () => startBsAuto());
-
-    startBsAuto();
+    bsGrid.addEventListener('mouseenter', () => isPaused = true);
+    bsGrid.addEventListener('mouseleave', () => isPaused = false);
   }
 
   /* ── 2. PRODUCT ICON NAVIGATION ── */
