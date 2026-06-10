@@ -121,7 +121,6 @@ async function uploadProductImage(file) {
 ══════════════════════════════════════════════════════════ */
 const apiCreateProduct = apiAddProduct;
 const apiUpdateShipping = apiUpdateShippingOption;
-const apiDeleteShipping = apiDeleteShippingOption;
 const apiCreateShipping = apiAddShippingOption;
 const apiPlaceOrder = apiCreateOrder;
 
