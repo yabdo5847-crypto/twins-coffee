@@ -55,7 +55,8 @@ router.post('/checkout', async (req, res) => {
     const { orderId, method } = req.body; // method: 'card' or 'fawry'
     
     // Fetch order from DB
-    const orderRow = await db.all("SELECT * FROM orders WHERE id = ?", [orderId]);
+    const dbInstance = db.getDb();
+    const orderRow = await dbInstance.all("SELECT * FROM orders WHERE id = ?", [orderId]);
     if (!orderRow || orderRow.length === 0) {
       return res.status(404).json({ error: "Order not found" });
     }
@@ -103,7 +104,7 @@ router.post('/checkout', async (req, res) => {
     );
 
     // Update local order with Paymob order ID
-    await db.run("UPDATE orders SET paymob_order_id = ? WHERE id = ?", [paymobOrderId, order.id]);
+    await dbInstance.run("UPDATE orders SET paymob_order_id = ? WHERE id = ?", [paymobOrderId, order.id]);
 
     if (method === 'fawry') {
       res.json({ iframeUrl: `https://accept.paymob.com/api/acceptance/iframes/${process.env.PAYMOB_IFRAME_ID}?payment_token=${paymentKey}` });
@@ -131,7 +132,8 @@ router.post('/webhook', express.json(), async (req, res) => {
     if (obj && obj.success === true) {
       const orderId = obj.order.merchant_order_id;
       // Mark order as processing (paid)
-      await db.run("UPDATE orders SET status = 'processing', paymob_transaction_id = ? WHERE id = ?", [obj.id, orderId]);
+      const dbInstance = db.getDb();
+      await dbInstance.run("UPDATE orders SET status = 'processing', paymob_transaction_id = ? WHERE id = ?", [obj.id, orderId]);
     }
 
     res.status(200).send('OK');
