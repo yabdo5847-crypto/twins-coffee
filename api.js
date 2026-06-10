@@ -106,7 +106,7 @@ async function apiGetStats() {
 ══════════════════════════════════════════════════════════ */
 async function uploadProductImage(file) {
   const formData = new FormData();
-  formData.append('image', file);
+  formData.append('file', file);
   const token = getAuthToken();
   const headers = {};
   if (token) headers['Authorization'] = 'Bearer ' + token;
