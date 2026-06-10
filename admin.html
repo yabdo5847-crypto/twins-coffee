@@ -1017,7 +1017,7 @@ window.openEditCategory = async function(id) {
     
     setToggleVal('cm-active-toggle', true);
   }
-  document.getElementById('cat-modal').classList.add('active');
+  openModal('cat-modal');
 };
 
 document.getElementById('add-cat-btn').addEventListener('click', () => openEditCategory(null));
