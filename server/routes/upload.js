@@ -11,7 +11,7 @@ const fs      = require('fs');
 const { requireAdmin } = require('../middleware/auth');
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
+const uploadsDir = path.join(__dirname, '..', '..', 'data', 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 // Disk storage — files saved to /uploads with unique names
