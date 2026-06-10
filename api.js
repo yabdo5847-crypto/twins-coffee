@@ -1,5 +1,5 @@
 // The Twins Coffee® - Frontend API Layer
-const API_URL = 'http://localhost:3000/api';
+const API_URL = window.location.origin + '/api';
 
 /* ─── Auth token helpers ─────────────────────────────────── */
 function getAuthToken()       { return localStorage.getItem('tc_auth_token'); }
@@ -35,6 +35,10 @@ async function adminLogin(email, password) {
 async function adminLogout() {
   clearAuthTokens();
 }
+async function apiVerifyToken() {
+  return apiFetch('/auth/verify');
+}
+
 
 /* ══════════════════════════════════════════════════════════
    PUBLIC DATA (PRODUCTS / BUNDLES)
@@ -67,7 +71,17 @@ async function apiGetShipping() { return apiFetch('/shipping').catch(()=>[]); }
 async function apiGetAllShipping() { return apiGetShipping(); }
 async function apiAddShippingOption(opt) { return apiFetch('/shipping', { method: 'POST', body: JSON.stringify(opt) }); }
 async function apiUpdateShippingOption(id, updates) { return apiFetch(`/shipping/${id}`, { method: 'PUT', body: JSON.stringify(updates) }); }
-async function apiDeleteShippingOption(id) { return apiFetch(`/shipping/${id}`, { method: 'DELETE' }); }
+async function apiDeleteShipping(id) {
+  return apiFetch('/shipping/' + id, { method: 'DELETE' });
+}
+
+/* ─── Paymob ─────────────────────────────────────────────── */
+async function apiCreatePaymobSession(orderId, method) {
+  return apiFetch('/paymob/checkout', {
+    method: 'POST',
+    body: JSON.stringify({ orderId, method })
+  });
+}
 
 /* ══════════════════════════════════════════════════════════
    ADMIN ENDPOINTS (PRODUCTS)

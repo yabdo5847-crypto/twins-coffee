@@ -51,12 +51,15 @@
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       </a>
       <!-- Account could link to login/admin -->
-      <a href="admin.html" class="icon-btn" title="Account">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-      </a>
       <button class="icon-btn" data-cart-open title="Cart" style="position:relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
         <span class="cart-badge">0</span>
+      </button>
+      <button class="icon-btn night-toggle" id="night-toggle" title="Night Mode" aria-label="Toggle Night Mode">
+        <!-- Moon icon (light mode) -->
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <!-- Sun icon (dark mode) -->
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
       </button>
       <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
@@ -197,21 +200,49 @@
         <input type="email" class="newsletter-input-minimal" placeholder="Email Address" required/>
         <button type="submit">→</button>
       </form>
+      <p id="newsletter-msg" style="font-size:.75rem;color:var(--gold);margin-top:.4rem;display:none"></p>
     </div>
   </div>
   <div class="footer-bottom container">
     <p>© 2026 The Twins Coffee®. All rights reserved.</p>
     <div class="footer-social">
-      <a href="#">Instagram</a>
-      <a href="#">TikTok</a>
-      <a href="#">Facebook</a>
+      <a href="https://www.instagram.com/thetwinseg" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.facebook.com/TheTwinsCoffee" target="_blank" rel="noopener">Facebook</a>
     </div>
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="api.js"></script>
 <script src="app.js"></script>
+<script>
+function handleNewsletter(e) {
+  e.preventDefault();
+  const email = e.target.querySelector('input[type="email"]').value;
+  const msg = document.getElementById('newsletter-msg');
+  msg.textContent = '✓ Thank you for subscribing!';
+  msg.style.display = 'block';
+  e.target.reset();
+  setTimeout(() => { msg.style.display = 'none'; }, 4000);
+}
+</script>
+<script>
+// ── Night Mode Toggle ──────────────────────────────────────────
+(function() {
+  const saved = localStorage.getItem('tc-theme');
+  if (saved === 'dark') document.body.setAttribute('data-theme', 'dark');
+})();
+
+document.getElementById('night-toggle').addEventListener('click', function() {
+  const isDark = document.body.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    document.body.removeAttribute('data-theme');
+    localStorage.setItem('tc-theme', 'light');
+  } else {
+    document.body.setAttribute('data-theme', 'dark');
+    localStorage.setItem('tc-theme', 'dark');
+  }
+});
+</script>
 <script>
 (async () => {
   function fixImgPath(src) {
@@ -315,17 +346,41 @@
       `;
     });
     
-    // Slider JS
+    // Slider JS — manual arrows + auto-scroll
     const bsPrev = document.getElementById('bs-prev');
     const bsNext = document.getElementById('bs-next');
+    let bsAutoTimer = null;
+
+    function bsScrollNext() {
+      const maxScroll = bsGrid.scrollWidth - bsGrid.clientWidth;
+      if (bsGrid.scrollLeft >= maxScroll - 4) {
+        bsGrid.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        bsGrid.scrollBy({ left: 280, behavior: 'smooth' });
+      }
+    }
+
+    function startBsAuto() {
+      clearInterval(bsAutoTimer);
+      bsAutoTimer = setInterval(bsScrollNext, 2500);
+    }
+
     if (bsPrev && bsNext) {
       bsPrev.onclick = () => {
-        bsGrid.scrollBy({ left: -300, behavior: 'smooth' });
+        bsGrid.scrollBy({ left: -280, behavior: 'smooth' });
+        startBsAuto(); // reset timer
       };
       bsNext.onclick = () => {
-        bsGrid.scrollBy({ left: 300, behavior: 'smooth' });
+        bsScrollNext();
+        startBsAuto();
       };
     }
+
+    // Pause on hover
+    bsGrid.addEventListener('mouseenter', () => clearInterval(bsAutoTimer));
+    bsGrid.addEventListener('mouseleave', () => startBsAuto());
+
+    startBsAuto();
   }
 
   /* ── 2. PRODUCT ICON NAVIGATION ── */

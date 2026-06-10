@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
@@ -28,13 +28,14 @@
       <a href="products.html" class="icon-btn" title="Search">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       </a>
-      <a href="admin.html" class="icon-btn" title="Account">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-      </a>
       <a href="checkout.html" class="icon-btn" style="position:relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
         <span class="cart-badge">0</span>
       </a>
+      <button class="icon-btn night-toggle" id="night-toggle" title="Night Mode" aria-label="Toggle Night Mode">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+      </button>
       <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </div>
@@ -151,6 +152,23 @@
         <div id="co-review-items" class="co-items-list"></div>
         <div class="divider"></div>
         <div style="font-size:.86rem;color:var(--txt2);line-height:1.9" id="co-review-info"></div>
+
+        <div class="divider"></div>
+        <div class="co-section-title" style="margin-top:1.5rem">Payment Method — طريقة الدفع</div>
+        <div style="display:flex;gap:1rem;margin-bottom:1.5rem">
+          <label class="ship-opt sel" style="flex:1;cursor:pointer">
+            <input type="radio" name="paymentMethod" value="cod" checked style="display:none"/>
+            <div style="text-align:center;padding:1rem;font-weight:bold">💵<br/>Cash on Delivery</div>
+          </label>
+          <label class="ship-opt" style="flex:1;cursor:pointer">
+            <input type="radio" name="paymentMethod" value="card" style="display:none"/>
+            <div style="text-align:center;padding:1rem;font-weight:bold">💳<br/>Credit / Debit Card</div>
+          </label>
+          <label class="ship-opt" style="flex:1;cursor:pointer">
+            <input type="radio" name="paymentMethod" value="fawry" style="display:none"/>
+            <div style="text-align:center;padding:1rem;font-weight:bold">🟡<br/>Fawry Pay</div>
+          </label>
+        </div>
         <div style="margin-top:1.5rem">
           <button class="btn btn-ghost btn-sm" id="step4-back">← Back</button>
         </div>
@@ -186,9 +204,23 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script src="api.js"></script>
 <script src="app.js"></script>
+<script>
+(function(){
+  const saved = localStorage.getItem('tc-theme');
+  if (saved === 'dark') document.body.setAttribute('data-theme', 'dark');
+})();
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('night-toggle');
+  if(btn) btn.addEventListener('click', function(){
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    if(isDark){ document.body.removeAttribute('data-theme'); localStorage.setItem('tc-theme','light'); }
+    else { document.body.setAttribute('data-theme','dark'); localStorage.setItem('tc-theme','dark'); }
+  });
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', async () => {
   let currentStep = 1;
@@ -341,6 +373,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   document.getElementById('step4-back').addEventListener('click', () => goToStep(3));
 
+  // Payment method selection styling
+  document.querySelectorAll('input[name="paymentMethod"]').forEach(inp => {
+    inp.addEventListener('change', (e) => {
+      document.querySelectorAll('input[name="paymentMethod"]').forEach(r => r.closest('.ship-opt').classList.remove('sel'));
+      e.target.closest('.ship-opt').classList.add('sel');
+    });
+  });
+
   // Place order
   document.getElementById('place-order-btn').addEventListener('click', async () => {
     const fname = document.getElementById('f-fname').value.trim();
@@ -352,6 +392,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cart = getCart();
     const sub = cartTotal();
     const total = sub + (ship ? ship.price : 0);
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
     const order = {
       id: genId(), date: formatDate(),
       customer: { name: fname+' '+document.getElementById('f-lname').value.trim(), phone, email:document.getElementById('f-email').value.trim(), address:addr, city, zip:document.getElementById('f-zip').value.trim() },
@@ -363,9 +405,30 @@ document.addEventListener('DOMContentLoaded', async () => {
       id:order.id, customerName:order.customer.name, customerPhone:order.customer.phone,
       customerAddress:order.customer.address, city:order.customer.city, items:order.items,
       shippingId:selectedShipId, shippingName:order.shipping?order.shipping.name:'',
-      shippingPrice:order.shipping?order.shipping.price:0, subtotal:order.subtotal, total:order.total, notes:''
+      shippingPrice:order.shipping?order.shipping.price:0, subtotal:order.subtotal, total:order.total, notes:'',
+      paymentMethod
     };
-    try { await apiPlaceOrder(apiPayload); }
+    try { 
+      const res = await apiPlaceOrder(apiPayload); 
+      
+      // Paymob integration
+      if (paymentMethod === 'card' || paymentMethod === 'fawry') {
+        const btn = document.getElementById('place-order-btn');
+        btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;margin:auto"></div>';
+        btn.disabled = true;
+        try {
+          const session = await apiCreatePaymobSession(res.orderId, paymentMethod);
+          if (session.iframeUrl) {
+            window.location.href = session.iframeUrl;
+            return;
+          }
+        } catch (err) {
+          toast('Payment initialization failed. Order saved as COD.', 'error');
+          btn.innerHTML = '🛒 Place Order — إرسال الطلب';
+          btn.disabled = false;
+        }
+      }
+    }
     catch { saveOrder(order); }
     cartClear();
     document.getElementById('co-main').classList.add('hidden');

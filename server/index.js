@@ -9,13 +9,14 @@ const cors    = require('cors');
 const path    = require('path');
 const bcrypt  = require('bcryptjs');
 
-const { db }              = require('./db'); // triggers schema + seed
-const { generateToken }   = require('./middleware/auth');
-const productsRouter      = require('./routes/products');
-const ordersRouter        = require('./routes/orders');
-const shippingRouter      = require('./routes/shipping');
-const categoriesRouter    = require('./routes/categories');
-const uploadRouter        = require('./routes/upload');
+const { initDb, getDb }         = require('./db');
+const { generateToken }         = require('./middleware/auth');
+const productsRouter            = require('./routes/products');
+const ordersRouter              = require('./routes/orders');
+const shippingRouter            = require('./routes/shipping');
+const categoriesRouter          = require('./routes/categories');
+const uploadRouter              = require('./routes/upload');
+const paymobRouter              = require('./routes/paymob');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -30,24 +31,26 @@ const uploadsDir = path.join(__dirname, '..', 'uploads');
 app.use('/uploads', express.static(uploadsDir));
 
 // ─── API Routes ──────────────────────────────────────────────
-app.use('/api/products', productsRouter);
-app.use('/api/orders',   ordersRouter);
-app.use('/api/shipping', shippingRouter);
+app.use('/api/products',   productsRouter);
+app.use('/api/orders',     ordersRouter);
+app.use('/api/shipping',   shippingRouter);
 app.use('/api/categories', categoriesRouter);
-app.use('/api/upload',   uploadRouter);
+app.use('/api/upload',     uploadRouter);
+app.use('/api/paymob',     paymobRouter);
 
 // ─── Auth: Login ─────────────────────────────────────────────
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ error: 'email and password required' });
     }
 
-    const admin = db.prepare('SELECT * FROM admins WHERE email=?').get(email.toLowerCase());
+    const db    = getDb();
+    const admin = await db.get('SELECT * FROM admins WHERE email=?', [email.toLowerCase()]);
     if (!admin) return res.status(401).json({ error: 'Invalid credentials' });
 
-    const valid = bcrypt.compareSync(password, admin.password_hash);
+    const valid = await bcrypt.compare(password, admin.password_hash);
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
 
     const token = generateToken({ id: admin.id, email: admin.email });
@@ -55,19 +58,37 @@ app.post('/api/auth/login', (req, res) => {
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
-// ─── Auth: Create first admin (only if no admins exist) ──────
-app.post('/api/auth/setup', (req, res) => {
+// ─── Auth: Verify Token ───────────────────────────────────────
+app.get('/api/auth/verify', (req, res) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  const jwt = require('jsonwebtoken');
+  const JWT_SECRET = process.env.JWT_SECRET || 'twins-coffee-secret-change-in-production';
   try {
-    const count = db.prepare('SELECT COUNT(*) as n FROM admins').get().n;
-    if (count > 0) return res.status(403).json({ error: 'Setup already done' });
+    const payload = jwt.verify(authHeader.split(' ')[1], JWT_SECRET);
+    res.json({ valid: true, user: payload });
+  } catch {
+    res.status(401).json({ error: 'Invalid or expired token' });
+  }
+});
+
+
+// ─── Auth: Create first admin (only if no admins exist) ──────
+app.post('/api/auth/setup', async (req, res) => {
+  try {
+    const db    = getDb();
+    const { n } = await db.get('SELECT COUNT(*) as n FROM admins');
+    if (n > 0) return res.status(403).json({ error: 'Setup already done' });
 
     const { email, password } = req.body;
     if (!email || !password || password.length < 6) {
       return res.status(400).json({ error: 'email and password (min 6 chars) required' });
     }
 
-    const hash = bcrypt.hashSync(password, 10);
-    db.prepare('INSERT INTO admins (email, password_hash) VALUES (?,?)').run(email.toLowerCase(), hash);
+    const hash = await bcrypt.hash(password, 10);
+    await db.run('INSERT INTO admins (email, password_hash) VALUES (?,?)', [email.toLowerCase(), hash]);
     const token = generateToken({ email: email.toLowerCase() });
     res.json({ success: true, message: 'Admin account created!', token });
   } catch(e) { res.status(500).json({ error: e.message }); }
@@ -87,18 +108,29 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
 });
 
-// ─── Start ───────────────────────────────────────────────────
-app.listen(PORT, () => {
-  const adminCount = db.prepare('SELECT COUNT(*) as n FROM admins').get().n;
-  console.log('');
-  console.log('☕  ══════════════════════════════════════════════════════════');
-  console.log('☕  The Twins Coffee® — Backend Server (SQLite Edition)');
-  console.log(`☕  Running on → http://localhost:${PORT}`);
-  if (adminCount === 0) {
-    console.log('');
-    console.log('⚠️   No admin account found!');
-    console.log(`⚠️   Create one by visiting: http://localhost:${PORT}/setup.html`);
+// ─── Start (wait for DB to be ready first) ───────────────────
+async function start() {
+  try {
+    await initDb();
+    app.listen(PORT, async () => {
+      const db         = getDb();
+      const { n }      = await db.get('SELECT COUNT(*) as n FROM admins');
+      console.log('');
+      console.log('☕  ══════════════════════════════════════════════════════════');
+      console.log('☕  The Twins Coffee® — Backend Server (SQLite Edition)');
+      console.log(`☕  Running on → http://localhost:${PORT}`);
+      if (n === 0) {
+        console.log('');
+        console.log('⚠️   No admin account found!');
+        console.log(`⚠️   Create one by visiting: http://localhost:${PORT}/setup.html`);
+      }
+      console.log('☕  ══════════════════════════════════════════════════════════');
+      console.log('');
+    });
+  } catch(e) {
+    console.error('💥 Failed to start server:', e.message);
+    process.exit(1);
   }
-  console.log('☕  ══════════════════════════════════════════════════════════');
-  console.log('');
-});
+}
+
+start();
