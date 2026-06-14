@@ -218,24 +218,40 @@ async function apiCreateOrder(orderData) {
   return data;
 }
 async function apiGetOrders() {
-  const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
-  if (error) throw error;
-  return data.map(o => ({
-    id: o.id,
-    customer: {
-      name: o.customer_name,
-      phone: o.customer_phone,
-      address: o.customer_address,
-      city: o.city
-    },
-    items: o.items,
-    shipping: o.shipping_id ? { id: o.shipping_id, name: o.shipping_name, price: o.shipping_price } : null,
-    subtotal: o.subtotal,
-    total: o.total,
-    status: o.status,
-    notes: o.notes,
-    createdAt: o.created_at
-  }));
+  let dbOrders = [];
+  try {
+    const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+    if (!error && data) {
+      dbOrders = data.map(o => ({
+        id: o.id,
+        customer: {
+          name: o.customer_name,
+          phone: o.customer_phone,
+          address: o.customer_address,
+          city: o.city
+        },
+        items: o.items,
+        shipping: o.shipping_id ? { id: o.shipping_id, name: o.shipping_name, price: o.shipping_price } : null,
+        subtotal: o.subtotal,
+        total: o.total,
+        status: o.status,
+        notes: o.notes,
+        createdAt: o.created_at
+      }));
+    }
+  } catch (e) { console.error('Error fetching Supabase orders', e); }
+
+  let localOrders = [];
+  try {
+    const localStr = localStorage.getItem('tc-orders');
+    if (localStr) localOrders = JSON.parse(localStr);
+  } catch (e) { console.error(e); }
+
+  const allOrders = [...localOrders, ...dbOrders];
+  // Sort by date descending
+  allOrders.sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
+  
+  return allOrders;
 }
 async function apiGetStats() {
   const orders = await apiGetOrders();
