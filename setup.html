@@ -164,6 +164,8 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="api.js"></script>
 <script>
 document.getElementById('form').addEventListener('submit', async e => {
   e.preventDefault();
@@ -187,17 +189,13 @@ document.getElementById('form').addEventListener('submit', async e => {
   btn.disabled     = true;
 
   try {
-    const res  = await fetch('/api/auth/setup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    const data = await res.json();
-
-    if (!res.ok || data.error) throw new Error(data.error || 'فشل الإنشاء');
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
 
     // Save token
-    localStorage.setItem('tc_auth_token', data.token);
+    if (data.session) {
+        localStorage.setItem('sb-auth-token', data.session.access_token);
+    }
 
     // Show done
     document.getElementById('setup-form').style.display = 'none';
