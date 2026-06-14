@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Admin | The Twins Coffee®</title>
   <meta name="description" content="Admin dashboard — The Twins Coffee®"/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="./src/css/style.css"/>
   <!-- Premium Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -15,7 +15,7 @@
 <div class="admin-gate" id="admin-gate">
   <div class="admin-gate-box">
     <div class="nav-logo" style="justify-content:center;margin-bottom:1.25rem">
-      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
+      <img src="./logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
       <span class="logo-text">THE TWINS COFFEE<sup>®</sup></span>
     </div>
     <h2>Admin Login</h2>
@@ -35,7 +35,7 @@
   <!-- Sidebar -->
   <aside class="admin-side">
     <div class="admin-brand">
-      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img" style="width:32px;height:32px;object-fit:contain"/>
+      <img src="./logo.png" alt="The Twins Coffee Logo" class="nav-logo-img" style="width:32px;height:32px;object-fit:contain"/>
       <div>
         <div style="font-size:.72rem;font-weight:800;letter-spacing:.06em">TWINS ADMIN</div>
         <div class="admin-brand-label">Dashboard v3</div>
@@ -397,8 +397,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="api.js?v=4"></script>
-<script src="app.js"></script>
+<script src="./src/js/api.js"></script>
+<script src="./src/js/app.js"></script>
 <script>
 // ── Night Mode (apply saved theme immediately) ──
 (function(){
