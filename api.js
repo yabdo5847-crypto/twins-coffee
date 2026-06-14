@@ -183,8 +183,7 @@ async function apiUpdateProduct(id, updates) {
 }
 
 async function apiDeleteProduct(id) {
-  // Rely on foreign key ON DELETE CASCADE, or delete manually first
-  await supabaseClient.from('product_sizes').delete().eq('product_id', id);
+  // Relying on ON DELETE CASCADE in Supabase
   const { error } = await supabaseClient.from('products').delete().eq('id', id);
   if (error) throw error;
   return { success: true };
@@ -203,13 +202,12 @@ async function apiCreateOrder(orderData) {
     items: orderData.items,
     shipping_id: orderData.shippingId,
     shipping_name: orderData.shippingName,
-    shipping_price: orderData.shippingPrice,
-    subtotal: orderData.subtotal,
-    total: orderData.total,
     notes: orderData.notes,
-    status: 'pending'
+    payment_method: orderData.paymentMethod
   };
-  const { data, error } = await supabaseClient.from('orders').insert([payload]).select().single();
+  
+  // SECURE CHECKOUT: Use RPC to calculate totals and deduct inventory safely
+  const { data, error } = await supabaseClient.rpc('place_order_secure', { order_payload: payload });
   if (error) throw error;
   return data;
 }
