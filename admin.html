@@ -564,7 +564,7 @@ async function renderOverview() {
     : recent.map(o => `
         <tr>
           <td><span style="font-size:.75rem;font-family:monospace;color:var(--gold)">${o.id}</span></td>
-          <td>${o.customer?.name || '—'}</td>
+          <td>${escapeHtml(o.customer?.name || '—')}</td>
           <td>${o.items?.length || 0} items</td>
           <td>${(o.total||0).toLocaleString()} جنيه</td>
           <td>${o.date}</td>
@@ -1205,15 +1205,15 @@ async function renderOrders() {
     const moreItems = (o.items||[]).length > 2 ? ` +${o.items.length-2} more` : '';
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><span style="font-size:.72rem;font-family:monospace;color:var(--gold)">${o.id}</span></td>
+      <td><span style="font-size:.72rem;font-family:monospace;color:var(--gold)">${escapeHtml(o.id)}</span></td>
       <td>
-        <div style="font-weight:600;font-size:.86rem">${o.customer?.name || '—'}</div>
-        <div style="font-size:.7rem;color:var(--txt2)">${o.customer?.phone || ''}</div>
+        <div style="font-weight:600;font-size:.86rem">${escapeHtml(o.customer?.name || '—')}</div>
+        <div style="font-size:.7rem;color:var(--txt2)">${escapeHtml(o.customer?.phone || '')}</div>
       </td>
-      <td style="font-size:.78rem">${itemsSummary}${moreItems}</td>
-      <td style="font-size:.78rem">${o.shipping?.nameAr || '—'}</td>
+      <td style="font-size:.78rem">${escapeHtml(itemsSummary)}${escapeHtml(moreItems)}</td>
+      <td style="font-size:.78rem">${escapeHtml(o.shipping?.nameAr || '—')}</td>
       <td><strong>${(o.total||0).toLocaleString()} جنيه</strong></td>
-      <td style="font-size:.78rem">${o.date}</td>
+      <td style="font-size:.78rem">${escapeHtml(o.date || o.createdAt || '')}</td>
       <td>${getOrderStatusPill(o.status)}</td>
       <td>${buildStatusSelect(o.id, o.status)}</td>`;
     tbody.appendChild(tr);
