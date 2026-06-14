@@ -213,10 +213,7 @@
         <div class="fg">
           <label>Category</label>
           <select id="m-cat" class="f-input">
-            <option value="coffee">☕ Coffee</option>
-            <option value="merch">🎁 Merchandise</option>
-            <option value="equipment">🛒 Equipment</option>
-            <option value="cups">☕ Cups & Mugs</option>
+            <!-- Dynamically populated via openEditProduct() -->
           </select>
         </div>
         <div class="fg">
@@ -691,12 +688,25 @@ window.openEditProduct = async function(pid) {
   if (pid) {
     try { p = await apiGetProductById(pid); } catch(e) { console.warn(e.message); }
   }
+  
+  try {
+    const allCats = await apiGetAllCategories();
+    const catSelect = document.getElementById('m-cat');
+    catSelect.innerHTML = '';
+    allCats.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat.slug;
+      opt.textContent = (cat.nameAr && cat.nameAr !== 'undefined' ? `${cat.name} (${cat.nameAr})` : cat.name);
+      catSelect.appendChild(opt);
+    });
+  } catch(e) { console.warn('Could not load categories for modal'); }
+
   document.getElementById('modal-title').textContent = p ? `Edit: ${p.name}` : 'Add Product';
   document.getElementById('m-pid').value         = p ? p.id : '';
   document.getElementById('m-name').value        = p ? p.name : '';
   document.getElementById('m-name-ar').value     = p ? p.nameAr : '';
   document.getElementById('m-desc').value        = p ? p.description : '';
-  document.getElementById('m-cat').value         = p ? p.category : 'coffee';
+  document.getElementById('m-cat').value         = p ? p.category : (document.getElementById('m-cat').options[0]?.value || '');
   document.getElementById('m-badge').value       = p && p.badge ? p.badge : '';
   document.getElementById('m-images').value      = p ? (p.images || []).join(', ') : '';
   setToggleVal('m-has-type-toggle',  p ? p.hasType  : false);
