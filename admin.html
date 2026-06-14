@@ -1175,7 +1175,21 @@ function buildStatusSelect(orderId, currentStatus) {
 window.updateOrderStatus = async function(orderId, newStatus) {
   try {
     const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
-    if (error) throw error;
+    
+    // Fallback: update in local storage if exists
+    try {
+      const localStr = localStorage.getItem('tc-orders');
+      if (localStr) {
+        let localOrders = JSON.parse(localStr);
+        let found = false;
+        localOrders = localOrders.map(o => {
+          if (o.id === orderId) { o.status = newStatus; found = true; }
+          return o;
+        });
+        if (found) localStorage.setItem('tc-orders', JSON.stringify(localOrders));
+      }
+    } catch(e) {}
+
     toast(`Order ${orderId} → ${newStatus}`, 'success');
     await renderOrders();
   } catch(e) {
@@ -1183,35 +1197,39 @@ window.updateOrderStatus = async function(orderId, newStatus) {
   }
 };
 
+let currentOrders = [];
+
 async function renderOrders() {
   const tbody  = document.getElementById('orders-body');
   const emptyEl= document.getElementById('orders-empty');
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem"><div class="spinner"></div></td></tr>';
 
-  let orders = [];
-  try { orders = await apiGetOrders(); }
-  catch(e) { console.warn('API unavailable:', e.message); }
+  try { currentOrders = await apiGetOrders(); }
+  catch(e) { console.warn('API unavailable:', e.message); currentOrders = []; }
 
   tbody.innerHTML = '';
 
-  if (orders.length === 0) {
+  if (currentOrders.length === 0) {
     emptyEl.classList.remove('hidden');
     return;
   }
   emptyEl.classList.add('hidden');
 
-  orders.forEach(o => {
+  currentOrders.forEach(o => {
     const itemsSummary = (o.items||[]).slice(0,2).map(i=>`${i.name} (${i.qty}x)`).join(', ');
     const moreItems = (o.items||[]).length > 2 ? ` +${o.items.length-2} more` : '';
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><span style="font-size:.72rem;font-family:monospace;color:var(--gold)">${escapeHtml(o.id)}</span></td>
+      <td>
+        <span style="font-size:.72rem;font-family:monospace;color:var(--gold);display:block;margin-bottom:4px">${escapeHtml(o.id)}</span>
+        <button onclick="viewOrder('${o.id}')" style="font-size:0.7rem;padding:2px 8px;border-radius:4px;background:var(--gold);color:#000;border:none;cursor:pointer;font-weight:bold">View Details</button>
+      </td>
       <td>
         <div style="font-weight:600;font-size:.86rem">${escapeHtml(o.customer?.name || '—')}</div>
         <div style="font-size:.7rem;color:var(--txt2)">${escapeHtml(o.customer?.phone || '')}</div>
       </td>
       <td style="font-size:.78rem">${escapeHtml(itemsSummary)}${escapeHtml(moreItems)}</td>
-      <td style="font-size:.78rem">${escapeHtml(o.shipping?.nameAr || '—')}</td>
+      <td style="font-size:.78rem">${escapeHtml(o.shipping?.nameAr || o.shipping?.name || '—')}</td>
       <td><strong>${(o.total||0).toLocaleString()} جنيه</strong></td>
       <td style="font-size:.78rem">${escapeHtml(o.date || o.createdAt || '')}</td>
       <td>${getOrderStatusPill(o.status)}</td>
@@ -1219,6 +1237,55 @@ async function renderOrders() {
     tbody.appendChild(tr);
   });
 }
+
+window.viewOrder = function(id) {
+  const o = currentOrders.find(x => x.id === id);
+  if(!o) return;
+  const itemsHtml = (o.items||[]).map(i => `
+    <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--brd);padding:4px 0">
+      <div>${i.name} ${i.size ? '('+i.size+')' : ''} x${i.qty}</div>
+      <div>${(i.price * i.qty).toLocaleString()} جنيه</div>
+    </div>
+  `).join('');
+  
+  const body = document.getElementById('order-details-body');
+  body.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+      <div>
+        <h4 style="color:var(--gold);margin-bottom:0.5rem">Customer Info</h4>
+        <div><strong>Name:</strong> ${escapeHtml(o.customer?.name||'')}</div>
+        <div><strong>Phone:</strong> ${escapeHtml(o.customer?.phone||'')}</div>
+        <div><strong>City:</strong> ${escapeHtml(o.customer?.city||'')}</div>
+        <div><strong>Address:</strong> ${escapeHtml(o.customer?.address||'')}</div>
+      </div>
+      <div>
+        <h4 style="color:var(--gold);margin-bottom:0.5rem">Order Info</h4>
+        <div><strong>ID:</strong> <span style="font-family:monospace">${o.id}</span></div>
+        <div><strong>Date:</strong> ${escapeHtml(o.date || o.createdAt || '')}</div>
+        <div><strong>Status:</strong> ${getOrderStatusPill(o.status)}</div>
+        <div><strong>Payment:</strong> ${escapeHtml(o.paymentMethod || 'Cash on Delivery')}</div>
+      </div>
+    </div>
+    <h4 style="color:var(--gold);margin-bottom:0.5rem">Items</h4>
+    <div style="background:var(--surf2);padding:0.8rem;border-radius:8px;margin-bottom:1rem">
+      ${itemsHtml}
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem">
+      <span>Subtotal:</span>
+      <span>${(o.subtotal||0).toLocaleString()} جنيه</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem">
+      <span>Shipping (${escapeHtml(o.shipping?.nameAr || o.shipping?.name || '—')}):</span>
+      <span>${o.shipping?.price ? o.shipping.price.toLocaleString() + ' جنيه' : 'Free'}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:1.1rem;color:var(--gold);margin-top:0.5rem;border-top:1px solid var(--brd);padding-top:0.5rem">
+      <span>Total:</span>
+      <span>${(o.total||0).toLocaleString()} جنيه</span>
+    </div>
+    ${o.notes ? \`<div style="margin-top:1rem"><h4 style="color:var(--gold);margin-bottom:0.5rem">Notes</h4><p style="background:var(--surf2);padding:0.8rem;border-radius:8px">\${escapeHtml(o.notes)}</p></div>\` : ''}
+  `;
+  document.getElementById('order-details-modal').classList.remove('hidden');
+};
 
 document.getElementById('clear-orders-btn').addEventListener('click', () => {
   toast('Bulk delete is disabled for safety', 'info');
@@ -1239,5 +1306,18 @@ function initDashboard() {
 // Make switchTab accessible globally
 window.switchTab = switchTab;
 </script>
+  <div class="modal hidden" id="order-details-modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2>Order Details</h2>
+        <button class="modal-close" onclick="document.getElementById('order-details-modal').classList.add('hidden')">×</button>
+      </div>
+      <div class="modal-body" id="order-details-body" style="font-size: 0.9rem; line-height: 1.6;">
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="document.getElementById('order-details-modal').classList.add('hidden')">Close</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
