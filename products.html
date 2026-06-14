@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Shop | The Twins Coffee®</title>
   <meta name="description" content="Shop premium Turkish coffee beans and merchandise from The Twins Coffee®. Choose your roast, size, and blend."/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="./src/css/style.css"/>
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -32,7 +32,7 @@
 <nav class="navbar scrolled" id="navbar">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
-      <img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
+      <img src="./logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/>
       <span class="logo-text">THE TWINS COFFEE<sup>®</sup></span>
     </a>
     <ul class="nav-links" id="nav-links">
@@ -85,7 +85,7 @@
 <footer class="footer" style="margin-top:0">
   <div class="footer-grid">
     <div class="footer-brand">
-      <div class="nav-logo"><img src="logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/><span class="logo-text">THE TWINS COFFEE<sup>®</sup></span></div>
+      <div class="nav-logo"><img src="./logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/><span class="logo-text">THE TWINS COFFEE<sup>®</sup></span></div>
       <p>Premium 100% Arabica Turkish Coffee.<br/>Crafted for the perfect cup, every time.</p>
       <div class="footer-social">
         <a href="https://www.facebook.com/TheTwinsCoffee" class="social-btn" aria-label="Facebook" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="15" height="15"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
@@ -106,8 +106,8 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="api.js"></script>
-<script src="app.js"></script>
+<script src="./src/js/api.js"></script>
+<script src="./src/js/app.js"></script>
 <script>
 (function(){
   const saved = localStorage.getItem('tc-theme');
