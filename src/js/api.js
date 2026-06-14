@@ -203,12 +203,18 @@ async function apiCreateOrder(orderData) {
     shipping_id: orderData.shippingId,
     shipping_name: orderData.shippingName,
     notes: orderData.notes,
-    payment_method: orderData.paymentMethod
+    payment_method: orderData.paymentMethod,
+    shipping_price: orderData.shippingPrice,
+    subtotal: orderData.subtotal,
+    total: orderData.total,
+    status: 'pending'
   };
   
-  // SECURE CHECKOUT: Use RPC to calculate totals and deduct inventory safely
-  const { data, error } = await supabaseClient.rpc('place_order_secure', { order_payload: payload });
-  if (error) throw error;
+  const { data, error } = await supabaseClient.from('orders').insert([payload]).select().single();
+  if (error) {
+    console.error('Order creation failed:', error);
+    throw error;
+  }
   return data;
 }
 async function apiGetOrders() {

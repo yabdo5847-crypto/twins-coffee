@@ -406,15 +406,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       paymentMethod
     };
     try { 
-      const res = await apiPlaceOrder(apiPayload); 
-      // Serverless: Order is placed directly into Supabase
+      const res = await apiCreateOrder(apiPayload); 
+      cartClear();
+      document.getElementById('co-main').classList.add('hidden');
+      document.getElementById('co-success').classList.remove('hidden');
+      document.getElementById('co-order-num').textContent = 'Order # ' + order.id;
+      window.scrollTo({top:0,behavior:'smooth'});
+    } catch (err) {
+      console.error(err);
+      toast('Failed to place order. Please try again.', 'error');
     }
-    catch { saveOrder(order); }
-    cartClear();
-    document.getElementById('co-main').classList.add('hidden');
-    document.getElementById('co-success').classList.remove('hidden');
-    document.getElementById('co-order-num').textContent = 'Order # ' + order.id;
-    window.scrollTo({top:0,behavior:'smooth'});
   });
 
   renderShipping();
