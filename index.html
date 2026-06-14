@@ -284,7 +284,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
     setInterval(() => {
       const next = currentSlide === backgroundImages.length - 1 ? 0 : currentSlide + 1;
       goToSlide(next);
-    }, 2000);
+    }, 5000);
   }
 
   // Load products
@@ -302,17 +302,19 @@ document.getElementById('night-toggle').addEventListener('click', function() {
     bestSellers.forEach(p => {
       const img = p.images && p.images.length > 0 ? fixImgPath(p.images[0]) : '';
       const price = p.sizes && p.sizes.length > 0 ? Math.min(...p.sizes.map(s=>s.price)) : 0;
+      const safeName = escapeHtml(p.name);
+      const safeBadge = p.badge ? escapeHtml(p.badge) : '';
       bsGrid.innerHTML += `
         <div class="p-card">
           <a href="product-detail.html?id=${p.id}" class="p-card-img-wrap">
-            <img src="${img}" alt="${p.name}" class="p-card-img"/>
-            ${p.badge ? `<span class="badge">${p.badge}</span>` : ''}
+            <img src="${img}" alt="${safeName}" class="p-card-img"/>
+            ${safeBadge ? `<span class="badge">${safeBadge}</span>` : ''}
           </a>
           <div class="p-card-info">
-            <h3 class="p-card-title"><a href="product-detail.html?id=${p.id}">${p.name}</a></h3>
+            <h3 class="p-card-title"><a href="product-detail.html?id=${p.id}">${safeName}</a></h3>
             <div class="p-card-price">${price} EGP</div>
             <div class="p-card-rating">★★★★★ (12)</div>
-            <button class="btn btn-outline btn-full" aria-label="Add ${p.name} to Cart" onclick="window.location.href='product-detail.html?id=${p.id}'">Add to Cart</button>
+            <button class="btn btn-outline btn-full" aria-label="Add ${safeName} to Cart" onclick="window.location.href='product-detail.html?id=${p.id}'">Add to Cart</button>
           </div>
         </div>
       `;
@@ -356,37 +358,21 @@ document.getElementById('night-toggle').addEventListener('click', function() {
       };
     }
 
-    // Pause on hover
-    bsGrid.addEventListener('mouseenter', () => isPaused = true);
-    bsGrid.addEventListener('mouseleave', () => isPaused = false);
-  }
 
-  /* ── 2. PRODUCT ICON NAVIGATION ── */
-  const iconTrack = document.getElementById('icon-nav-track');
-  if(iconTrack) {
-    activeProducts.forEach(p => {
-      const img = p.images && p.images.length > 0 ? fixImgPath(p.images[0]) : '';
-      const a = document.createElement('a');
-      a.href = `product-detail.html?id=${p.id}`;
-      a.className = 'icon-nav-item';
-      a.innerHTML = `
-        <div class="icon-nav-img"><img src="${img}" alt="${p.name}"/></div>
-        <span class="icon-nav-name">${p.name}</span>
-      `;
-      iconTrack.appendChild(a);
-    });
-  }
+
+  /* ── 2. PRODUCT ICON NAVIGATION (Moved to Categories section below) ── */
 
   /* ── 5. FEATURED PRODUCTS (Editorial) ── */
   const edGrid = document.getElementById('editorial-grid');
   if(edGrid) {
     featured.forEach(p => {
       const img = p.images && p.images.length > 0 ? fixImgPath(p.images[0]) : '';
+      const safeName = escapeHtml(p.name);
       edGrid.innerHTML += `
         <a href="product-detail.html?id=${p.id}" class="ed-card">
-          <div class="ed-img"><img src="${img}" alt="${p.name}"/></div>
+          <div class="ed-img"><img src="${img}" alt="${safeName}"/></div>
           <div class="ed-content">
-            <h3>${p.name}</h3>
+            <h3>${safeName}</h3>
             <span class="btn btn-outline btn-sm">Discover</span>
           </div>
         </a>
@@ -396,24 +382,41 @@ document.getElementById('night-toggle').addEventListener('click', function() {
 
     // Categories
     const dynCat = document.getElementById('dynamic-categories');
-    if(dynCat) {
-      apiGetAllCategories().then(cats => {
-        const activeCats = cats.filter(c => c.active);
-        if(activeCats.length === 0) return;
+    const iconTrack = document.getElementById('icon-nav-track');
+    
+    apiGetAllCategories().then(cats => {
+      const activeCats = cats.filter(c => c.active);
+      if(activeCats.length === 0) return;
+      
+      if(dynCat) {
         dynCat.innerHTML = activeCats.map(c => {
           const img = c.image ? fixImgPath(c.image) : './logo.png';
+          const safeName = escapeHtml(c.name);
           return `
-            <a href="products.html?cat=${c.slug}" class="category-card">
-              <div class="category-img"><img src="${img}" alt="${c.name}"/></div>
+            <a href="products.html?cat=${encodeURIComponent(c.slug || c.id)}" class="category-card">
+              <div class="category-img"><img src="${img}" alt="${safeName}"/></div>
               <div class="category-content">
-                <h3>${c.name}</h3>
-                <span>Shop Collection →</span>
+                <h3>${safeName}</h3>
+                <span class="btn btn-outline btn-sm">Shop Now</span>
               </div>
             </a>
           `;
         }).join('');
-      }).catch(e => console.log('Failed to load categories', e));
-    }
+      }
+
+      if(iconTrack) {
+        iconTrack.innerHTML = activeCats.map(c => {
+          const img = c.image ? fixImgPath(c.image) : './logo.png';
+          const safeName = escapeHtml(c.name);
+          return `
+            <a href="products.html?cat=${encodeURIComponent(c.slug || c.id)}" class="icon-nav-item">
+              <div class="icon-nav-img"><img src="${img}" alt="${safeName}"/></div>
+              <span class="icon-nav-name">${safeName}</span>
+            </a>
+          `;
+        }).join('');
+      }
+    }).catch(e => console.log('Failed to load categories', e));
 })();
 </script>
 </body>
