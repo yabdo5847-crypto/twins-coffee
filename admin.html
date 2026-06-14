@@ -6,14 +6,7 @@
   <title>Admin | The Twins Coffee®</title>
   <meta name="description" content="Admin dashboard — The Twins Coffee®"/>
   <meta name="robots" content="noindex, nofollow"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./src/css/style.css"/>
-  <style>
-    .admin-mobile-header { display: none; }
-    @media (max-width: 768px) {
-      .admin-mobile-header { display: flex !important; }
-    }
-  </style>
   <!-- Premium Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.js"></script>
 </head>
@@ -80,17 +73,8 @@
     </div>
   </aside>
 
-  <div class="admin-overlay" id="admin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1050;display:none;backdrop-filter:blur(2px);"></div>
-
   <!-- Main -->
   <div class="admin-main">
-    <!-- Mobile Header -->
-    <div class="admin-mobile-header" id="admin-mobile-header" style="align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--brd);background:var(--surf);">
-      <div style="font-weight:800;letter-spacing:.08em;">TWINS ADMIN</div>
-      <button class="icon-btn" id="admin-menu-toggle" style="background:transparent;border:1px solid var(--brd);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;">
-        <i data-lucide="menu"></i>
-      </button>
-    </div>
 
     <!-- ─── OVERVIEW TAB ─── -->
     <div class="adm-tab active" id="tab-overview">
@@ -1333,32 +1317,6 @@ function initDashboard() {
 
 // Make switchTab accessible globally
 window.switchTab = switchTab;
-
-// Mobile sidebar logic
-const adminSide = document.querySelector('.admin-side');
-const adminOverlay = document.getElementById('admin-overlay');
-const adminMenuToggle = document.getElementById('admin-menu-toggle');
-
-function toggleAdminSidebar() {
-  const isOpen = adminSide.classList.contains('open');
-  if (isOpen) {
-    adminSide.classList.remove('open');
-    if(adminOverlay) adminOverlay.style.display = 'none';
-  } else {
-    adminSide.classList.add('open');
-    if(adminOverlay) adminOverlay.style.display = 'block';
-  }
-}
-
-if(adminMenuToggle) adminMenuToggle.addEventListener('click', toggleAdminSidebar);
-if(adminOverlay) adminOverlay.addEventListener('click', toggleAdminSidebar);
-
-// Close sidebar when clicking a nav button on mobile
-document.querySelectorAll('.adm-nav-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if(window.innerWidth <= 768) toggleAdminSidebar();
-  });
-});
 </script>
   <div class="modal-bg" id="order-details-modal">
     <div class="modal-box" style="max-width: 600px;">
