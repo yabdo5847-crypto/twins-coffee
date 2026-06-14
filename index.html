@@ -217,7 +217,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
 <script>
 (async () => {
   function fixImgPath(src) {
-    if (!src) return 'uploads/placeholder.jpeg';
+    if (!src) return './logo.png';
     if (src.startsWith('uploads/') || src.startsWith('/uploads/') || src.startsWith('http')) return src;
     return 'uploads/' + src;
   }
@@ -401,7 +401,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
         const activeCats = cats.filter(c => c.active);
         if(activeCats.length === 0) return;
         dynCat.innerHTML = activeCats.map(c => {
-          const img = c.image ? fixImgPath(c.image) : 'uploads/placeholder.jpeg';
+          const img = c.image ? fixImgPath(c.image) : './logo.png';
           return `
             <a href="products.html?cat=${c.slug}" class="category-card">
               <div class="category-img"><img src="${img}" alt="${c.name}"/></div>
