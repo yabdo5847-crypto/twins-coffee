@@ -1282,7 +1282,7 @@ window.viewOrder = function(id) {
       <span>Total:</span>
       <span>${(o.total||0).toLocaleString()} جنيه</span>
     </div>
-    ${o.notes ? \`<div style="margin-top:1rem"><h4 style="color:var(--gold);margin-bottom:0.5rem">Notes</h4><p style="background:var(--surf2);padding:0.8rem;border-radius:8px">\${escapeHtml(o.notes)}</p></div>\` : ''}
+    ${o.notes ? `<div style="margin-top:1rem"><h4 style="color:var(--gold);margin-bottom:0.5rem">Notes</h4><p style="background:var(--surf2);padding:0.8rem;border-radius:8px">${escapeHtml(o.notes)}</p></div>` : ''}
   `;
   document.getElementById('order-details-modal').classList.remove('hidden');
 };
