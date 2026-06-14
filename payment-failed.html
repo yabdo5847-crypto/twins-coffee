@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Payment Failed | The Twins Coffee®</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .result-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .result-icon {
+      font-size: 5rem;
+      color: #ef4444;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="result-page">
+    <div class="result-icon">✗</div>
+    <h1 style="color:var(--red);margin-bottom:.5rem">Payment Failed</h1>
+    <p style="margin-bottom:2rem;color:var(--txt2)">عذراً، لم تتم عملية الدفع بنجاح. يرجى المحاولة مرة أخرى أو اختيار الدفع عند الاستلام.</p>
+    <a href="checkout.html" class="btn btn-gold btn-xl">Try Again</a>
+  </div>
+  <script>
+    (function(){
+      const saved = localStorage.getItem('tc-theme');
+      if (saved === 'dark') document.body.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+</body>
+</html>
