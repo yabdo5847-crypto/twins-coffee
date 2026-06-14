@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db');
+const { Order, normalizeOrder } = require('../db');
 const crypto = require('crypto');
 
 // Utility to make Paymob requests
@@ -55,12 +55,11 @@ router.post('/checkout', async (req, res) => {
     const { orderId, method } = req.body; // method: 'card' or 'fawry'
     
     // Fetch order from DB
-    const dbInstance = db.getDb();
-    const orderRow = await dbInstance.all("SELECT * FROM orders WHERE id = ?", [orderId]);
-    if (!orderRow || orderRow.length === 0) {
+    const o = await Order.findOne({ $or: [{ _id: orderId }, { id: orderId }] }).catch(() => null);
+    if (!o) {
       return res.status(404).json({ error: "Order not found" });
     }
-    const order = db.normalizeOrder(orderRow[0]);
+    const order = normalizeOrder(o);
 
     // Paymob requires amounts in cents
     const amountCents = Math.round(order.total * 100);
@@ -104,7 +103,7 @@ router.post('/checkout', async (req, res) => {
     );
 
     // Update local order with Paymob order ID
-    await dbInstance.run("UPDATE orders SET paymob_order_id = ? WHERE id = ?", [paymobOrderId, order.id]);
+    await Order.findByIdAndUpdate(o._id, { paymobOrderId: String(paymobOrderId) });
 
     if (method === 'fawry') {
       res.json({ iframeUrl: `https://accept.paymob.com/api/acceptance/iframes/${process.env.PAYMOB_IFRAME_ID}?payment_token=${paymentKey}` });
@@ -132,8 +131,10 @@ router.post('/webhook', express.json(), async (req, res) => {
     if (obj && obj.success === true) {
       const orderId = obj.order.merchant_order_id;
       // Mark order as processing (paid)
-      const dbInstance = db.getDb();
-      await dbInstance.run("UPDATE orders SET status = 'processing', paymob_transaction_id = ? WHERE id = ?", [obj.id, orderId]);
+      await Order.findOneAndUpdate(
+        { $or: [{ _id: orderId }, { id: orderId }] },
+        { status: 'processing', paymobTransactionId: String(obj.id) }
+      ).catch(() => null);
     }
 
     res.status(200).send('OK');

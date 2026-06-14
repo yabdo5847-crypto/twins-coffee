@@ -44,13 +44,13 @@ async function apiVerifyToken() {
    PUBLIC DATA (PRODUCTS / BUNDLES)
 ══════════════════════════════════════════════════════════ */
 async function apiGetFeaturedProducts(filters = {}) {
-  const data = await apiFetch('/products?active=true');
+  const data = await apiFetch('/products').catch(()=>[]);
   if (filters.category && filters.category !== 'all') {
     return data.filter(p => p.category === filters.category);
   }
   return data;
 }
-async function apiGetAllProducts() { return apiFetch('/products'); }
+async function apiGetAllProducts() { return apiFetch('/products/all').catch(()=>[]); }
 async function apiGetProductById(id) { return apiFetch(`/products/${id}`); }
 
 async function apiGetBundles() { return []; }
@@ -61,25 +61,11 @@ async function apiGetBundleById(id) { return null; }
 ══════════════════════════════════════════════════════════ */
 async function apiGetAllCategories() { return apiFetch('/categories').catch(()=>[]); }
 async function apiAddCategory(catData) {
-  const res = await fetch(API_URL + '/categories', {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(catData)
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error);
-  return data;
+  return apiFetch('/categories', { method: 'POST', body: JSON.stringify(catData) });
 }
 
 async function apiUpdateCategory(id, updates) {
-  const res = await fetch(API_URL + '/categories/' + id, {
-    method: 'PUT',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(updates)
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error);
-  return data;
+  return apiFetch(`/categories/${id}`, { method: 'PUT', body: JSON.stringify(updates) });
 }
 async function apiDeleteCategory(id) { return apiFetch(`/categories/${id}`, { method: 'DELETE' }); }
 
@@ -87,7 +73,7 @@ async function apiDeleteCategory(id) { return apiFetch(`/categories/${id}`, { me
    SHIPPING OPTIONS
 ══════════════════════════════════════════════════════════ */
 async function apiGetShipping() { return apiFetch('/shipping').catch(()=>[]); }
-async function apiGetAllShipping() { return apiGetShipping(); }
+async function apiGetAllShipping() { return apiFetch('/shipping/all').catch(()=>[]); }
 async function apiAddShippingOption(opt) { return apiFetch('/shipping', { method: 'POST', body: JSON.stringify(opt) }); }
 async function apiUpdateShippingOption(id, updates) { return apiFetch(`/shipping/${id}`, { method: 'PUT', body: JSON.stringify(updates) }); }
 async function apiDeleteShipping(id) {
@@ -144,14 +130,9 @@ const apiCreateShipping = apiAddShippingOption;
 const apiPlaceOrder = apiCreateOrder;
 
 async function apiUpdateStock(pid, sizeId, newStock) {
-  const p = await apiGetProductById(pid);
-  const sz = p.sizes.find(s => s.id === sizeId);
-  if (sz) sz.stock = newStock;
-  return apiUpdateProduct(pid, p);
+  return apiFetch(`/products/${pid}/stock`, { method: 'PATCH', body: JSON.stringify({ sizeId, stock: newStock }) });
 }
 
 async function apiToggleProduct(pid) {
-  const p = await apiGetProductById(pid);
-  p.active = !p.active;
-  return apiUpdateProduct(pid, p);
+  return apiFetch(`/products/${pid}/toggle`, { method: 'PATCH' });
 }

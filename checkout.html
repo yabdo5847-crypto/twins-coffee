@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let cachedShipping = [];
 
   try { cachedShipping = await apiGetShipping(); }
-  catch { cachedShipping = getShipping().filter(s => s.active); }
+  catch { cachedShipping = []; }
 
   function goToStep(n) {
     for (let i = 1; i <= 4; i++) {

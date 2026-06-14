@@ -1,9 +1,6 @@
-// ============================================================
-//  The Twins Coffee® — Orders Routes (SQLite async)
-// ============================================================
 const express  = require('express');
 const router   = express.Router();
-const { getDb, normalizeOrder } = require('../db');
+const { supabase, normalizeOrder } = require('../db');
 const { requireAdmin } = require('../middleware/auth');
 
 // ─── POST /api/orders — place order (public) ─────────────────
@@ -17,43 +14,41 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Missing required order fields' });
     }
 
-    const db      = getDb();
     const orderId = id || ('ORD-' + Date.now().toString(36).toUpperCase());
 
-    // Securely calculate total from DB
+    // Securely calculate total
     let calculatedTotal = 0;
     if (shippingId) {
-      const ship = await db.get('SELECT price FROM shipping_options WHERE id=?', [shippingId]);
-      if (ship) calculatedTotal += ship.price;
+      const { data: ship } = await supabase.from('shipping_options').select('price').eq('id', shippingId).single();
+      if (ship) calculatedTotal += Number(ship.price);
     }
     for (const item of items) {
-      const sizeRow = await db.get(
-        'SELECT price FROM product_sizes WHERE id=? AND product_id=?',
-        [item.sizeId, item.productId]
-      );
-      if (sizeRow) calculatedTotal += (sizeRow.price * (item.quantity || item.qty || 1));
+      const { data: p } = await supabase.from('products').select('sizes').eq('id', item.productId).single();
+      if (p) {
+        let sizeObj = p.sizes.find(s => s.id === item.sizeId || s.label === item.sizeId);
+        if (sizeObj) {
+           const qty = Number(item.qty) || Number(item.quantity) || 1;
+           calculatedTotal += (Number(sizeObj.price) * qty);
+           // Decrement stock
+           const newSizes = p.sizes.map(s => {
+             if (s.id === item.sizeId || s.label === item.sizeId) return { ...s, stock: Math.max(0, s.stock - qty) };
+             return s;
+           });
+           await supabase.from('products').update({ sizes: newSizes }).eq('id', item.productId);
+        }
+      }
     }
     const secureTotal = calculatedTotal > 0 ? calculatedTotal : total;
 
-      `INSERT INTO orders
-        (id, customer_name, customer_phone, customer_address, city,
-         items, shipping_id, shipping_name, shipping_price, subtotal, total, notes, status, payment_method)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'pending',?)`,
-      [orderId, customerName, customerPhone||'', customerAddress||'', city||'',
-       JSON.stringify(items), shippingId||null, shippingName||'', shippingPrice||0,
-       subtotal, secureTotal, notes||'', paymentMethod||'cod']
+    const { data: order, error } = await supabase.from('orders').insert([{
+      custom_id: orderId,
+      customer_name: customerName, customer_phone: customerPhone || '', customer_address: customerAddress || '', city: city || '',
+      items, shipping_id: shippingId || null, shipping_name: shippingName || '', shipping_price: shippingPrice || 0,
+      subtotal, total: secureTotal, notes: notes || '', payment_method: paymentMethod || 'cod', status: 'pending'
+    }]).select().single();
 
-    // Decrement stock
-    for (const item of items) {
-      if (item.sizeId) {
-        await db.run(
-          'UPDATE product_sizes SET stock = MAX(0, stock - ?) WHERE id=?',
-          [item.qty || 1, item.sizeId]
-        );
-      }
-    }
+    if (error) throw error;
 
-    const order = await db.get('SELECT * FROM orders WHERE id=?', [orderId]);
     res.status(201).json({ success: true, orderId, order: normalizeOrder(order) });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -61,18 +56,17 @@ router.post('/', async (req, res) => {
 // ─── GET /api/orders — all orders (admin) ────────────────────
 router.get('/', requireAdmin, async (req, res) => {
   try {
-    const db   = getDb();
-    const rows = await db.all('SELECT * FROM orders ORDER BY created_at DESC');
-    res.json(rows.map(normalizeOrder));
+    const { data: rows, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json((rows || []).map(normalizeOrder));
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // ─── GET /api/orders/:id — single order (admin) ──────────────
 router.get('/:id', requireAdmin, async (req, res) => {
   try {
-    const db = getDb();
-    const o  = await db.get('SELECT * FROM orders WHERE id=?', [req.params.id]);
-    if (!o) return res.status(404).json({ error: 'Order not found' });
+    const { data: o, error } = await supabase.from('orders').select('*').eq('custom_id', req.params.id).single();
+    if (error || !o) return res.status(404).json({ error: 'Order not found' });
     res.json(normalizeOrder(o));
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -85,10 +79,8 @@ router.patch('/:id/status', requireAdmin, async (req, res) => {
     if (!valid.includes(status)) {
       return res.status(400).json({ error: `Invalid status. Must be: ${valid.join(', ')}` });
     }
-    const db = getDb();
-    await db.run("UPDATE orders SET status=?, updated_at=datetime('now') WHERE id=?",
-      [status, req.params.id]);
-    const updated = await db.get('SELECT * FROM orders WHERE id=?', [req.params.id]);
+    const { data: updated, error } = await supabase.from('orders').update({ status }).eq('custom_id', req.params.id).select().single();
+    if (error || !updated) return res.status(404).json({ error: 'Order not found' });
     res.json(normalizeOrder(updated));
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -96,8 +88,8 @@ router.patch('/:id/status', requireAdmin, async (req, res) => {
 // ─── DELETE /api/orders/:id — delete (admin) ─────────────────
 router.delete('/:id', requireAdmin, async (req, res) => {
   try {
-    const db = getDb();
-    await db.run('DELETE FROM orders WHERE id=?', [req.params.id]);
+    const { error } = await supabase.from('orders').delete().eq('custom_id', req.params.id);
+    if (error) throw error;
     res.json({ success: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -105,8 +97,8 @@ router.delete('/:id', requireAdmin, async (req, res) => {
 // ─── DELETE /api/orders — clear all (admin) ──────────────────
 router.delete('/', requireAdmin, async (req, res) => {
   try {
-    const db = getDb();
-    await db.run('DELETE FROM orders');
+    const { error } = await supabase.from('orders').delete().neq('id', 0); // Delete all rows
+    if (error) throw error;
     res.json({ success: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });

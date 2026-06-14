@@ -542,7 +542,7 @@ async function renderOverview() {
       apiGetAllProducts(), apiGetOrders(), apiGetAllShipping()
     ]);
   } catch(e) {
-    products = getProducts(); orders = getOrders(); shipping = getShipping();
+    console.warn('API unavailable:', e.message);
   }
   const revenue    = orders.reduce((s, o) => s + (o.total || 0), 0);
   const totalStock = products.reduce((s,p) => s + p.sizes.reduce((ss,sz) => ss+sz.stock, 0), 0);
@@ -577,7 +577,7 @@ async function renderOverview() {
 async function renderProducts() {
   let products = [];
   try { products = await apiGetAllProducts(); }
-  catch { products = getProducts(); }
+  catch(e) { console.warn('API unavailable:', e.message); }
   const tbody = document.getElementById('products-body');
   tbody.innerHTML = '';
 
@@ -634,7 +634,7 @@ async function renderProducts() {
 /* ══ Stock inline adjust (now uses API) ══ */
 window.adjustStock = async function(pid, sizeIdx, delta) {
   try {
-    const products = await apiGetAllProducts().catch(() => getProducts());
+    const products = await apiGetAllProducts().catch(() => []);
     const p = products.find(p => p.id === pid);
     if (!p || !p.sizes[sizeIdx]) return;
     const sz = p.sizes[sizeIdx];
@@ -649,7 +649,7 @@ window.adjustStock = async function(pid, sizeIdx, delta) {
 
 window.setStockDirect = async function(pid, sizeIdx, val) {
   try {
-    const products = await apiGetAllProducts().catch(() => getProducts());
+    const products = await apiGetAllProducts().catch(() => []);
     const p = products.find(p => p.id === pid);
     if (!p || !p.sizes[sizeIdx]) return;
     const sz = p.sizes[sizeIdx];
@@ -664,12 +664,8 @@ window.setStockDirect = async function(pid, sizeIdx, val) {
 /* ══ Toggle product active ══ */
 window.toggleProduct = async function(pid) {
   try {
-    const res = await apiToggleProduct(pid).catch(async () => {
-      const products = getProducts();
-      const p = products.find(p => p.id === pid);
-      if (p) { p.active = !p.active; saveProducts(products); }
-      return p;
-    });
+    const res = await apiToggleProduct(pid).catch(() => null);
+    await renderProducts();
     await renderProducts();
     toast(`Product is now ${res?.active ? 'visible' : 'hidden'}`, res?.active ? 'success' : 'info');
   } catch(e) { toast('Toggle failed', 'error'); }
@@ -677,15 +673,12 @@ window.toggleProduct = async function(pid) {
 
 /* ══ Delete product ══ */
 window.deleteProduct = async function(pid) {
-  const products = await apiGetAllProducts().catch(() => getProducts());
+  const products = await apiGetAllProducts().catch(() => []);
   const p = products.find(pr => pr.id === pid);
   if (!p) return;
   if (!confirm(`حذف "${p.name}" نهائياً؟\nDelete "${p.name}" permanently?`)) return;
   try {
-    await apiDeleteProduct(pid).catch(() => {
-      const prods = getProducts().filter(pr => pr.id !== pid);
-      saveProducts(prods);
-    });
+    await apiDeleteProduct(pid).catch(() => {});
     await renderProducts();
     toast(`تم حذف المنتج: ${p.name}`, 'info');
   } catch(e) { toast('Delete failed', 'error'); }
@@ -695,7 +688,7 @@ window.deleteProduct = async function(pid) {
 window.openEditProduct = async function(pid) {
   let p = null;
   if (pid) {
-    try { p = await apiGetProductById(pid); } catch { p = getProductById(pid); }
+    try { p = await apiGetProductById(pid); } catch(e) { console.warn(e.message); }
   }
   document.getElementById('modal-title').textContent = p ? `Edit: ${p.name}` : 'Add Product';
   document.getElementById('m-pid').value         = p ? p.id : '';
@@ -1065,7 +1058,7 @@ document.getElementById('cat-image-upload').addEventListener('change', async (e)
 async function renderShipping() {
   let ships = [];
   try { ships = await apiGetAllShipping(); }
-  catch { ships = getShipping(); }
+  catch(e) { console.warn('API unavailable:', e.message); }
   const listEl = document.getElementById('shipping-list');
   listEl.innerHTML = '';
   const SHIP_ICONS = ['🚶', '🚚', '⚡', '🛵', '✈️', '🏍️'];
@@ -1096,7 +1089,7 @@ async function renderShipping() {
 
 window.openEditShipping = async function(sid) {
   let ships = [];
-  try { ships = await apiGetAllShipping(); } catch { ships = getShipping(); }
+  try { ships = await apiGetAllShipping(); } catch(e) { console.warn(e.message); }
   const s = sid ? ships.find(x => x.id === sid) : null;
   document.getElementById('ship-modal-title').textContent = s ? `Edit: ${s.name}` : 'Add Shipping Method';
   document.getElementById('sm-id').value      = s ? s.id : '';
@@ -1111,15 +1104,11 @@ window.openEditShipping = async function(sid) {
 window.toggleShipping = async function(sid) {
   try {
     let ships = [];
-    try { ships = await apiGetAllShipping(); } catch { ships = getShipping(); }
+    try { ships = await apiGetAllShipping(); } catch(e) { console.warn(e.message); }
     const s = ships.find(x => x.id === sid);
     if (!s) return;
     const updated = { ...s, active: !s.active };
-    await apiUpdateShipping(sid, updated).catch(() => {
-      const sh = getShipping();
-      const idx = sh.findIndex(x => x.id === sid);
-      if (idx !== -1) { sh[idx].active = !sh[idx].active; saveShipping(sh); }
-    });
+    await apiUpdateShipping(sid, updated).catch(() => {});
     await renderShipping();
     toast(`${s.name} is now ${!s.active ? 'enabled' : 'disabled'}`, !s.active ? 'success' : 'info');
   } catch(e) { toast('Toggle failed', 'error'); }
@@ -1128,10 +1117,7 @@ window.toggleShipping = async function(sid) {
 window.deleteShipping = async function(sid) {
   if (!confirm('Delete this shipping method?')) return;
   try {
-    await apiDeleteShipping(sid).catch(() => {
-      const ships = getShipping().filter(s => s.id !== sid);
-      saveShipping(ships);
-    });
+    await apiDeleteShipping(sid).catch(() => {});
     await renderShipping();
     toast('Shipping method deleted', 'info');
   } catch(e) { toast('Delete failed', 'error'); }
@@ -1157,17 +1143,7 @@ document.getElementById('save-ship-btn').addEventListener('click', async () => {
     await renderShipping();
     toast(`Shipping "${name}" saved!`, 'success');
   } catch(err) {
-    const ships = getShipping();
-    if (sid) {
-      const idx = ships.findIndex(s => s.id === +sid);
-      if (idx !== -1) ships[idx] = { ...ships[idx], name, nameAr, price, days, active };
-    } else {
-      ships.push({ id: Math.max(...ships.map(s=>s.id), 0) + 1, name, nameAr, price, days, active });
-    }
-    saveShipping(ships);
-    closeModal('shipping-modal');
-    await renderShipping();
-    toast(`Shipping "${name}" saved (local)!`, 'success');
+    toast(`Failed to save shipping: ${err.message}`, 'error');
   }
 });
 
@@ -1212,7 +1188,7 @@ async function renderOrders() {
 
   let orders = [];
   try { orders = await apiGetOrders(); }
-  catch { orders = getOrders(); }
+  catch(e) { console.warn('API unavailable:', e.message); }
 
   tbody.innerHTML = '';
 

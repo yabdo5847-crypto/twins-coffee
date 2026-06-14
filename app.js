@@ -37,51 +37,8 @@ const DEFAULT_SHIPPING = [
   { id:3, name:"Same Day",          nameAr:"توصيل نفس اليوم",  price:200, days:"اليوم نفسه",  active:false }
 ];
 
-/* ─────────────── Products ─────────────── */
-function getProducts() {
-  const s = localStorage.getItem('tc_products');
-  return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
-}
-function saveProducts(p) { localStorage.setItem('tc_products', JSON.stringify(p)); }
-function getProductById(id) { return getProducts().find(p => p.id === +id) || null; }
+// (Removed localStorage data methods: getProducts, getCategories, getShipping, getOrders)
 
-/* ─────────────── Shipping ─────────────── */
-function getShipping() {
-  const s = localStorage.getItem('tc_shipping');
-  return s ? JSON.parse(s) : JSON.parse(JSON.stringify(DEFAULT_SHIPPING));
-}
-function saveShipping(s) { localStorage.setItem('tc_shipping', JSON.stringify(s)); }
-
-/* ─────────────── Orders ─────────────── */
-function getOrders() {
-  const s = localStorage.getItem('tc_orders');
-  return s ? JSON.parse(s) : [];
-}
-function saveOrder(order) {
-  const orders = getOrders();
-  orders.unshift(order);
-  localStorage.setItem('tc_orders', JSON.stringify(orders));
-}
-function saveOrders(o) {
-  localStorage.setItem('tc_orders', JSON.stringify(o));
-}
-
-function getCategories() {
-  const cats = localStorage.getItem('tc_categories');
-  if (cats) return JSON.parse(cats);
-  // Default categories
-  const defaultCats = [
-    { id: 1, name: 'Signature Blends', nameAr: 'خلطات مميزة', active: true },
-    { id: 2, name: 'Single Origin', nameAr: 'أحادية المنشأ', active: true },
-    { id: 3, name: 'Espresso Roast', nameAr: 'اسبريسو', active: true },
-    { id: 4, name: 'Merchandise', nameAr: 'أدوات وهدايا', active: true }
-  ];
-  saveCategories(defaultCats);
-  return defaultCats;
-}
-function saveCategories(c) {
-  localStorage.setItem('tc_categories', JSON.stringify(c));
-}
 
 /* ─────────────── Cart ─────────────── */
 function getCart() {

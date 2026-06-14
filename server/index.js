@@ -1,6 +1,6 @@
 // ============================================================
-//  The Twins Coffee® — Main Server (SQLite Edition)
-//  No external services needed. Everything is local.
+//  The Twins Coffee® — Main Server (Supabase Edition)
+//  Uses Supabase instead of MongoDB/Mongoose.
 // ============================================================
 require('dotenv').config();
 
@@ -8,8 +8,16 @@ const express = require('express');
 const cors    = require('cors');
 const path    = require('path');
 const bcrypt  = require('bcryptjs');
+const xss     = require('xss-clean');
+const rateLimit = require('express-rate-limit');
 
-const { initDb, getDb }         = require('./db');
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 requests per windowMs
+  message: { error: 'Too many login attempts, please try again after 15 minutes' }
+});
+
+const { initDb, supabase }      = require('./db');
 const { generateToken }         = require('./middleware/auth');
 const productsRouter            = require('./routes/products');
 const ordersRouter              = require('./routes/orders');
@@ -25,6 +33,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
+app.use(xss());
 
 // ─── Serve uploaded files as static ──────────────────────────
 const uploadsDir = path.join(__dirname, '..', 'data', 'uploads');
@@ -39,16 +48,15 @@ app.use('/api/upload',     uploadRouter);
 app.use('/api/paymob',     paymobRouter);
 
 // ─── Auth: Login ─────────────────────────────────────────────
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ error: 'email and password required' });
     }
 
-    const db    = getDb();
-    const admin = await db.get('SELECT * FROM admins WHERE email=?', [email.toLowerCase()]);
-    if (!admin) return res.status(401).json({ error: 'Invalid credentials' });
+    const { data: admin, error } = await supabase.from('admins').select('*').eq('email', email.toLowerCase()).single();
+    if (error || !admin) return res.status(401).json({ error: 'Invalid credentials' });
 
     const valid = await bcrypt.compare(password, admin.password_hash);
     if (!valid) return res.status(401).json({ error: 'Invalid credentials' });
@@ -78,9 +86,9 @@ app.get('/api/auth/verify', (req, res) => {
 // ─── Auth: Create first admin (only if no admins exist) ──────
 app.post('/api/auth/setup', async (req, res) => {
   try {
-    const db    = getDb();
-    const { n } = await db.get('SELECT COUNT(*) as n FROM admins');
-    if (n > 0) return res.status(403).json({ error: 'Setup already done' });
+    const { count, error: countError } = await supabase.from('admins').select('*', { count: 'exact', head: true });
+    if (countError) throw countError;
+    if (count > 0) return res.status(403).json({ error: 'Setup already done' });
 
     const { email, password } = req.body;
     if (!email || !password || password.length < 6) {
@@ -88,7 +96,8 @@ app.post('/api/auth/setup', async (req, res) => {
     }
 
     const hash = await bcrypt.hash(password, 10);
-    await db.run('INSERT INTO admins (email, password_hash) VALUES (?,?)', [email.toLowerCase(), hash]);
+    const { error: insertError } = await supabase.from('admins').insert([{ email: email.toLowerCase(), password_hash: hash }]);
+    if (insertError) throw insertError;
     const token = generateToken({ email: email.toLowerCase() });
     res.json({ success: true, message: 'Admin account created!', token });
   } catch(e) { res.status(500).json({ error: e.message }); }
@@ -113,13 +122,12 @@ async function start() {
   try {
     await initDb();
     app.listen(PORT, async () => {
-      const db         = getDb();
-      const { n }      = await db.get('SELECT COUNT(*) as n FROM admins');
+      const { count } = await supabase.from('admins').select('*', { count: 'exact', head: true });
       console.log('');
       console.log('☕  ══════════════════════════════════════════════════════════');
-      console.log('☕  The Twins Coffee® — Backend Server (SQLite Edition)');
+      console.log('☕  The Twins Coffee® — Backend Server (Supabase Edition)');
       console.log(`☕  Running on → http://localhost:${PORT}`);
-      if (n === 0) {
+      if (count === 0) {
         console.log('');
         console.log('⚠️   No admin account found!');
         console.log(`⚠️   Create one by visiting: http://localhost:${PORT}/setup.html`);

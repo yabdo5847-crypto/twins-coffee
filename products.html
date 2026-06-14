@@ -130,12 +130,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   let allProducts = [], categories = [];
   try {
     [allProducts, categories] = await Promise.all([
-      apiGetAllProducts().catch(() => getProducts()),
-      apiGetAllCategories().catch(() => getCategories())
+      apiGetAllProducts().catch(() => []),
+      apiGetAllCategories().catch(() => [])
     ]);
   } catch(e) {
-    allProducts = getProducts();
-    categories = getCategories();
+    console.warn('API unavailable:', e.message);
+    allProducts = [];
+    categories = [];
   }
 
   // Render Category Filters

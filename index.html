@@ -283,7 +283,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
   // Load products
   let allProducts = [];
   try { allProducts = await apiGetAllProducts(); }
-  catch(e) { console.warn('API unavailable, using local fallback:', e.message); allProducts = getProducts(); }
+  catch(e) { console.warn('API unavailable:', e.message); allProducts = []; }
 
   const activeProducts = allProducts.filter(p => p.active);
   const bestSellers = allProducts.filter(p => p.active && (p.isBestseller || p.badge === 'Best Seller'));
@@ -317,12 +317,19 @@ document.getElementById('night-toggle').addEventListener('click', function() {
     let bsAutoTimer = null;
     let isPaused = false;
     
+    bsGrid.addEventListener('mouseenter', () => isPaused = true);
+    bsGrid.addEventListener('mouseleave', () => isPaused = false);
+    bsGrid.addEventListener('touchstart', () => isPaused = true, {passive: true});
+    bsGrid.addEventListener('touchend', () => isPaused = false);
+    
     function scrollMarquee() {
       if (!isPaused) {
-        bsGrid.scrollLeft += 1.5;
         const maxScroll = bsGrid.scrollWidth - bsGrid.clientWidth;
-        if (bsGrid.scrollLeft >= maxScroll - 2) {
-          bsGrid.scrollTo({ left: 0, behavior: 'auto' });
+        if (maxScroll > 0) {
+          bsGrid.scrollLeft += 1; // Slower, smoother scroll
+          if (bsGrid.scrollLeft >= maxScroll - 1) {
+            bsGrid.scrollTo({ left: 0, behavior: 'auto' });
+          }
         }
       }
       bsAutoTimer = requestAnimationFrame(scrollMarquee);
@@ -331,10 +338,14 @@ document.getElementById('night-toggle').addEventListener('click', function() {
 
     if (bsPrev && bsNext) {
       bsPrev.onclick = () => {
+        isPaused = true;
         bsGrid.scrollBy({ left: -280, behavior: 'smooth' });
+        setTimeout(() => isPaused = false, 1000);
       };
       bsNext.onclick = () => {
+        isPaused = true;
         bsGrid.scrollBy({ left: 280, behavior: 'smooth' });
+        setTimeout(() => isPaused = false, 1000);
       };
     }
 
