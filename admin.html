@@ -1174,7 +1174,8 @@ function buildStatusSelect(orderId, currentStatus) {
 
 window.updateOrderStatus = async function(orderId, newStatus) {
   try {
-    await apiFetch('/orders/' + orderId + '/status', { method: 'PATCH', body: JSON.stringify({ status: newStatus }) });
+    const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
+    if (error) throw error;
     toast(`Order ${orderId} → ${newStatus}`, 'success');
     await renderOrders();
   } catch(e) {
