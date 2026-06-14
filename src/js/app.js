@@ -3,47 +3,23 @@
 // ============================================================
 
 /* ─────────────── Default Data ─────────────── */
-const DEFAULT_PRODUCTS = [
-  {
-    id: 1, name: "Cardamom Coffee", nameAr: "قهوة تركية محوجة", category: "coffee",
-    images: ["uploads/Professional_studio_product_photography_of_202606090156 (1).jpeg","uploads/Professional_studio_product_photography_of_202606090156 (2).jpeg"],
-    description: "Premium 100% Arabica Turkish Coffee blended with natural ground cardamom. Rich, aromatic, and crafted for a perfect cup with thick traditional foam.",
-    hasType: false, hasRoast: true,
-    sizes: [{ label:"200g", price:180, stock:50 },{ label:"500g", price:380, stock:30 },{ label:"1kg", price:700, stock:20 }],
-    badge: "Best Seller", featured: true, active: true
-  },
-  {
-    id: 2, name: "Plain Coffee", nameAr: "قهوة تركية ساده", category: "coffee",
-    images: ["uploads/Professional_studio_product_photography_of_202606090156 (3).jpeg","uploads/Professional_studio_product_photography_of_202606090156 (4).jpeg"],
-    description: "Pure 100% Arabica Turkish Coffee with no additives. A clean, smooth, and balanced flavor that highlights the true essence of premium coffee beans.",
-    hasType: false, hasRoast: true,
-    sizes: [{ label:"200g", price:170, stock:60 },{ label:"500g", price:350, stock:40 },{ label:"1kg", price:650, stock:25 }],
-    badge: "Classic", featured: true, active: true
-  },
-  {
-    id: 3, name: "Premium Travel Cup", nameAr: "كوب سفر فاخر", category: "merch",
-    images: ["uploads/Professional_studio_product_photography_of_202606090156 (5).jpeg","uploads/Professional_studio_product_photography_of_202606090156 (6).jpeg"],
-    description: "Premium matte black stainless steel travel cup. Double-wall vacuum insulated to keep your Turkish coffee hot for hours.",
-    hasType: false, hasRoast: false,
-    sizes: [{ label:"Compact", price:450, stock:35 }],
-    colors: [{ hex:"#1a1a1a", name:"T Logo / شعار" },{ hex:"#2c2c2c", name:"Signature / توقيع" }],
-    badge: "Merch", featured: true, active: true
-  }
-];
+const DEFAULT_PRODUCTS = [];
 
-const DEFAULT_SHIPPING = [
-  { id:1, name:"Standard Delivery", nameAr:"توصيل عادي",       price:50,  days:"3-5 أيام",    active:true  },
-  { id:2, name:"Express Delivery",  nameAr:"توصيل سريع",       price:120, days:"1-2 يوم",     active:true  },
-  { id:3, name:"Same Day",          nameAr:"توصيل نفس اليوم",  price:200, days:"اليوم نفسه",  active:false }
-];
+const DEFAULT_SHIPPING = [];
 
 // (Removed localStorage data methods: getProducts, getCategories, getShipping, getOrders)
 
 
 /* ─────────────── Cart ─────────────── */
 function getCart() {
-  const s = localStorage.getItem('tc_cart');
-  return s ? JSON.parse(s) : [];
+  try {
+    const s = localStorage.getItem('tc_cart');
+    return s ? JSON.parse(s) : [];
+  } catch(e) {
+    console.error('Cart data corrupted, resetting:', e);
+    localStorage.removeItem('tc_cart');
+    return [];
+  }
 }
 function _saveCart(cart) {
   localStorage.setItem('tc_cart', JSON.stringify(cart));
@@ -109,20 +85,23 @@ function _renderDrawerItems() {
     const opts = [item.size, item.type, item.roast, item.color].filter(Boolean).join(' · ');
     const div = document.createElement('div');
     div.className = 'drawer-item';
+    const safeName = typeof escapeHtml === 'function' ? escapeHtml(item.name) : item.name;
+    const safeOpts = typeof escapeHtml === 'function' ? escapeHtml(opts) : opts;
+    const safeKey = typeof escapeHtml === 'function' ? escapeHtml(item.key) : item.key;
     div.innerHTML = `
-      <div class="drawer-item-img"><img src="${item.image}" alt="${item.name}" loading="lazy"/></div>
+      <div class="drawer-item-img"><img src="${item.image}" alt="${safeName}" loading="lazy"/></div>
       <div class="drawer-item-info">
-        <div class="drawer-item-name">${item.name}</div>
-        ${opts ? `<div class="drawer-item-opts">${opts}</div>` : ''}
+        <div class="drawer-item-name">${safeName}</div>
+        ${opts ? `<div class="drawer-item-opts">${safeOpts}</div>` : ''}
         <div class="drawer-item-qty">
-          <button class="di-qty-btn" data-key="${item.key}" data-delta="-1" aria-label="Decrease quantity of ${item.name}">−</button>
+          <button class="di-qty-btn" data-key="${safeKey}" data-delta="-1" aria-label="Decrease quantity of ${safeName}">−</button>
           <span class="di-qty-v">${item.qty}</span>
-          <button class="di-qty-btn" data-key="${item.key}" data-delta="1" aria-label="Increase quantity of ${item.name}">+</button>
+          <button class="di-qty-btn" data-key="${safeKey}" data-delta="1" aria-label="Increase quantity of ${safeName}">+</button>
         </div>
       </div>
       <div class="drawer-item-right">
         <div class="drawer-item-price">${(item.price * item.qty).toLocaleString()} جنيه</div>
-        <button class="drawer-item-remove btn-ghost" data-key="${item.key}" aria-label="Remove ${item.name} from cart">Remove</button>
+        <button class="drawer-item-remove btn-ghost" data-key="${safeKey}" aria-label="Remove ${safeName} from cart">Remove</button>
       </div>`;
     body.appendChild(div);
   });
@@ -193,8 +172,50 @@ function starRating(n = 5) {
   ).join('');
 }
 
+/* ─────────────── Night Mode (DRY — called from boot) ─── */
+function initNightMode() {
+  const saved = localStorage.getItem('tc-theme');
+  if (saved === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+  }
+  // Wire up theme toggle button if present on the page
+  const themeBtn = document.getElementById('theme-toggle');
+  if (themeBtn) {
+    themeBtn.addEventListener('click', () => {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('tc-theme', 'light');
+      } else {
+        document.body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('tc-theme', 'dark');
+      }
+    });
+  }
+}
+
+/* ─────────────── Cookie / LocalStorage Consent ─────────── */
+function initCookieConsent() {
+  if (localStorage.getItem('tc-consent-given')) return;
+  const banner = document.createElement('div');
+  banner.id = 'cookie-consent-banner';
+  banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--surf1,#1a1714);border-top:1px solid var(--gold,#c9a84c);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;font-size:.82rem;color:var(--txt1,#f0ead8);box-shadow:0 -4px 20px rgba(0,0,0,.4);';
+  banner.innerHTML = `
+    <p style="margin:0;line-height:1.5">نستخدم التخزين المحلي لعربة التسوق وتفضيلاتك. <a href="privacy-policy.html" style="color:var(--gold,#c9a84c);text-decoration:underline">سياسة الخصوصية</a></p>
+    <button id="accept-consent-btn" style="background:var(--gold,#c9a84c);color:#0e0c0a;border:none;padding:.5rem 1.2rem;border-radius:8px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit">موافق / Accept</button>
+  `;
+  document.body.appendChild(banner);
+  document.getElementById('accept-consent-btn').addEventListener('click', () => {
+    localStorage.setItem('tc-consent-given', '1');
+    banner.remove();
+  });
+}
+
 /* ─────────────── Boot ─────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  // Night mode (must run early)
+  initNightMode();
+
   // Version guard
   const DATA_VERSION = 'v5';
   if (localStorage.getItem('tc_data_version') !== DATA_VERSION) {
@@ -207,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Navbar scroll
   const nb = document.getElementById('navbar');
-  if (nb) window.addEventListener('scroll', () => nb.classList.toggle('scrolled', scrollY > 50));
+  if (nb) window.addEventListener('scroll', () => nb.classList.toggle('scrolled', window.scrollY > 50));
 
   // Hamburger
   const hb = document.getElementById('hamburger');
@@ -235,4 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Lucide icons
   if (window.lucide) lucide.createIcons();
+
+  // Cookie consent banner (after page renders)
+  initCookieConsent();
 });

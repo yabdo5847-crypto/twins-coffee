@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
   <title>Checkout | The Twins Coffee®</title>
   <meta name="description" content="Complete your order — The Twins Coffee® checkout."/>
+  <meta name="robots" content="noindex, nofollow"/>
   <link rel="stylesheet" href="./src/css/style.css"/>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.js"></script>
 </head>
 <body>
 
@@ -98,7 +99,7 @@
             <div class="fg"><label>First Name — الاسم الأول</label><input type="text" id="f-fname" placeholder="Ahmed" required/></div>
             <div class="fg"><label>Last Name — الاسم الأخير</label><input type="text" id="f-lname" placeholder="Ali"/></div>
           </div>
-          <div class="fg"><label>Phone — الهاتف</label><input type="tel" id="f-phone" placeholder="+20 1XX XXX XXXX" required/></div>
+          <div class="fg"><label>Phone — الهاتف</label><input type="tel" id="f-phone" placeholder="01X XXXX XXXX" pattern="^(\+?2?0?1[0125][0-9]{8})$" title="Egyptian phone: 01XXXXXXXXX" required/></div>
           <div class="fg"><label>Email — البريد الإلكتروني</label><input type="email" id="f-email" placeholder="you@email.com"/></div>
           <div class="fg"><label>Address — العنوان</label><input type="text" id="f-addr" placeholder="Street, Building" required/></div>
           <div class="form-row">
@@ -231,7 +232,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   let cachedShipping = [];
 
   try { cachedShipping = await apiGetShipping(); }
-  catch { cachedShipping = []; }
+  catch(e) {
+    console.error('Shipping load failed:', e);
+    cachedShipping = [];
+    toast('⚠️ Could not load shipping methods. Please refresh the page.', 'error');
+  }
 
   function goToStep(n) {
     for (let i = 1; i <= 4; i++) {
@@ -284,16 +289,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       const opts = [item.size,item.type,item.roast,item.color].filter(Boolean).join(' · ');
       const row = document.createElement('div');
       row.className = 'co-item';
+      const sN = escapeHtml(item.name);
+      const sO = escapeHtml(opts);
+      const sK = escapeHtml(item.key);
       row.innerHTML = `
-        <div class="co-item-img"><img src="${item.image}" alt="${item.name}" loading="lazy"/></div>
-        <div class="co-item-info"><div class="co-item-name">${item.name}</div><div class="co-item-opts">${opts}</div></div>
+        <div class="co-item-img"><img src="${item.image}" alt="${sN}" loading="lazy"/></div>
+        <div class="co-item-info"><div class="co-item-name">${sN}</div><div class="co-item-opts">${sO}</div></div>
         <div class="co-item-qty">
-          <button class="co-qty-btn" data-key="${item.key}" data-delta="-1" aria-label="Decrease quantity of ${item.name}">−</button>
+          <button class="co-qty-btn" data-key="${sK}" data-delta="-1" aria-label="Decrease quantity of ${sN}">−</button>
           <span class="co-qty-v">${item.qty}</span>
-          <button class="co-qty-btn" data-key="${item.key}" data-delta="1" aria-label="Increase quantity of ${item.name}">+</button>
+          <button class="co-qty-btn" data-key="${sK}" data-delta="1" aria-label="Increase quantity of ${sN}">+</button>
         </div>
         <div class="co-item-price">${(item.price*item.qty).toLocaleString()} جنيه</div>
-        <button class="co-remove" data-key="${item.key}" aria-label="Remove ${item.name} from cart">✕</button>`;
+        <button class="co-remove" data-key="${sK}" aria-label="Remove ${sN} from cart">✕</button>`;
       list.appendChild(row);
     });
     list.querySelectorAll('.co-qty-btn').forEach(btn => {
@@ -338,8 +346,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       const opts = [item.size,item.type,item.roast,item.color].filter(Boolean).join(' · ');
       const row = document.createElement('div');
       row.className = 'co-item'; row.style.pointerEvents = 'none';
-      row.innerHTML = `<div class="co-item-img"><img src="${item.image}" alt="${item.name}" loading="lazy"/></div>
-        <div class="co-item-info"><div class="co-item-name">${item.name}</div><div class="co-item-opts">${opts}</div></div>
+      const sN = escapeHtml(item.name);
+      const sO = escapeHtml(opts);
+      row.innerHTML = `<div class="co-item-img"><img src="${item.image}" alt="${sN}" loading="lazy"/></div>
+        <div class="co-item-info"><div class="co-item-name">${sN}</div><div class="co-item-opts">${sO}</div></div>
         <div class="co-item-price">${item.qty}x — ${(item.price*item.qty).toLocaleString()} جنيه</div>`;
       reviewEl.appendChild(row);
     });
@@ -350,10 +360,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const addr = document.getElementById('f-addr').value;
     const city = document.getElementById('f-city').value;
     document.getElementById('co-review-info').innerHTML = `<div style="display:grid;grid-template-columns:auto 1fr;gap:.4rem 1.25rem">
-      <span style="color:var(--gold);font-weight:700">Name:</span><span>${fname} ${lname}</span>
-      <span style="color:var(--gold);font-weight:700">Phone:</span><span>${phone}</span>
-      <span style="color:var(--gold);font-weight:700">Address:</span><span>${addr}, ${city}</span>
-      <span style="color:var(--gold);font-weight:700">Shipping:</span><span>${ship ? (ship.nameAr ? ship.nameAr + ' — ' : '') + ship.name + ' (' + (ship.price ? ship.price.toLocaleString() + ' جنيه' : 'Free') + ')' : '—'}</span>
+      <span style="color:var(--gold);font-weight:700">Name:</span><span>${escapeHtml(fname)} ${escapeHtml(lname)}</span>
+      <span style="color:var(--gold);font-weight:700">Phone:</span><span>${escapeHtml(phone)}</span>
+      <span style="color:var(--gold);font-weight:700">Address:</span><span>${escapeHtml(addr)}, ${escapeHtml(city)}</span>
+      <span style="color:var(--gold);font-weight:700">Shipping:</span><span>${ship ? (ship.nameAr ? escapeHtml(ship.nameAr) + ' — ' : '') + escapeHtml(ship.name) + ' (' + (ship.price ? ship.price.toLocaleString() + ' جنيه' : 'Free') + ')' : '—'}</span>
     </div>`;
     updateSummaryAll();
   }
@@ -386,7 +396,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Place order
   function getWhatsAppLink(o) {
-    const phone = "201066996287";
+    const phone = typeof WHATSAPP_PHONE !== 'undefined' ? WHATSAPP_PHONE : "201066996287";
     let text = `مرحباً، أود تأكيد طلبي الجديد من متجر The Twins Coffee ☕\n\n`;
     text += `*رقم الطلب:* ${o.id}\n`;
     text += `*الاسم:* ${o.customerName || (o.customer && o.customer.name)}\n`;
@@ -412,7 +422,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cart = getCart();
     const sub = cartTotal();
     const total = sub + (ship ? ship.price : 0);
-    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+    const paymentEl = document.querySelector('input[name="paymentMethod"]:checked');
+    const paymentMethod = paymentEl ? paymentEl.value : 'cod';
 
     const order = {
       id: genId(), date: formatDate(),
@@ -437,18 +448,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('wa-confirm-btn').href = getWhatsAppLink(apiPayload);
       window.scrollTo({top:0,behavior:'smooth'});
     } catch (err) {
-      console.warn('Supabase insertion failed, falling back to local storage', err);
-      // Fallback to local storage if Supabase fails (e.g. RLS issues)
-      const existingOrders = JSON.parse(localStorage.getItem('tc-orders') || '[]');
-      existingOrders.push(order);
-      localStorage.setItem('tc-orders', JSON.stringify(existingOrders));
-      
-      cartClear();
-      document.getElementById('co-main').classList.add('hidden');
-      document.getElementById('co-success').classList.remove('hidden');
-      document.getElementById('co-order-num').textContent = 'Order # ' + order.id + ' (Local)';
-      document.getElementById('wa-confirm-btn').href = getWhatsAppLink(order);
-      window.scrollTo({top:0,behavior:'smooth'});
+      console.error('Order submission failed:', err);
+      toast('Failed to place order. Please check your connection and try again.', 'error');
     }
   });
 

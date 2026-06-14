@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
   <title>Product | The Twins Coffee®</title>
   <meta name="description" content="Product details — The Twins Coffee® premium Turkish coffee."/>
+  <link rel="dns-prefetch" href="https://bgijvwneyxrgrugxeyor.supabase.co"/>
   <link rel="stylesheet" href="./src/css/style.css"/>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.js"></script>
 </head>
 <body>
 
@@ -201,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const id = params.get('id');
   let product = null;
   if (id) {
-    try { product = await apiGetProductById(id); } catch(e) { console.warn('API unavailable:', e.message); product = getProductById(id); }
+    try { product = await apiGetProductById(id); } catch(e) { console.warn('API unavailable:', e.message); product = null; }
   }
 
   // Helper: ensure image path includes 'uploads/' prefix

@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
   <title>Shop | The Twins Coffee®</title>
   <meta name="description" content="Shop premium Turkish coffee beans and merchandise from The Twins Coffee®. Choose your roast, size, and blend."/>
+  <link rel="canonical" href="https://thetwinscoffee.com/products.html"/>
+  <link rel="dns-prefetch" href="https://bgijvwneyxrgrugxeyor.supabase.co"/>
   <link rel="stylesheet" href="./src/css/style.css"/>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.js"></script>
 </head>
 <body>
 
@@ -145,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   categories.filter(c => c.active).forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'f-btn';
-    btn.dataset.cat = c.id;
+    btn.dataset.cat = c.slug || String(c.id);
     btn.textContent = c.name;
     filterWrap.appendChild(btn);
   });
@@ -168,24 +170,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function renderProducts() {
     const products = allProducts.filter(p => p.active);
-    const filtered = currentCat === 'all' ? products : products.filter(p => String(p.category) === String(currentCat));
+    const filtered = currentCat === 'all' ? products : products.filter(p => {
+      const cat = categories.find(c => String(c.id) === String(p.category));
+      return String(p.category) === String(currentCat) ||
+             (cat && (cat.slug === currentCat || cat.name.toLowerCase() === currentCat.toLowerCase()));
+    });
     grid.innerHTML = '';
     if (filtered.length === 0) { noProducts.classList.remove('hidden'); return; }
     noProducts.classList.add('hidden');
 
     filtered.forEach((p, idx) => {
+      if (!p.sizes || p.sizes.length === 0) return;
       const minPrice = Math.min(...p.sizes.map(s => s.price));
       const maxPrice = Math.max(...p.sizes.map(s => s.price));
       const priceStr = minPrice === maxPrice ? minPrice.toLocaleString() : `${minPrice.toLocaleString()}–${maxPrice.toLocaleString()}`;
       const outOfStock = p.sizes.every(s => s.stock === 0);
+      const safeName = escapeHtml(p.name);
+      const safeDesc = escapeHtml(p.description);
+      const safeBadge = p.badge ? escapeHtml(p.badge) : '';
+      const catName = categories.find(c => String(c.id) === String(p.category))?.name || 'Product';
+      const safeCatName = escapeHtml(catName);
 
       const card = document.createElement('a');
       card.href = `product-detail.html?id=${p.id}`;
       card.className = `p-card anim-up${outOfStock ? ' out' : ''}`;
       card.innerHTML = `
         <div class="p-card-img">
-          <img src="${fixImgPath(p.images && p.images[0])}" alt="${p.name}" loading="lazy"/>
-          <span class="p-card-badge tag">${outOfStock ? 'Out of Stock' : p.badge}</span>
+          <img src="${fixImgPath(p.images && p.images[0])}" alt="${safeName}" loading="lazy"/>
+          <span class="p-card-badge tag">${outOfStock ? 'Out of Stock' : safeBadge}</span>
           <div class="p-card-actions">
             <span class="p-card-quick" title="View Product">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
@@ -193,9 +205,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           </div>
         </div>
         <div class="p-card-body">
-          <div class="p-card-cat">${categories.find(c => String(c.id) === String(p.category))?.name || 'Product'}</div>
-          <div class="p-card-name">${p.name}</div>
-          <div class="p-card-desc">${p.description}</div>
+          <div class="p-card-cat">${safeCatName}</div>
+          <div class="p-card-name">${safeName}</div>
+          <div class="p-card-desc">${safeDesc}</div>
           <div class="p-card-stars">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -204,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           </div>
           <div class="p-card-foot">
-            <div class="p-card-price"><strong>${priceStr}</strong> جنيه<br/><small>${p.sizes.map(s=>s.label).join(' · ')}${p.hasRoast?' · 3 Roasts':''}</small></div>
+            <div class="p-card-price"><strong>${priceStr}</strong> جنيه<br/><small>${p.sizes.map(s=>escapeHtml(s.label)).join(' · ')}${p.hasRoast?' · 3 Roasts':''}</small></div>
             <span class="p-card-add">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
               View

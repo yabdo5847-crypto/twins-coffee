@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Setup Admin — The Twins Coffee®</title>
+<meta name="robots" content="noindex, nofollow"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
 <style>
@@ -189,12 +190,15 @@ document.getElementById('form').addEventListener('submit', async e => {
   btn.disabled     = true;
 
   try {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabaseClient.auth.signUp({ email, password });
     if (error) throw error;
 
-    // Save token
-    if (data.session) {
+    // Save token if session exists (email confirmation may return null session)
+    if (data && data.session) {
         localStorage.setItem('sb-auth-token', data.session.access_token);
+    } else {
+        okEl.textContent = '✅ تحقق من بريدك الإلكتروني لتفعيل الحساب';
+        okEl.style.display = 'block';
     }
 
     // Show done

@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
   <title>Admin | The Twins Coffee®</title>
   <meta name="description" content="Admin dashboard — The Twins Coffee®"/>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./src/css/style.css"/>
+  <style>
+    .admin-mobile-header { display: none; }
+    @media (max-width: 768px) {
+      .admin-mobile-header { display: flex !important; }
+    }
+  </style>
   <!-- Premium Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.js"></script>
 </head>
 <body>
 
@@ -72,8 +80,17 @@
     </div>
   </aside>
 
+  <div class="admin-overlay" id="admin-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1050;display:none;backdrop-filter:blur(2px);"></div>
+
   <!-- Main -->
   <div class="admin-main">
+    <!-- Mobile Header -->
+    <div class="admin-mobile-header" id="admin-mobile-header" style="align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--brd);background:var(--surf);">
+      <div style="font-weight:800;letter-spacing:.08em;">TWINS ADMIN</div>
+      <button class="icon-btn" id="admin-menu-toggle" style="background:transparent;border:1px solid var(--brd);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
 
     <!-- ─── OVERVIEW TAB ─── -->
     <div class="adm-tab active" id="tab-overview">
@@ -598,11 +615,13 @@ async function renderProducts() {
       </div>`).join('');
 
     const tr = document.createElement('tr');
+    const sName = escapeHtml(p.name);
+    const sNameAr = escapeHtml(p.nameAr || '');
     tr.innerHTML = `
       <td><div style="width:46px;height:46px;border-radius:var(--r-sm);overflow:hidden;background:var(--surf2)"><img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover" loading="lazy"/></div></td>
       <td>
-        <div style="font-weight:700;font-size:.88rem">${p.name}</div>
-        <div style="font-size:.72rem;color:var(--txt2)">${p.nameAr}</div>
+        <div style="font-weight:700;font-size:.88rem">${sName}</div>
+        <div style="font-size:.72rem;color:var(--txt2)">${sNameAr}</div>
         <div style="font-size:.65rem;color:var(--txt3);margin-top:.15rem">
           ${p.hasType ? '☕ محوج/ساده' : ''} ${p.hasRoast ? '🔥 فاتح/وسط/غامق' : ''}
         </div>
@@ -663,7 +682,6 @@ window.setStockDirect = async function(pid, sizeIdx, val) {
 window.toggleProduct = async function(pid) {
   try {
     const res = await apiToggleProduct(pid).catch(() => null);
-    await renderProducts();
     await renderProducts();
     toast(`Product is now ${res?.active ? 'visible' : 'hidden'}`, res?.active ? 'success' : 'info');
   } catch(e) { toast('Toggle failed', 'error'); }
@@ -985,7 +1003,7 @@ async function renderCategories() {
 
 window.toggleCategoryActive = async function(id, currentStatus) {
   try {
-    await apiUpdateCategory(id, { active: currentStatus ? 0 : 1 });
+    await apiUpdateCategory(id, { active: !currentStatus });
     renderCategories();
     toast('Category status updated', 'success');
   } catch(e) { toast('Update failed', 'error'); }
@@ -1253,8 +1271,8 @@ window.viewOrder = function(id) {
   if(!o) return;
   const itemsHtml = (o.items||[]).map(i => `
     <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--brd);padding:4px 0">
-      <div>${i.name} ${i.size ? '('+i.size+')' : ''} x${i.qty}</div>
-      <div>${(i.price * i.qty).toLocaleString()} جنيه</div>
+      <div>${escapeHtml(i.name||'')} ${i.size ? '('+escapeHtml(i.size)+')' : ''} x${Number(i.qty)||0}</div>
+      <div>${((+(i.price||0)) * (+(i.qty||0))).toLocaleString()} جنيه</div>
     </div>
   `).join('');
   
@@ -1294,7 +1312,7 @@ window.viewOrder = function(id) {
     </div>
     ${o.notes ? `<div style="margin-top:1rem"><h4 style="color:var(--gold);margin-bottom:0.5rem">Notes</h4><p style="background:var(--surf2);padding:0.8rem;border-radius:8px">${escapeHtml(o.notes)}</p></div>` : ''}
   `;
-  document.getElementById('order-details-modal').classList.remove('hidden');
+  openModal('order-details-modal');
 };
 
 document.getElementById('clear-orders-btn').addEventListener('click', () => {
@@ -1308,24 +1326,50 @@ function initDashboard() {
   renderOverview();
   if (window.lucide) lucide.createIcons();
 // Init all toggles in modals
-  ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-active-toggle','sm-active-toggle','m-bestseller-toggle','cm-active-toggle'].forEach(id => {
+  ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-active-toggle','sm-active-toggle','cm-active-toggle'].forEach(id => {
     initToggles(id);
   });
 }
 
 // Make switchTab accessible globally
 window.switchTab = switchTab;
+
+// Mobile sidebar logic
+const adminSide = document.querySelector('.admin-side');
+const adminOverlay = document.getElementById('admin-overlay');
+const adminMenuToggle = document.getElementById('admin-menu-toggle');
+
+function toggleAdminSidebar() {
+  const isOpen = adminSide.classList.contains('open');
+  if (isOpen) {
+    adminSide.classList.remove('open');
+    if(adminOverlay) adminOverlay.style.display = 'none';
+  } else {
+    adminSide.classList.add('open');
+    if(adminOverlay) adminOverlay.style.display = 'block';
+  }
+}
+
+if(adminMenuToggle) adminMenuToggle.addEventListener('click', toggleAdminSidebar);
+if(adminOverlay) adminOverlay.addEventListener('click', toggleAdminSidebar);
+
+// Close sidebar when clicking a nav button on mobile
+document.querySelectorAll('.adm-nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if(window.innerWidth <= 768) toggleAdminSidebar();
+  });
+});
 </script>
-  <div class="modal hidden" id="order-details-modal">
-    <div class="modal-content" style="max-width: 600px;">
+  <div class="modal-bg" id="order-details-modal">
+    <div class="modal-box" style="max-width: 600px;">
       <div class="modal-header">
         <h2>Order Details</h2>
-        <button class="modal-close" onclick="document.getElementById('order-details-modal').classList.add('hidden')">×</button>
+        <button class="modal-close" onclick="closeModal('order-details-modal')">×</button>
       </div>
       <div class="modal-body" id="order-details-body" style="font-size: 0.9rem; line-height: 1.6;">
       </div>
       <div class="modal-footer">
-        <button class="btn" onclick="document.getElementById('order-details-modal').classList.add('hidden')">Close</button>
+        <button class="btn" onclick="closeModal('order-details-modal')">Close</button>
       </div>
     </div>
   </div>

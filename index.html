@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
   <title>The Twins Coffee® | Premium Luxury Coffee</title>
   <meta name="description" content="The Twins Coffee® — Premium 100% Arabica. Luxury coffee experience. Order now for secure checkout and fast delivery."/>
   <meta property="og:title" content="The Twins Coffee® | Premium Luxury Coffee" />
@@ -10,8 +10,12 @@
   <meta property="og:image" content="https://thetwinscoffee.com/logo.png" />
   <meta property="og:type" content="website" />
   <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://thetwinscoffee.com/"/>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin/>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin/>
+  <link rel="dns-prefetch" href="https://bgijvwneyxrgrugxeyor.supabase.co"/>
   <link rel="stylesheet" href="./src/css/style.css"/>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.js"></script>
 </head>
 <body>
 
@@ -335,7 +339,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
       if (!isPaused) {
         const maxScroll = bsGrid.scrollWidth - bsGrid.clientWidth;
         if (maxScroll > 0) {
-          bsGrid.scrollLeft += 1; // Slower, smoother scroll
+          bsGrid.scrollLeft += 1;
           if (bsGrid.scrollLeft >= maxScroll - 1) {
             bsGrid.scrollTo({ left: 0, behavior: 'auto' });
           }
@@ -344,6 +348,15 @@ document.getElementById('night-toggle').addEventListener('click', function() {
       bsAutoTimer = requestAnimationFrame(scrollMarquee);
     }
     bsAutoTimer = requestAnimationFrame(scrollMarquee);
+
+    // Pause RAF when tab is hidden to save CPU/battery
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(bsAutoTimer);
+      } else {
+        bsAutoTimer = requestAnimationFrame(scrollMarquee);
+      }
+    });
 
     if (bsPrev && bsNext) {
       bsPrev.onclick = () => {

@@ -7,3 +7,9 @@ data/*.db
 data/*.db-journal
 data/*.db-wal
 data/*.db-shm
+*.zip
+*.pdf
+test_*.js
+compress_images.py
+fix_paths.py
+dist/

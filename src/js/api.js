@@ -5,6 +5,21 @@ const SUPABASE_ANON_KEY = 'sb_publishable_seuq4SYX6RCWFRSBcEDchQ_SO7XHdPB';
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+/* ─── Configuration constants ─────────────────────────── */
+const WHATSAPP_PHONE = '201066996287';
+
+/* ─── Simple API cache (5-minute TTL) ─────────────────── */
+const _cache = {};
+const _cacheTTL = 5 * 60 * 1000;
+function _bustCache(key) { if (key) delete _cache[key]; else Object.keys(_cache).forEach(k => delete _cache[k]); }
+async function _cached(key, fn) {
+  const now = Date.now();
+  if (_cache[key] && (now - _cache[key].ts) < _cacheTTL) return _cache[key].data;
+  const data = await fn();
+  _cache[key] = { data, ts: now };
+  return data;
+}
+
 /* ─── Auth token helpers ─────────────────────────────────── */
 function getAuthToken()       { return localStorage.getItem('sb-auth-token'); } 
 function setAuthToken(t)      { localStorage.setItem('sb-auth-token', t); }
@@ -69,9 +84,11 @@ async function apiGetFeaturedProducts(filters = {}) {
 }
 
 async function apiGetAllProducts() {
-  const { data, error } = await supabaseClient.from('products').select('*, product_sizes(*)');
-  if (error) throw error;
-  return data.map(mapProduct);
+  return _cached('products', async () => {
+    const { data, error } = await supabaseClient.from('products').select('*, product_sizes(*)');
+    if (error) throw error;
+    return data.map(mapProduct);
+  });
 }
 
 async function apiGetProductById(id) {
@@ -80,29 +97,33 @@ async function apiGetProductById(id) {
   return mapProduct(data);
 }
 
-async function apiGetBundles() { return []; }
-async function apiGetBundleById(id) { return null; }
+
 
 /* ══════════════════════════════════════════════════════════
    CATEGORIES
 ══════════════════════════════════════════════════════════ */
 async function apiGetAllCategories() {
-  const { data, error } = await supabaseClient.from('categories').select('*');
-  if (error) throw error;
-  return data;
+  return _cached('categories', async () => {
+    const { data, error } = await supabaseClient.from('categories').select('*');
+    if (error) throw error;
+    return data;
+  });
 }
 async function apiAddCategory(catData) {
+  _bustCache('categories');
   const { data, error } = await supabaseClient.from('categories').insert([catData]).select().single();
   if (error) throw error;
   return data;
 }
 
 async function apiUpdateCategory(id, updates) {
+  _bustCache('categories');
   const { data, error } = await supabaseClient.from('categories').update(updates).eq('id', id).select().single();
   if (error) throw error;
   return data;
 }
 async function apiDeleteCategory(id) {
+  _bustCache('categories');
   const { error } = await supabaseClient.from('categories').delete().eq('id', id);
   if (error) throw error;
   return { success: true };
@@ -112,26 +133,33 @@ async function apiDeleteCategory(id) {
    SHIPPING OPTIONS
 ══════════════════════════════════════════════════════════ */
 async function apiGetShipping() {
-  const { data, error } = await supabaseClient.from('shipping_options').select('*').eq('active', true);
-  if (error) throw error;
-  return data;
+  return _cached('shipping_active', async () => {
+    const { data, error } = await supabaseClient.from('shipping_options').select('*').eq('active', true);
+    if (error) throw error;
+    return data;
+  });
 }
 async function apiGetAllShipping() {
-  const { data, error } = await supabaseClient.from('shipping_options').select('*');
-  if (error) throw error;
-  return data;
+  return _cached('shipping_all', async () => {
+    const { data, error } = await supabaseClient.from('shipping_options').select('*');
+    if (error) throw error;
+    return data;
+  });
 }
 async function apiAddShippingOption(opt) {
+  _bustCache('shipping_active'); _bustCache('shipping_all');
   const { data, error } = await supabaseClient.from('shipping_options').insert([opt]).select().single();
   if (error) throw error;
   return data;
 }
 async function apiUpdateShippingOption(id, updates) {
+  _bustCache('shipping_active'); _bustCache('shipping_all');
   const { data, error } = await supabaseClient.from('shipping_options').update(updates).eq('id', id).select().single();
   if (error) throw error;
   return data;
 }
 async function apiDeleteShipping(id) {
+  _bustCache('shipping_active'); _bustCache('shipping_all');
   const { error } = await supabaseClient.from('shipping_options').delete().eq('id', id);
   if (error) throw error;
   return { success: true };
@@ -146,6 +174,7 @@ async function apiCreatePaymobSession(orderId, method) {
    ADMIN ENDPOINTS (PRODUCTS)
 ══════════════════════════════════════════════════════════ */
 async function apiAddProduct(productData) {
+  _bustCache('products');
   const sizes = productData.sizes || [];
   delete productData.sizes;
 
@@ -154,13 +183,15 @@ async function apiAddProduct(productData) {
 
   if (sizes.length > 0) {
     const sizesToInsert = sizes.map((s, index) => ({ ...s, product_id: data.id, sort_order: index }));
-    await supabaseClient.from('product_sizes').insert(sizesToInsert);
+    const { error: sizeErr } = await supabaseClient.from('product_sizes').insert(sizesToInsert);
+    if (sizeErr) throw sizeErr;
   }
 
   return await apiGetProductById(data.id);
 }
 
 async function apiUpdateProduct(id, updates) {
+  _bustCache('products');
   const sizes = updates.sizes;
   delete updates.sizes;
 
@@ -172,10 +203,11 @@ async function apiUpdateProduct(id, updates) {
     await supabaseClient.from('product_sizes').delete().eq('product_id', id);
     if (sizes.length > 0) {
       const sizesToInsert = sizes.map((s, index) => {
-        const { id, ...sizeData } = s; // Remove local id if any
-        return { ...sizeData, product_id: data.id, sort_order: index };
+        const { id: _localId, ...sizeData } = s; // Remove local id if any
+        return { ...sizeData, product_id: id, sort_order: index };
       });
-      await supabaseClient.from('product_sizes').insert(sizesToInsert);
+      const { error: sizeErr } = await supabaseClient.from('product_sizes').insert(sizesToInsert);
+      if (sizeErr) throw sizeErr;
     }
   }
 
@@ -221,7 +253,8 @@ async function apiGetOrders() {
   let dbOrders = [];
   try {
     const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
-    if (!error && data) {
+    if (error) throw error;
+    if (data) {
       dbOrders = data.map(o => ({
         id: o.id,
         customer: {
@@ -236,22 +269,15 @@ async function apiGetOrders() {
         total: o.total,
         status: o.status,
         notes: o.notes,
+        paymentMethod: o.payment_method,
         createdAt: o.created_at
       }));
     }
-  } catch (e) { console.error('Error fetching Supabase orders', e); }
+  } catch (e) { console.error('Error fetching orders:', e); }
 
-  let localOrders = [];
-  try {
-    const localStr = localStorage.getItem('tc-orders');
-    if (localStr) localOrders = JSON.parse(localStr);
-  } catch (e) { console.error(e); }
-
-  const allOrders = [...localOrders, ...dbOrders];
   // Sort by date descending
-  allOrders.sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0));
-  
-  return allOrders;
+  dbOrders.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  return dbOrders;
 }
 async function apiGetStats() {
   const orders = await apiGetOrders();
@@ -264,8 +290,9 @@ async function apiGetStats() {
    UPLOAD
 ══════════════════════════════════════════════════════════ */
 async function uploadProductImage(file) {
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Math.random()}.${fileExt}`;
+  const fileExt = file.name.split('.').pop().toLowerCase();
+  const uniqueId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2);
+  const fileName = `${Date.now()}-${uniqueId}.${fileExt}`;
   const filePath = `${fileName}`;
 
   const { error: uploadError } = await supabaseClient.storage.from('product-images').upload(filePath, file);
