@@ -282,12 +282,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="co-item-img"><img src="${item.image}" alt="${item.name}" loading="lazy"/></div>
         <div class="co-item-info"><div class="co-item-name">${item.name}</div><div class="co-item-opts">${opts}</div></div>
         <div class="co-item-qty">
-          <button class="co-qty-btn" data-key="${item.key}" data-delta="-1">−</button>
+          <button class="co-qty-btn" data-key="${item.key}" data-delta="-1" aria-label="Decrease quantity of ${item.name}">−</button>
           <span class="co-qty-v">${item.qty}</span>
-          <button class="co-qty-btn" data-key="${item.key}" data-delta="1">+</button>
+          <button class="co-qty-btn" data-key="${item.key}" data-delta="1" aria-label="Increase quantity of ${item.name}">+</button>
         </div>
         <div class="co-item-price">${(item.price*item.qty).toLocaleString()} جنيه</div>
-        <button class="co-remove" data-key="${item.key}">✕</button>`;
+        <button class="co-remove" data-key="${item.key}" aria-label="Remove ${item.name} from cart">✕</button>`;
       list.appendChild(row);
     });
     list.querySelectorAll('.co-qty-btn').forEach(btn => {

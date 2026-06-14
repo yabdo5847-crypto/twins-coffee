@@ -243,6 +243,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Dot
     const dot = document.createElement('button');
     dot.className = 'pd-sl-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `View product image ${i+1}`);
     dot.addEventListener('click', () => goToSlide(i));
     dotsWrap.appendChild(dot);
 

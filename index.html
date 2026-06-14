@@ -255,6 +255,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
 
       const dot = document.createElement('button');
       dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Go to slide ${i+1}`);
       dot.onclick = () => goToSlide(i);
       heroDots.appendChild(dot);
     });
@@ -311,7 +312,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
             <h3 class="p-card-title"><a href="product-detail.html?id=${p.id}">${p.name}</a></h3>
             <div class="p-card-price">${price} EGP</div>
             <div class="p-card-rating">★★★★★ (12)</div>
-            <button class="btn btn-outline btn-full" onclick="window.location.href='product-detail.html?id=${p.id}'">Add to Cart</button>
+            <button class="btn btn-outline btn-full" aria-label="Add ${p.name} to Cart" onclick="window.location.href='product-detail.html?id=${p.id}'">Add to Cart</button>
           </div>
         </div>
       `;

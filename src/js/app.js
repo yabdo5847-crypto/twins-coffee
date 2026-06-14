@@ -115,14 +115,14 @@ function _renderDrawerItems() {
         <div class="drawer-item-name">${item.name}</div>
         ${opts ? `<div class="drawer-item-opts">${opts}</div>` : ''}
         <div class="drawer-item-qty">
-          <button class="di-qty-btn" data-key="${item.key}" data-delta="-1">−</button>
+          <button class="di-qty-btn" data-key="${item.key}" data-delta="-1" aria-label="Decrease quantity of ${item.name}">−</button>
           <span class="di-qty-v">${item.qty}</span>
-          <button class="di-qty-btn" data-key="${item.key}" data-delta="1">+</button>
+          <button class="di-qty-btn" data-key="${item.key}" data-delta="1" aria-label="Increase quantity of ${item.name}">+</button>
         </div>
       </div>
       <div class="drawer-item-right">
         <div class="drawer-item-price">${(item.price * item.qty).toLocaleString()} جنيه</div>
-        <span class="drawer-item-remove" data-key="${item.key}">Remove</span>
+        <button class="drawer-item-remove btn-ghost" data-key="${item.key}" aria-label="Remove ${item.name} from cart">Remove</button>
       </div>`;
     body.appendChild(div);
   });
