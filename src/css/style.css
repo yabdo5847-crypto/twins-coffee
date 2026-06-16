@@ -2283,6 +2283,43 @@ body[data-theme="dark"] .pd-sl-arrow { background: rgba(30,30,30,0.85); color: #
 .setup-box h1 { font-size:1.75rem; margin-bottom:.5rem; }
 .setup-box p { color:var(--txt2); margin-bottom:2rem; font-size:.9rem; line-height:1.65; }
 
+/* ── Admin Mobile Responsiveness ────────────────────────────── */
+.adm-mobile-menu-btn {
+  display:none;
+  background:none; border:none; color:var(--txt1);
+  font-size:1.5rem; cursor:pointer;
+  padding:0; margin-right:1rem;
+}
+.admin-overlay {
+  display:none;
+}
+@media (max-width: 768px) {
+  .admin-side {
+    position:fixed; left:-100%; top:0; height:100vh;
+    z-index:2000; transition:left 0.3s ease;
+    box-shadow:var(--shadow-xl);
+  }
+  .admin-side.open { left:0; }
+  .admin-overlay {
+    display:block; position:fixed; inset:0;
+    background:rgba(0,0,0,0.5); z-index:1999;
+    opacity:0; pointer-events:none; transition:opacity 0.3s;
+    backdrop-filter:blur(2px);
+  }
+  .admin-overlay.open { opacity:1; pointer-events:all; }
+  
+  .adm-mobile-menu-btn { display:inline-flex; align-items:center; }
+  
+  .adm-header { padding:1.25rem 1.5rem; }
+  .adm-stats { grid-template-columns:1fr; padding:1.25rem 1.5rem; }
+  .adm-table-wrap { margin:1.25rem 1.5rem; overflow-x:auto; }
+  .ship-editor-card { flex-direction:column; align-items:flex-start; gap:1rem; }
+  .ship-ed-actions { width:100%; justify-content:space-between; margin-top:.5rem; }
+  
+  /* Make tables scrollable smoothly */
+  .adm-table { min-width: 600px; }
+}
+
 /* ── Toasts ─────────────────────────────────────────────────── */
 #tc-toasts {
   position:fixed;

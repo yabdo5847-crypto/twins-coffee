@@ -34,7 +34,8 @@
 <div class="admin-wrap hidden" id="admin-dash">
 
   <!-- Sidebar -->
-  <aside class="admin-side">
+  <div class="admin-overlay" id="adm-overlay" onclick="toggleAdminMenu()"></div>
+  <aside class="admin-side" id="adm-sidebar">
     <div class="admin-brand">
       <img src="./logo.png" alt="The Twins Coffee Logo" class="nav-logo-img" style="width:32px;height:32px;object-fit:contain"/>
       <div>
@@ -79,7 +80,10 @@
     <!-- ─── OVERVIEW TAB ─── -->
     <div class="adm-tab active" id="tab-overview">
       <div class="adm-header">
-        <h1>📊 Overview</h1>
+        <div style="display:flex;align-items:center;">
+          <button class="adm-mobile-menu-btn" onclick="toggleAdminMenu()"><i data-lucide="menu"></i></button>
+          <h1>📊 Overview</h1>
+        </div>
         <span style="font-size:.8rem;color:var(--txt2)" id="ov-date"></span>
       </div>
 
@@ -111,7 +115,10 @@
     <!-- ─── PRODUCTS TAB ─── -->
     <div class="adm-tab" id="tab-products">
       <div class="adm-header">
-        <h1>📦 Products</h1>
+        <div style="display:flex;align-items:center;">
+          <button class="adm-mobile-menu-btn" onclick="toggleAdminMenu()"><i data-lucide="menu"></i></button>
+          <h1>📦 Products</h1>
+        </div>
         <button class="btn btn-gold btn-sm" id="add-product-btn">+ Add Product</button>
       </div>
 
@@ -136,7 +143,10 @@
     <!-- ─── CATEGORIES TAB ─── -->
     <div class="adm-tab" id="tab-categories">
       <div class="adm-header">
-        <h1>📚 Categories</h1>
+        <div style="display:flex;align-items:center;">
+          <button class="adm-mobile-menu-btn" onclick="toggleAdminMenu()"><i data-lucide="menu"></i></button>
+          <h1>📚 Categories</h1>
+        </div>
         <button class="btn btn-gold btn-sm" id="add-cat-btn">+ Add Category</button>
       </div>
 
@@ -160,7 +170,10 @@
     <!-- ─── SHIPPING TAB ─── -->
     <div class="adm-tab" id="tab-shipping">
       <div class="adm-header">
-        <h1>🗺️ Governorates & Zones</h1>
+        <div style="display:flex;align-items:center;">
+          <button class="adm-mobile-menu-btn" onclick="toggleAdminMenu()"><i data-lucide="menu"></i></button>
+          <h1>🗺️ Governorates & Zones</h1>
+        </div>
         <button class="btn btn-gold btn-sm" id="add-ship-btn">+ Add Governorate</button>
       </div>
 
@@ -170,7 +183,10 @@
     <!-- ─── ORDERS TAB ─── -->
     <div class="adm-tab" id="tab-orders">
       <div class="adm-header">
-        <h1>🧾 Orders</h1>
+        <div style="display:flex;align-items:center;">
+          <button class="adm-mobile-menu-btn" onclick="toggleAdminMenu()"><i data-lucide="menu"></i></button>
+          <h1>🧾 Orders</h1>
+        </div>
         <button class="btn btn-danger btn-sm" id="clear-orders-btn">Clear All Orders</button>
       </div>
 
@@ -500,11 +516,21 @@ document.getElementById('adm-theme-btn').addEventListener('click', () => {
 })();
 
 /* ── Tab switching ── */
+window.toggleAdminMenu = function() {
+  document.getElementById('adm-sidebar').classList.toggle('open');
+  document.getElementById('adm-overlay').classList.toggle('open');
+};
+
 function switchTab(tab) {
   document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.adm-nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('nav-' + tab).classList.add('active');
+  
+  // Close sidebar on mobile
+  document.getElementById('adm-sidebar').classList.remove('open');
+  document.getElementById('adm-overlay').classList.remove('open');
+  
   if (tab === 'products') renderProducts();
   if (tab === 'categories') renderCategories();
   if (tab === 'shipping') renderShipping();
