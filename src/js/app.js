@@ -235,9 +235,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const nl = document.getElementById('nav-links');
   if (hb && nl) {
     hb.addEventListener('click', () => { hb.classList.toggle('open'); nl.classList.toggle('open'); });
-    nl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-      hb.classList.remove('open'); nl.classList.remove('open');
-    }));
+    nl.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const parentLi = a.closest('.has-dropdown');
+        // Only intercept the top-level toggle link, not the sub-links in the mega menu
+        if (parentLi && window.innerWidth <= 768 && a.classList.contains('dropdown-toggle')) {
+          e.preventDefault(); 
+          parentLi.classList.toggle('open');
+        } else {
+          hb.classList.remove('open'); nl.classList.remove('open');
+          document.querySelectorAll('.has-dropdown').forEach(d => d.classList.remove('open'));
+        }
+      });
+    });
   }
 
   // Cart drawer triggers

@@ -30,6 +30,31 @@
   </div>
 </div>
 
+<!-- ══ ANNOUNCEMENT BAR ══ -->
+<div class="announcement-bar">
+  <div class="announcement-ticker">
+    <span class="announcement-item">NEW PRODUCTS ◳</span>
+    <span class="announcement-item">PREMIUM HAND-ROASTED COFFEE ◳</span>
+    <span class="announcement-item">3 ITEMS = 10% + FREE SHIPPING ◳</span>
+    <span class="announcement-item">RICH & SWEET FLAVOR NOTES ◳</span>
+    <span class="announcement-item">2 ITEMS = FREE SHIPPING ◳</span>
+    <span class="announcement-item">100% ARABICA BEANS ◳</span>
+    <span class="announcement-item">GUARANTEED RETURNS & EXCHANGES ◳</span>
+    <span class="announcement-item">OUR STORES ◳</span>
+    <span class="announcement-item" style="color:var(--gold)">مصر ◳</span>
+    <!-- Repeat for seamless loop -->
+    <span class="announcement-item">NEW PRODUCTS ◳</span>
+    <span class="announcement-item">PREMIUM HAND-ROASTED COFFEE ◳</span>
+    <span class="announcement-item">3 ITEMS = 10% + FREE SHIPPING ◳</span>
+    <span class="announcement-item">RICH & SWEET FLAVOR NOTES ◳</span>
+    <span class="announcement-item">2 ITEMS = FREE SHIPPING ◳</span>
+    <span class="announcement-item">100% ARABICA BEANS ◳</span>
+    <span class="announcement-item">GUARANTEED RETURNS & EXCHANGES ◳</span>
+    <span class="announcement-item">OUR STORES ◳</span>
+    <span class="announcement-item" style="color:var(--gold)">مصر ◳</span>
+  </div>
+</div>
+
 <!-- ══ NAVBAR ══ -->
 <nav class="navbar scrolled" id="navbar">
   <div class="nav-inner">
@@ -40,14 +65,27 @@
     <ul class="nav-links" id="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="products.html" class="active">Shop</a></li>
-      <li><a href="index.html#categories">Categories</a></li>
+      <li class="has-dropdown">
+        <a href="index.html#categories" class="dropdown-toggle">Categories <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:2px;vertical-align:middle"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="mega-menu">
+          <div class="mega-menu-inner">
+            <div class="mega-col">
+              <h4>COFFEE</h4>
+              <a href="products.html?category=turkish-coffee">TURKISH COFFEE (قهوة تركي)</a>
+              <a href="products.html?category=espresso">ESPRESSO (قهوة اسبريسو)</a>
+            </div>
+            <div class="mega-col">
+              <h4>MERCH</h4>
+              <a href="products.html?category=cups">CUPS (أكواب)</a>
+            </div>
+          </div>
+        </div>
+      </li>
       <li><a href="index.html#bestsellers">Best Sellers</a></li>
       <li><a href="products.html">About</a></li>
     </ul>
     <div class="nav-actions">
-      <a href="products.html" class="icon-btn" title="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-      </a>
+      <!-- Search removed -->
       <button class="icon-btn" data-cart-open title="Cart" style="position:relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
         <span class="cart-badge">0</span>
@@ -65,7 +103,6 @@
 <div class="page-header">
   <span class="eyebrow" data-reveal>Our Collection</span>
   <h1 class="h1" data-reveal data-delay="1">Premium Coffee &amp; Merch</h1>
-  <p data-reveal data-delay="2">100% Arabica Turkish coffee with your choice of roast, type, and size — plus handcrafted merchandise.</p>
 </div>
 
 <!-- ══ FILTERS ══ -->
@@ -90,8 +127,8 @@
       <div class="nav-logo"><img src="./logo.png" alt="The Twins Coffee Logo" class="nav-logo-img"/><span class="logo-text">THE TWINS COFFEE<sup>®</sup></span></div>
       <p>Premium 100% Arabica Turkish Coffee.<br/>Crafted for the perfect cup, every time.</p>
       <div class="footer-social">
-        <a href="https://www.facebook.com/TheTwinsCoffee" class="social-btn" aria-label="Facebook" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="15" height="15"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
-        <a href="https://www.instagram.com/thetwinseg" class="social-btn" aria-label="Instagram" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="15" height="15"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" stroke-width="2"/><path stroke-width="2" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" stroke-width="2"/></svg></a>
+        <a href="https://www.facebook.com/TheTwinsCoffee" class="social-btn fb-btn" aria-label="Facebook" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="15" height="15"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+        <a href="https://www.instagram.com/thetwinseg" class="social-btn ig-btn" aria-label="Instagram" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="15" height="15"><rect width="20" height="20" x="2" y="2" rx="5" ry="5" stroke-width="2"/><path stroke-width="2" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" stroke-width="2"/></svg></a>
       </div>
     </div>
     <div class="f-col"><h4>Quick Links</h4><a href="index.html">Home</a><a href="products.html">Shop</a><a href="index.html#story">About</a></div>
@@ -153,7 +190,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Handle URL param cat filter
-  const urlCat = new URLSearchParams(location.search).get('cat');
+  const urlParams = new URLSearchParams(location.search);
+  const urlCat = urlParams.get('category') || urlParams.get('cat');
   if (urlCat) {
     currentCat = urlCat;
     document.querySelectorAll('.f-btn').forEach(b => {

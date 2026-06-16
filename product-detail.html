@@ -23,6 +23,31 @@
   </div>
 </div>
 
+<!-- ══ ANNOUNCEMENT BAR ══ -->
+<div class="announcement-bar">
+  <div class="announcement-ticker">
+    <span class="announcement-item">NEW PRODUCTS ◳</span>
+    <span class="announcement-item">PREMIUM HAND-ROASTED COFFEE ◳</span>
+    <span class="announcement-item">3 ITEMS = 10% + FREE SHIPPING ◳</span>
+    <span class="announcement-item">RICH & SWEET FLAVOR NOTES ◳</span>
+    <span class="announcement-item">2 ITEMS = FREE SHIPPING ◳</span>
+    <span class="announcement-item">100% ARABICA BEANS ◳</span>
+    <span class="announcement-item">GUARANTEED RETURNS & EXCHANGES ◳</span>
+    <span class="announcement-item">OUR STORES ◳</span>
+    <span class="announcement-item" style="color:var(--gold)">مصر ◳</span>
+    <!-- Repeat for seamless loop -->
+    <span class="announcement-item">NEW PRODUCTS ◳</span>
+    <span class="announcement-item">PREMIUM HAND-ROASTED COFFEE ◳</span>
+    <span class="announcement-item">3 ITEMS = 10% + FREE SHIPPING ◳</span>
+    <span class="announcement-item">RICH & SWEET FLAVOR NOTES ◳</span>
+    <span class="announcement-item">2 ITEMS = FREE SHIPPING ◳</span>
+    <span class="announcement-item">100% ARABICA BEANS ◳</span>
+    <span class="announcement-item">GUARANTEED RETURNS & EXCHANGES ◳</span>
+    <span class="announcement-item">OUR STORES ◳</span>
+    <span class="announcement-item" style="color:var(--gold)">مصر ◳</span>
+  </div>
+</div>
+
 <!-- ══ NAVBAR ══ -->
 <nav class="navbar scrolled" id="navbar">
   <div class="nav-inner">
@@ -32,15 +57,28 @@
     </a>
     <ul class="nav-links" id="nav-links">
       <li><a href="index.html">Home</a></li>
-      <li><a href="products.html" class="active">Shop</a></li>
-      <li><a href="index.html#categories">Categories</a></li>
+      <li><a href="products.html">Shop</a></li>
+      <li class="has-dropdown">
+        <a href="index.html#categories" class="dropdown-toggle">Categories <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:2px;vertical-align:middle"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="mega-menu">
+          <div class="mega-menu-inner">
+            <div class="mega-col">
+              <h4>COFFEE</h4>
+              <a href="products.html?category=turkish-coffee">TURKISH COFFEE (قهوة تركي)</a>
+              <a href="products.html?category=espresso">ESPRESSO (قهوة اسبريسو)</a>
+            </div>
+            <div class="mega-col">
+              <h4>MERCH</h4>
+              <a href="products.html?category=cups">CUPS (أكواب)</a>
+            </div>
+          </div>
+        </div>
+      </li>
       <li><a href="index.html#bestsellers">Best Sellers</a></li>
       <li><a href="products.html">About</a></li>
     </ul>
     <div class="nav-actions">
-      <a href="products.html" class="icon-btn" title="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-      </a>
+      <!-- Search removed -->
       <button class="icon-btn" data-cart-open title="Cart" style="position:relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
         <span class="cart-badge">0</span>
@@ -114,7 +152,6 @@
         <div class="opt-group" id="roast-group" style="display:none">
           <span class="opt-lbl">الحمصة / Roast</span>
           <div class="roast-cards" id="roast-cards">
-            <button class="roast-card" data-roast="light"><span class="roast-card-ico">🌤</span><span class="roast-card-ar">فاتح</span><span class="roast-card-en">Light</span></button>
             <button class="roast-card" data-roast="medium"><span class="roast-card-ico">⚖️</span><span class="roast-card-ar">وسط</span><span class="roast-card-en">Medium</span></button>
             <button class="roast-card" data-roast="dark"><span class="roast-card-ico">🌑</span><span class="roast-card-ar">غامق</span><span class="roast-card-en">Dark</span></button>
           </div>
@@ -172,6 +209,18 @@
     </div>
   </div>
 </main>
+
+<!-- ══ YOU MAY ALSO LIKE ══ -->
+<section class="related-products-section" id="related-section" style="padding:3rem 0;background:var(--bg2);display:none">
+  <div class="container">
+    <div class="sec-head">
+      <h2>You May Also Like</h2>
+    </div>
+    <div class="related-slider" id="related-slider">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</section>
 
 <!-- Not found -->
 <div id="not-found" class="hidden" style="text-align:center;padding:calc(var(--nav-h)+4rem) 2rem 6rem;color:var(--txt2)">
@@ -317,13 +366,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('tab-desc-text').textContent = product.description;
   document.getElementById('pd-review-count').textContent = '';
 
-  // Detect if coffee product (always show type selector for coffee)
-  const isCoffee = String(product.category).toLowerCase() === 'coffee' || product.hasType;
+  // Detect if coffee product requires choice
+  const isCoffeeChoice = product.coffeeType === 'choice' || product.hasType;
+  const isCoffeeFixed = product.coffeeType === 'plain' || product.coffeeType === 'cardamom';
+
+  // Determine roast behavior
+  const roastLvl = product.roastLevel || (product.hasRoast ? 'choice' : 'none');
+  const isRoastChoice = (roastLvl === 'choice');
 
   // State
   let selSizeIdx = 0;
-  let selType = isCoffee ? null : '';
-  let selRoast = product.hasRoast ? null : '';
+  let selType = isCoffeeChoice ? null : (isCoffeeFixed ? product.coffeeType : '');
+  let selRoast = isRoastChoice ? null : (roastLvl === 'none' ? '' : roastLvl);
   let selColor = null;
   let qty = 1;
 
@@ -350,8 +404,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function validate() {
-    const needsType = isCoffee && selType === null;
-    const needsRoast = product.hasRoast && selRoast === null;
+    const needsType = isCoffeeChoice && selType === null;
+    const needsRoast = isRoastChoice && selRoast === null;
     const ok = !needsType && !needsRoast && currentSize().stock > 0;
     const addBtn = document.getElementById('add-btn');
     const buyBtn = document.getElementById('buy-btn');
@@ -360,15 +414,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     buyBtn.disabled = !ok;
     let hints = [];
     if (needsType) hints.push('النوع (محوج/ساده)');
-    if (needsRoast) hints.push('الحمصة (فاتح/وسط/غامق)');
+    if (needsRoast) hints.push('الحمصة (وسط/غامق)');
     if (currentSize().stock === 0) hints.push('size out of stock');
     hint.textContent = hints.length ? `⚠️ Select: ${hints.join(' & ')}` : '✅ Ready to add to cart!';
     hint.style.color = hints.length ? 'var(--txt3)' : 'var(--green)';
     // Variant image update via slider
-    if (isCoffee && selType && product.variantImages) {
+    if ((isCoffeeChoice || isCoffeeFixed) && selType && product.variantImages) {
       if (selType === 'plain' && product.variantImages.plain) goToSlideByUrl(fixImgPath(product.variantImages.plain));
       else if (selType === 'cardamom' && product.variantImages.spiced) goToSlideByUrl(fixImgPath(product.variantImages.spiced));
-    } else if (product.hasRoast && selRoast && product.variantImages && product.variantImages[selRoast]) {
+    } else if (selRoast && product.variantImages && product.variantImages[selRoast]) {
       goToSlideByUrl(fixImgPath(product.variantImages[selRoast]));
     }
     updateSummary();
@@ -390,7 +444,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Type - always show for coffee
-  if (isCoffee) {
+  if (isCoffeeChoice) {
     document.getElementById('type-group').style.display = '';
     document.querySelectorAll('#type-pills .type-toggle-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -402,7 +456,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Roast
-  if (product.hasRoast) {
+  if (isRoastChoice) {
     document.getElementById('roast-group').style.display = '';
     document.querySelectorAll('#roast-cards .roast-card').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -487,6 +541,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   updatePrice();
   validate();
   if (window.lucide) lucide.createIcons();
+
+  // ── Related Products Slider ──
+  try {
+    const allProducts = await apiGetAllProducts();
+    const related = allProducts.filter(p => p.active && p.id !== product.id).slice(0, 10);
+    const relSection = document.getElementById('related-section');
+    const relSlider = document.getElementById('related-slider');
+    if (related.length > 0 && relSection && relSlider) {
+      relSection.style.display = 'block';
+      relSlider.innerHTML = related.map(p => {
+        const img = p.images && p.images.length > 0 ? fixImgPath(p.images[0]) : '';
+        const safeName = escapeHtml(p.name);
+        const price = p.sizes && p.sizes.length > 0 ? Math.min(...p.sizes.map(s => s.price)) : 0;
+        return `
+          <a href="product-detail.html?id=${p.id}" class="related-card">
+            <div class="related-card-img"><img src="${img}" alt="${safeName}" loading="lazy"/></div>
+            <div class="related-card-name">${safeName}</div>
+            <div class="related-card-price">${price} EGP</div>
+          </a>
+        `;
+      }).join('');
+    }
+  } catch(e) { console.warn('Related products error:', e); }
 });
 </script>
 </body>

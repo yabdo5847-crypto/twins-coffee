@@ -40,6 +40,31 @@
   </div>
 </div>
 
+<!-- ══ ANNOUNCEMENT BAR ══ -->
+<div class="announcement-bar">
+  <div class="announcement-ticker">
+    <span class="announcement-item">NEW PRODUCTS ◳</span>
+    <span class="announcement-item">PREMIUM HAND-ROASTED COFFEE ◳</span>
+    <span class="announcement-item">3 ITEMS = 10% + FREE SHIPPING ◳</span>
+    <span class="announcement-item">RICH & SWEET FLAVOR NOTES ◳</span>
+    <span class="announcement-item">2 ITEMS = FREE SHIPPING ◳</span>
+    <span class="announcement-item">100% ARABICA BEANS ◳</span>
+    <span class="announcement-item">GUARANTEED RETURNS & EXCHANGES ◳</span>
+    <span class="announcement-item">OUR STORES ◳</span>
+    <span class="announcement-item" style="color:var(--gold)">مصر ◳</span>
+    <!-- Repeat for seamless loop -->
+    <span class="announcement-item">NEW PRODUCTS ◳</span>
+    <span class="announcement-item">PREMIUM HAND-ROASTED COFFEE ◳</span>
+    <span class="announcement-item">3 ITEMS = 10% + FREE SHIPPING ◳</span>
+    <span class="announcement-item">RICH & SWEET FLAVOR NOTES ◳</span>
+    <span class="announcement-item">2 ITEMS = FREE SHIPPING ◳</span>
+    <span class="announcement-item">100% ARABICA BEANS ◳</span>
+    <span class="announcement-item">GUARANTEED RETURNS & EXCHANGES ◳</span>
+    <span class="announcement-item">OUR STORES ◳</span>
+    <span class="announcement-item" style="color:var(--gold)">مصر ◳</span>
+  </div>
+</div>
+
 <!-- ══ NAVBAR ══ -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
@@ -50,15 +75,27 @@
     <ul class="nav-links" id="nav-links">
       <li><a href="index.html" class="active">Home</a></li>
       <li><a href="products.html">Shop</a></li>
-      <li><a href="#categories">Categories</a></li>
+      <li class="has-dropdown">
+        <a href="#categories" class="dropdown-toggle">Categories <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:2px;vertical-align:middle"><path d="M6 9l6 6 6-6"/></svg></a>
+        <div class="mega-menu">
+          <div class="mega-menu-inner">
+            <div class="mega-col">
+              <h4>COFFEE</h4>
+              <a href="products.html?category=turkish-coffee">TURKISH COFFEE (قهوة تركي)</a>
+              <a href="products.html?category=espresso">ESPRESSO (قهوة اسبريسو)</a>
+            </div>
+            <div class="mega-col">
+              <h4>MERCH</h4>
+              <a href="products.html?category=cups">CUPS (أكواب)</a>
+            </div>
+          </div>
+        </div>
+      </li>
       <li><a href="#bestsellers">Best Sellers</a></li>
-      <li><a href="products.html">About</a></li>
+      <li><a href="#faq">About</a></li>
     </ul>
     <div class="nav-actions">
-      <!-- Search could open a modal, for now just links to shop -->
-      <a href="products.html" class="icon-btn" title="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-      </a>
+      <!-- Search removed -->
       <!-- Account could link to login/admin -->
       <button class="icon-btn" data-cart-open title="Cart" style="position:relative">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
@@ -92,14 +129,6 @@
   </div>
 </section>
 
-<!-- ══ PRODUCT ICON NAVIGATION ══ -->
-<section class="icon-nav-section">
-  <div class="container">
-    <div class="icon-nav-track" id="icon-nav-track">
-      <!-- Icon items injected by JS -->
-    </div>
-  </div>
-</section>
 
 <!-- ══ BEST SELLERS ══ -->
 <section class="bestsellers-section" id="bestsellers">
@@ -122,15 +151,18 @@
   </div>
 </section>
 
-<!-- ══ CATEGORIES ══ -->
-<section class="categories-section" id="categories">
+<!-- ══ HOME PRODUCTS ══ -->
+<section class="products-section" id="home-products" style="padding:3rem 0">
   <div class="container">
     <div class="sec-head">
-      <h2>Categories</h2>
-      <p>Explore our luxury collections.</p>
+      <h2>Our Collection</h2>
+      <p>Explore our luxury roasts and exclusive merchandise.</p>
     </div>
-    <div class="categories-grid" id="dynamic-categories">
+    <div class="products-grid" id="home-products-grid">
       <!-- loaded by JS -->
+    </div>
+    <div style="text-align:center; margin-top:3rem;">
+      <a href="products.html" class="btn btn-dark btn-xl" style="padding: 1rem 4rem; letter-spacing: 0.15em;">VIEW ALL PRODUCTS</a>
     </div>
   </div>
 </section>
@@ -144,6 +176,75 @@
     </div>
     <div class="editorial-grid" id="editorial-grid">
       <!-- Injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ══ SHOP BY CATEGORY ══ -->
+<section class="icon-nav-section">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Shop By Category</h2>
+      <p>Browse our collections</p>
+    </div>
+    <div class="icon-nav-track" id="icon-nav-track">
+      <!-- Icon items injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section class="faq-section" id="faq">
+  <div class="container container--sm">
+    <div class="sec-head">
+      <h2 style="text-transform: uppercase;">Frequently Asked Questions</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">
+          What type of coffee beans do you use?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="faq-answer">
+          <p>We use 100% premium Arabica beans, carefully hand-roasted in small batches to ensure an authentic and rich Turkish coffee experience.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          How should I store my coffee to keep it fresh?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="faq-answer">
+          <p>We recommend storing your coffee in an airtight container in a cool, dry, and dark place. Avoid the fridge or freezer, as moisture can ruin the flavor.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          What is the difference between Plain and Cardamom roasts?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="faq-answer">
+          <p>Plain is our pure, rich, classic Turkish coffee. The Cardamom roast is infused with high-quality cardamom pods for a traditional, aromatic, and spiced flavor.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          How long does delivery take inside Egypt?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="faq-answer">
+          <p>Orders are freshly packed and typically arrive within 2-4 business days depending on your exact location in Egypt.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">
+          Do you sell equipment or just coffee?
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="faq-answer">
+          <p>We sell premium coffee blends as well as exclusive merchandise and coffee preparation gear to give you the ultimate brewing experience at home.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -166,16 +267,18 @@
       <h4>Contact</h4>
       <p>Mansoura, Egypt</p>
       <p>Thetwinseg@outlook.com</p>
+      <div class="footer-contact-social">
+        <a href="https://www.instagram.com/thetwinseg" target="_blank" rel="noopener" class="contact-social-link ig">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          Instagram
+        </a>
+        <a href="https://www.facebook.com/TheTwinsCoffee" target="_blank" rel="noopener" class="contact-social-link fb">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </a>
+      </div>
     </div>
-    <div class="f-col">
-      <h4>Newsletter</h4>
-      <p>Sign up for updates from The Twins Coffee.</p>
-      <form class="newsletter-form-minimal" onsubmit="handleNewsletter(event)">
-        <input type="email" class="newsletter-input-minimal" placeholder="Email Address" required/>
-        <button type="submit">→</button>
-      </form>
-      <p id="newsletter-msg" style="font-size:.75rem;color:var(--gold);margin-top:.4rem;display:none"></p>
-    </div>
+
   </div>
   <div class="footer-bottom container">
     <p>© 2026 The Twins Coffee®. All rights reserved.</p>
@@ -250,7 +353,7 @@ document.getElementById('night-toggle').addEventListener('click', function() {
             <h1 class="display">Luxury Coffee</h1>
             <p class="body-lg">Discover our premium, hand-roasted collection curated for the ultimate experience.</p>
             <div class="hero-slide-actions">
-              <a href="products.html" class="btn btn-dark btn-xl">Explore Collection</a>
+              <a href="products.html" class="btn btn-dark btn-xl">Shop Now</a>
             </div>
           </div>
         </div>
@@ -289,6 +392,18 @@ document.getElementById('night-toggle').addEventListener('click', function() {
       const next = currentSlide === backgroundImages.length - 1 ? 0 : currentSlide + 1;
       goToSlide(next);
     }, 5000);
+
+    let heroTouchStartX = 0;
+    heroTrack.addEventListener('touchstart', e => { heroTouchStartX = e.touches[0].clientX; }, { passive: true });
+    heroTrack.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - heroTouchStartX;
+      if (Math.abs(dx) > 50) {
+        let next = currentSlide + (dx < 0 ? 1 : -1);
+        if (next < 0) next = backgroundImages.length - 1;
+        if (next >= backgroundImages.length) next = 0;
+        goToSlide(next);
+      }
+    });
   }
 
   // Load products
@@ -303,12 +418,13 @@ document.getElementById('night-toggle').addEventListener('click', function() {
   /* ── 2. BEST SELLERS SLIDER ── */
   const bsGrid = document.getElementById('bestsellers-grid');
   if(bsGrid) {
+    let html = '';
     bestSellers.forEach(p => {
       const img = p.images && p.images.length > 0 ? fixImgPath(p.images[0]) : '';
       const price = p.sizes && p.sizes.length > 0 ? Math.min(...p.sizes.map(s=>s.price)) : 0;
       const safeName = escapeHtml(p.name);
       const safeBadge = p.badge ? escapeHtml(p.badge) : '';
-      bsGrid.innerHTML += `
+      html += `
         <div class="p-card">
           <a href="product-detail.html?id=${p.id}" class="p-card-img-wrap">
             <img src="${img}" alt="${safeName}" class="p-card-img"/>
@@ -324,54 +440,103 @@ document.getElementById('night-toggle').addEventListener('click', function() {
       `;
     });
     
-    // Slider JS — continuous scroll
-    const bsPrev = document.getElementById('bs-prev');
-    const bsNext = document.getElementById('bs-next');
+    // Create a track and duplicate the items 20 times for a true seamless infinite loop on any screen size
+    bsGrid.innerHTML = `<div class="bestsellers-track" id="bs-track">${html.repeat(20)}</div>`;
+    
+    // Slider JS — Seamless Infinite Loop
+    const track = document.getElementById('bs-track');
     let bsAutoTimer = null;
     let isPaused = false;
+    let position = 0;
+    let singleSetWidth = 0;
     
-    bsGrid.addEventListener('mouseenter', () => isPaused = true);
-    bsGrid.addEventListener('mouseleave', () => isPaused = false);
-    bsGrid.addEventListener('touchstart', () => isPaused = true, {passive: true});
-    bsGrid.addEventListener('touchend', () => isPaused = false);
-    
-    function scrollMarquee() {
-      if (!isPaused) {
-        const maxScroll = bsGrid.scrollWidth - bsGrid.clientWidth;
-        if (maxScroll > 0) {
-          bsGrid.scrollLeft += 1;
-          if (bsGrid.scrollLeft >= maxScroll - 1) {
-            bsGrid.scrollTo({ left: 0, behavior: 'auto' });
-          }
+    // We need to measure the width of one set of products
+    // We do this after a tiny delay so the DOM has time to render the flex gap correctly
+    setTimeout(() => {
+      const cards = track.querySelectorAll('.p-card');
+      if (cards.length > 0 && bestSellers.length > 0) {
+        // Measure the distance from the start of the first card to the start of the first cloned card
+        const firstCard = cards[0];
+        const firstClone = cards[bestSellers.length];
+        
+        if (firstClone) {
+          singleSetWidth = firstClone.offsetLeft - firstCard.offsetLeft;
+          position = singleSetWidth * 10; // Start in the middle (copy 10)
         }
       }
+    }, 100);
+
+    // Touch and Drag State
+    let isDragging = false;
+    let startX = 0;
+    let prevTranslate = 0;
+
+    function scrollMarquee() {
+      if (!isPaused && !isDragging && singleSetWidth > 0) {
+        position += 1; // Animation speed
+      }
+      
+      if (singleSetWidth > 0) {
+        // True Infinite Loop Magic
+        if (position >= singleSetWidth * 11) {
+          position -= singleSetWidth;
+        } else if (position <= singleSetWidth * 9) {
+          position += singleSetWidth;
+        }
+        track.style.transform = `translate3d(-${position}px, 0, 0)`;
+      }
+      
       bsAutoTimer = requestAnimationFrame(scrollMarquee);
     }
     bsAutoTimer = requestAnimationFrame(scrollMarquee);
 
-    // Pause RAF when tab is hidden to save CPU/battery
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        cancelAnimationFrame(bsAutoTimer);
-      } else {
-        bsAutoTimer = requestAnimationFrame(scrollMarquee);
-      }
-    });
+    // Pause on hover
+    bsGrid.addEventListener('mouseenter', () => isPaused = true);
+    bsGrid.addEventListener('mouseleave', () => { isPaused = false; isDragging = false; });
 
-    if (bsPrev && bsNext) {
-      bsPrev.onclick = () => {
-        isPaused = true;
-        bsGrid.scrollBy({ left: -280, behavior: 'smooth' });
-        setTimeout(() => isPaused = false, 1000);
-      };
-      bsNext.onclick = () => {
-        isPaused = true;
-        bsGrid.scrollBy({ left: 280, behavior: 'smooth' });
-        setTimeout(() => isPaused = false, 1000);
-      };
+    // Drag / Swipe Logic
+    bsGrid.addEventListener('mousedown', dragStart);
+    bsGrid.addEventListener('touchstart', dragStart, {passive: true});
+    window.addEventListener('mouseup', dragEnd);
+    window.addEventListener('touchend', dragEnd);
+    window.addEventListener('mousemove', drag);
+    window.addEventListener('touchmove', drag, {passive: false});
+
+    function dragStart(e) {
+      if (singleSetWidth === 0) return;
+      isDragging = true;
+      startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+      prevTranslate = position;
+      track.style.transition = 'none'; // Ensure no CSS transition during drag
     }
 
+    function drag(e) {
+      if (!isDragging) return;
+      const currentX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+      const moveBy = startX - currentX;
+      // If scrolling horizontally, prevent page vertical scroll
+      if (Math.abs(moveBy) > 5 && e.cancelable) e.preventDefault();
+      position = prevTranslate + moveBy;
+    }
 
+    function dragEnd() {
+      isDragging = false;
+    }
+
+    // Prev/Next Buttons
+    const bsPrev = document.getElementById('bs-prev');
+    const bsNext = document.getElementById('bs-next');
+    if (bsPrev && bsNext) {
+      bsPrev.onclick = () => {
+        if(singleSetWidth === 0) return;
+        position -= 300; 
+      };
+      bsNext.onclick = () => {
+        if(singleSetWidth === 0) return;
+        position += 300;
+      };
+    }
+  }
 
   /* ── 2. PRODUCT ICON NAVIGATION (Moved to Categories section below) ── */
 
@@ -393,31 +558,40 @@ document.getElementById('night-toggle').addEventListener('click', function() {
     });
   }
 
-    // Categories
-    const dynCat = document.getElementById('dynamic-categories');
-    const iconTrack = document.getElementById('icon-nav-track');
-    
-    apiGetAllCategories().then(cats => {
-      const activeCats = cats.filter(c => c.active);
-      if(activeCats.length === 0) return;
-      
-      if(dynCat) {
-        dynCat.innerHTML = activeCats.map(c => {
-          const img = c.image ? fixImgPath(c.image) : './logo.png';
-          const safeName = escapeHtml(c.name);
-          return `
-            <a href="products.html?cat=${encodeURIComponent(c.slug || c.id)}" class="category-card">
-              <div class="category-img"><img src="${img}" alt="${safeName}"/></div>
-              <div class="category-content">
-                <h3>${safeName}</h3>
-                <span class="btn btn-outline btn-sm">Shop Now</span>
-              </div>
+    // Home Products
+    const homeGrid = document.getElementById('home-products-grid');
+    if(homeGrid) {
+      // Show up to 4 products
+      const productsToShow = activeProducts.slice(0, 4);
+      homeGrid.innerHTML = productsToShow.map(p => {
+        const img = p.images && p.images.length > 0 ? fixImgPath(p.images[0]) : '';
+        const safeName = escapeHtml(p.name);
+        const safeBadge = p.badge ? escapeHtml(p.badge) : '';
+        const price = p.sizes && p.sizes.length > 0 ? Math.min(...p.sizes.map(s => s.price)) : 0;
+        
+        return `
+          <div class="p-card">
+            <a href="product-detail.html?id=${p.id}" class="p-card-img-wrap">
+              <img src="${img}" alt="${safeName}" class="p-card-img" loading="lazy"/>
+              ${safeBadge ? `<span class="badge">${safeBadge}</span>` : ''}
             </a>
-          `;
-        }).join('');
-      }
+            <div class="p-card-info">
+              <h3 class="p-card-title"><a href="product-detail.html?id=${p.id}">${safeName}</a></h3>
+              <div class="p-card-price">${price} EGP</div>
+              <div class="p-card-rating">★★★★★ (12)</div>
+              <button class="btn btn-outline btn-full" onclick="window.location.href='product-detail.html?id=${p.id}'">Add to Cart</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
 
-      if(iconTrack) {
+    // Icon Track (if used on homepage)
+    const iconTrack = document.getElementById('icon-nav-track');
+    if (iconTrack) {
+      apiGetAllCategories().then(cats => {
+        const activeCats = cats.filter(c => c.active);
+        if(activeCats.length === 0) return;
         iconTrack.innerHTML = activeCats.map(c => {
           const img = c.image ? fixImgPath(c.image) : './logo.png';
           const safeName = escapeHtml(c.name);
@@ -428,8 +602,21 @@ document.getElementById('night-toggle').addEventListener('click', function() {
             </a>
           `;
         }).join('');
-      }
-    }).catch(e => console.log('Failed to load categories', e));
+      }).catch(e => console.log('Failed to load categories', e));
+    }
+
+    // FAQ Toggle
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+      const btn = item.querySelector('.faq-question');
+      btn.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
+        // Close all
+        faqItems.forEach(i => i.classList.remove('active'));
+        // If it wasn't active, open it
+        if (!isActive) item.classList.add('active');
+      });
+    });
 })();
 </script>
 </body>

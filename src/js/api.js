@@ -194,12 +194,14 @@ async function apiUpdateProduct(id, updates) {
   _bustCache('products');
   const sizes = updates.sizes;
   delete updates.sizes;
+  const colors = updates.colors;
+  delete updates.colors;
 
   const { data, error } = await supabaseClient.from('products').update(updates).eq('id', id).select().single();
   if (error) throw error;
 
   if (sizes) {
-    // Delete old sizes and insert new ones (simplest approach for sync)
+    // Delete old sizes and insert new ones
     await supabaseClient.from('product_sizes').delete().eq('product_id', id);
     if (sizes.length > 0) {
       const sizesToInsert = sizes.map((s, index) => {
@@ -208,6 +210,19 @@ async function apiUpdateProduct(id, updates) {
       });
       const { error: sizeErr } = await supabaseClient.from('product_sizes').insert(sizesToInsert);
       if (sizeErr) throw sizeErr;
+    }
+  }
+
+  if (colors !== undefined) {
+    // Delete old colors and insert new ones
+    await supabaseClient.from('product_colors').delete().eq('product_id', id);
+    if (colors.length > 0) {
+      const colorsToInsert = colors.map((c, index) => {
+        const { id: _localId, ...colorData } = c;
+        return { ...colorData, product_id: id, sort_order: index };
+      });
+      const { error: colErr } = await supabaseClient.from('product_colors').insert(colorsToInsert);
+      if (colErr) throw colErr;
     }
   }
 
@@ -235,7 +250,6 @@ async function apiCreateOrder(orderData) {
     shipping_id: orderData.shippingId,
     shipping_name: orderData.shippingName,
     notes: orderData.notes,
-    payment_method: orderData.paymentMethod,
     shipping_price: orderData.shippingPrice,
     subtotal: orderData.subtotal,
     total: orderData.total,

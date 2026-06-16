@@ -224,23 +224,35 @@
       </div>
       <div class="form-row">
         <div class="fg">
-          <label>Has Type (محوج/ساده)?</label>
-          <div class="roast-admin-toggle" id="m-has-type-toggle">
-            <button class="roast-admin-btn" data-val="true">Yes — يحتوي</button>
-            <button class="roast-admin-btn sel" data-val="false">No</button>
-          </div>
+          <label>Coffee Type (نوع القهوة)</label>
+          <select id="m-coffee-type" class="f-input">
+            <option value="choice">Let Buyer Choose (محوج/ساده)</option>
+            <option value="plain">Strictly Plain (ساده فقط)</option>
+            <option value="cardamom">Strictly Cardamom (محوج فقط)</option>
+            <option value="none">Not Applicable (للمنتجات الأخرى)</option>
+          </select>
         </div>
         <div class="fg">
-          <label>Has Roast (فاتح/وسط/غامق)?</label>
-          <div class="roast-admin-toggle" id="m-has-roast-toggle">
-            <button class="roast-admin-btn" data-val="true">Yes — يحتوي</button>
-            <button class="roast-admin-btn sel" data-val="false">No</button>
-          </div>
+          <label>Roast Level (درجة التحميص)</label>
+          <select id="m-roast-level" class="f-input">
+            <option value="choice">Let Buyer Choose (فاتح/وسط/غامق)</option>
+            <option value="light">Light Only (فاتح فقط)</option>
+            <option value="medium">Medium Only (وسط فقط)</option>
+            <option value="dark">Dark Only (غامق فقط)</option>
+            <option value="none">Not Applicable (لا يوجد تحميص)</option>
+          </select>
         </div>
       </div>
       <div class="fg">
         <label>Featured? (Home Page)</label>
         <div class="roast-admin-toggle" id="m-featured-toggle">
+          <button class="roast-admin-btn" data-val="true">Yes — نعم</button>
+          <button class="roast-admin-btn sel" data-val="false">No</button>
+        </div>
+      </div>
+      <div class="fg">
+        <label>Best Seller? (Home Page Slider)</label>
+        <div class="roast-admin-toggle" id="m-bestseller-toggle">
           <button class="roast-admin-btn" data-val="true">Yes — نعم</button>
           <button class="roast-admin-btn sel" data-val="false">No</button>
         </div>
@@ -607,7 +619,7 @@ async function renderProducts() {
         <div style="font-weight:700;font-size:.88rem">${sName}</div>
         <div style="font-size:.72rem;color:var(--txt2)">${sNameAr}</div>
         <div style="font-size:.65rem;color:var(--txt3);margin-top:.15rem">
-          ${p.hasType ? '☕ محوج/ساده' : ''} ${p.hasRoast ? '🔥 فاتح/وسط/غامق' : ''}
+          ${p.coffeeType === 'choice' ? '☕ محوج/ساده' : p.coffeeType === 'plain' ? '☕ سادة' : p.coffeeType === 'cardamom' ? '☕ محوج' : p.hasType ? '☕ محوج/ساده' : ''} ${p.hasRoast ? '🔥 وسط/غامق' : ''}
         </div>
       </td>
       <td><span class="tag">${p.category === 'coffee' ? '☕ Coffee' : '🎁 Merch'}</span></td>
@@ -617,6 +629,7 @@ async function renderProducts() {
         <div style="display:flex;flex-direction:column;gap:.3rem">
           <span class="s-pill ${p.active ? 'on' : 'off'}">${p.active ? '✓ Active' : '✗ Hidden'}</span>
           ${p.featured ? '<span class="tag" style="font-size:.6rem">⭐ Featured</span>' : ''}
+          ${p.is_bestseller ? '<span class="tag" style="font-size:.6rem; background:var(--brand); color:white;">🔥 Best Seller</span>' : ''}
         </div>
       </td>
       <td>
@@ -711,9 +724,10 @@ window.openEditProduct = async function(pid) {
   document.getElementById('m-cat').value         = p ? p.category : (document.getElementById('m-cat').options[0]?.value || '');
   document.getElementById('m-badge').value       = p && p.badge ? p.badge : '';
   document.getElementById('m-images').value      = p ? (p.images || []).join(', ') : '';
-  setToggleVal('m-has-type-toggle',  p ? p.hasType  : false);
-  setToggleVal('m-has-roast-toggle', p ? p.hasRoast : false);
+  document.getElementById('m-coffee-type').value = p ? (p.coffeeType || (p.hasType ? 'choice' : 'none')) : 'none';
+  document.getElementById('m-roast-level').value = p ? (p.roastLevel || (p.hasRoast ? 'choice' : 'none')) : 'none';
   setToggleVal('m-featured-toggle',  p ? p.featured : false);
+  setToggleVal('m-bestseller-toggle', p ? p.is_bestseller : false);
   setToggleVal('m-active-toggle',    p ? p.active   : true);
   renderSizeRows(p ? p.sizes : [{ label:'200g', price:180, stock:0 }]);
   document.getElementById('m-drop-preview').innerHTML = '';
@@ -722,7 +736,7 @@ window.openEditProduct = async function(pid) {
   renderColorRows(p && p.colors ? p.colors : []);
   
   // Render Variant Images Mapping
-  renderVariantImageInputs(p ? p.variantImages : null, p ? p.hasType : false, p ? p.hasRoast : false);
+  renderVariantImageInputs(p ? p.variantImages : null, p ? (p.coffeeType === 'choice' || p.hasType) : false, p ? p.hasRoast : false);
   
   openModal('product-modal');
 };
@@ -740,7 +754,7 @@ function renderVariantImageInputs(variantImages, hasType, hasRoast) {
   
   const variants = [];
   if (hasType) variants.push({ key: 'plain', label: 'Plain (ساده)' }, { key: 'cardamom', label: 'Cardamom (محوج)' });
-  if (hasRoast) variants.push({ key: 'light', label: 'Light (فاتح)' }, { key: 'medium', label: 'Medium (وسط)' }, { key: 'dark', label: 'Dark (غامق)' });
+  if (hasRoast) variants.push({ key: 'medium', label: 'Medium (وسط)' }, { key: 'dark', label: 'Dark (غامق)' });
   
   variants.forEach(v => {
     const val = variantImages && variantImages[v.key] ? variantImages[v.key] : '';
@@ -754,11 +768,15 @@ function renderVariantImageInputs(variantImages, hasType, hasRoast) {
 }
 
 // Re-render when toggles change
-document.getElementById('m-has-type-toggle').addEventListener('click', () => {
-  setTimeout(() => renderVariantImageInputs(getVariantImagesData(), getToggleVal('m-has-type-toggle'), getToggleVal('m-has-roast-toggle')), 50);
+document.getElementById('m-coffee-type').addEventListener('change', () => {
+  const hasType = document.getElementById('m-coffee-type').value === 'choice';
+  const hasRoast = document.getElementById('m-roast-level').value !== 'none';
+  setTimeout(() => renderVariantImageInputs(getVariantImagesData(), hasType, hasRoast), 50);
 });
-document.getElementById('m-has-roast-toggle').addEventListener('click', () => {
-  setTimeout(() => renderVariantImageInputs(getVariantImagesData(), getToggleVal('m-has-type-toggle'), getToggleVal('m-has-roast-toggle')), 50);
+document.getElementById('m-roast-level').addEventListener('change', () => {
+  const hasType = document.getElementById('m-coffee-type').value === 'choice';
+  const hasRoast = document.getElementById('m-roast-level').value !== 'none';
+  setTimeout(() => renderVariantImageInputs(getVariantImagesData(), hasType, hasRoast), 50);
 });
 
 function getVariantImagesData() {
@@ -822,8 +840,9 @@ document.getElementById('save-product-btn').addEventListener('click', async () =
 
   const payload = {
     name, nameAr, description:desc, category:cat, badge, images, variantImages, sizes, colors,
-    hasType: getToggleVal('m-has-type-toggle'), hasRoast: getToggleVal('m-has-roast-toggle'),
-    featured: getToggleVal('m-featured-toggle'), active: getToggleVal('m-active-toggle')
+    coffeeType: document.getElementById('m-coffee-type').value, hasType: document.getElementById('m-coffee-type').value === 'choice', roastLevel: document.getElementById('m-roast-level').value, hasRoast: document.getElementById('m-roast-level').value !== 'none',
+    featured: getToggleVal('m-featured-toggle'), active: getToggleVal('m-active-toggle'),
+    is_bestseller: getToggleVal('m-bestseller-toggle')
   };
 
   try {
@@ -1035,7 +1054,7 @@ document.getElementById('save-cat-btn').addEventListener('click', async () => {
     name_ar: document.getElementById('cm-name-ar').value.trim(),
     slug: document.getElementById('cm-slug').value.trim(),
     image: document.getElementById('cm-image').value.trim(),
-    active: getToggleVal('cm-active-toggle') ? 1 : 0
+    active: getToggleVal('cm-active-toggle')
   };
   if (!payload.name) { toast('Name is required', 'error'); return; }
 
@@ -1310,7 +1329,7 @@ function initDashboard() {
   renderOverview();
   if (window.lucide) lucide.createIcons();
 // Init all toggles in modals
-  ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-active-toggle','sm-active-toggle','cm-active-toggle'].forEach(id => {
+  ['m-has-type-toggle','m-has-roast-toggle','m-featured-toggle','m-bestseller-toggle','m-active-toggle','sm-active-toggle','cm-active-toggle'].forEach(id => {
     initToggles(id);
   });
 }
