@@ -9,7 +9,8 @@
   },
   "main": "src/js/api.js",
   "devDependencies": {
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-plugin-static-copy": "^4.1.1"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1"
