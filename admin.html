@@ -1107,7 +1107,7 @@ async function renderShipping() {
     card.innerHTML = `
       <div class="ship-ed-icon">${SHIP_ICONS[i % SHIP_ICONS.length]}</div>
       <div class="ship-ed-info">
-        <div class="ship-ed-name">${s.nameAr} — ${s.name}</div>
+        <div class="ship-ed-name">${s.name_ar || ''} — ${s.name}</div>
         <div class="ship-ed-days">⏱ ${s.days}</div>
       </div>
       <div class="ship-ed-price">${s.price === 0 ? 'Free' : s.price.toLocaleString() + ' جنيه'}</div>
@@ -1133,7 +1133,7 @@ window.openEditShipping = async function(sid) {
   document.getElementById('ship-modal-title').textContent = s ? `Edit: ${s.name}` : 'Add Governorate';
   document.getElementById('sm-id').value      = s ? s.id : '';
   document.getElementById('sm-name').value    = s ? s.name : '';
-  document.getElementById('sm-name-ar').value = s ? s.nameAr : '';
+  document.getElementById('sm-name-ar').value = s ? (s.name_ar || '') : '';
   document.getElementById('sm-price').value   = s ? s.price : 0;
   document.getElementById('sm-days').value    = s ? s.days : '';
   setToggleVal('sm-active-toggle', s ? s.active : true);
@@ -1174,9 +1174,9 @@ document.getElementById('save-ship-btn').addEventListener('click', async () => {
   if (!name || !nameAr || !days) { toast('Fill all fields', 'error'); return; }
   try {
     if (sid) {
-      await apiUpdateShipping(sid, { name, nameAr, price, days, active });
+      await apiUpdateShipping(sid, { name, name_ar: nameAr, price, days, active });
     } else {
-      await apiCreateShipping({ name, nameAr, price, days, active });
+      await apiCreateShipping({ name, name_ar: nameAr, price, days, active });
     }
     closeModal('shipping-modal');
     await renderShipping();
@@ -1267,7 +1267,7 @@ async function renderOrders() {
         <div style="font-size:.7rem;color:var(--txt2)">${escapeHtml(o.customer?.phone || '')}</div>
       </td>
       <td style="font-size:.78rem">${escapeHtml(itemsSummary)}${escapeHtml(moreItems)}</td>
-      <td style="font-size:.78rem">${escapeHtml(o.shipping?.nameAr || o.shipping?.name || '—')}</td>
+      <td style="font-size:.78rem">${escapeHtml(o.shipping?.name_ar || o.shipping?.name || '—')}</td>
       <td><strong>${(o.total||0).toLocaleString()} جنيه</strong></td>
       <td style="font-size:.78rem">${escapeHtml(o.date || o.createdAt || '')}</td>
       <td>${getOrderStatusPill(o.status)}</td>
@@ -1313,7 +1313,7 @@ window.viewOrder = function(id) {
       <span>${(o.subtotal||0).toLocaleString()} جنيه</span>
     </div>
     <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem">
-      <span>Shipping (${escapeHtml(o.shipping?.nameAr || o.shipping?.name || '—')}):</span>
+      <span>Shipping (${escapeHtml(o.shipping?.name_ar || o.shipping?.name || '—')}):</span>
       <span>${o.shipping?.price ? o.shipping.price.toLocaleString() + ' جنيه' : 'Free'}</span>
     </div>
     <div style="display:flex;justify-content:space-between;font-weight:bold;font-size:1.1rem;color:var(--gold);margin-top:0.5rem;border-top:1px solid var(--brd);padding-top:0.5rem">

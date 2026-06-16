@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     activeShipping.forEach(s => {
       const opt = document.createElement('option');
       opt.value = s.id;
-      opt.textContent = (s.nameAr ? s.nameAr + ' — ' : '') + s.name;
+      opt.textContent = (s.name_ar ? s.name_ar + ' — ' : '') + s.name;
       select.appendChild(opt);
     });
     
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       <span style="color:var(--gold);font-weight:700">Name:</span><span>${escapeHtml(fname)} ${escapeHtml(lname)}</span>
       <span style="color:var(--gold);font-weight:700">Phone:</span><span>${escapeHtml(phone)}</span>
       <span style="color:var(--gold);font-weight:700">Address:</span><span>${escapeHtml(addr)}, ${escapeHtml(cityText)}</span>
-      <span style="color:var(--gold);font-weight:700">Shipping:</span><span>${ship ? (ship.nameAr ? escapeHtml(ship.nameAr) + ' — ' : '') + escapeHtml(ship.name) + ' (' + (ship.price ? ship.price.toLocaleString() + ' جنيه' : 'Free') + ')' : '—'}</span>
+      <span style="color:var(--gold);font-weight:700">Shipping:</span><span>${ship ? (ship.name_ar ? escapeHtml(ship.name_ar) + ' — ' : '') + escapeHtml(ship.name) + ' (' + (ship.price ? ship.price.toLocaleString() + ' جنيه' : 'Free') + ')' : '—'}</span>
     </div>`;
     updateSummaryAll();
   }
@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       id: genId(), date: formatDate(),
       customer: { name: fname+' '+document.getElementById('f-lname').value.trim(), phone, email:document.getElementById('f-email').value.trim(), address:addr, city:cityText, zip:document.getElementById('f-zip').value.trim() },
       items: cart,
-      shipping: ship ? {name:ship.name,nameAr:ship.nameAr,price:ship.price,days:ship.days} : null,
+      shipping: ship ? {name:ship.name,name_ar:ship.name_ar,price:ship.price,days:ship.days} : null,
       subtotal:sub, total, status:'pending'
     };
     const apiPayload = {
