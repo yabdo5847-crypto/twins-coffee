@@ -54,7 +54,7 @@
         <i data-lucide="layers"></i> Categories
       </button>
       <button class="adm-nav-btn" data-tab="shipping" id="nav-shipping">
-        <i data-lucide="truck"></i> Shipping
+        <i data-lucide="map-pin"></i> Governorates
       </button>
       <button class="adm-nav-btn" data-tab="orders" id="nav-orders">
         <i data-lucide="shopping-bag"></i> Orders
@@ -160,8 +160,8 @@
     <!-- ─── SHIPPING TAB ─── -->
     <div class="adm-tab" id="tab-shipping">
       <div class="adm-header">
-        <h1>🚚 Shipping Methods</h1>
-        <button class="btn btn-gold btn-sm" id="add-ship-btn">+ Add Method</button>
+        <h1>🗺️ Governorates & Zones</h1>
+        <button class="btn btn-gold btn-sm" id="add-ship-btn">+ Add Governorate</button>
       </div>
 
       <div style="display:flex;flex-direction:column;gap:.85rem" id="shipping-list"></div>
@@ -351,23 +351,23 @@
   </div>
 </div>
 
-<!-- ══ SHIPPING MODAL ══ -->
-<div class="modal-bg" id="shipping-modal">
-  <div class="modal-box" style="max-width:480px">
-    <div class="modal-head">
-      <h3 id="ship-modal-title">Edit Shipping</h3>
-      <button class="modal-close" onclick="closeModal('shipping-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="sm-id"/>
-      <div class="form-row">
-        <div class="fg"><label>Name (EN)</label><input type="text" id="sm-name" placeholder="Standard Delivery"/></div>
-        <div class="fg"><label>Name (AR) — الاسم</label><input type="text" id="sm-name-ar" placeholder="توصيل عادي" dir="rtl"/></div>
+  <!-- ══ SHIPPING MODAL ══ -->
+  <div class="modal-bg" id="shipping-modal">
+    <div class="modal-box" style="max-width:480px">
+      <div class="modal-head">
+        <h3 id="ship-modal-title">Edit Governorate</h3>
+        <button class="modal-close" onclick="closeModal('shipping-modal')">✕</button>
       </div>
-      <div class="form-row">
-        <div class="fg"><label>Price (جنيه)</label><input type="number" id="sm-price" min="0" placeholder="50"/></div>
-        <div class="fg"><label>Delivery Days — المدة</label><input type="text" id="sm-days" placeholder="3-5 أيام"/></div>
-      </div>
+      <div class="modal-body">
+        <input type="hidden" id="sm-id"/>
+        <div class="form-row">
+          <div class="fg"><label>Governorate (EN)</label><input type="text" id="sm-name" placeholder="Cairo"/></div>
+          <div class="fg"><label>Governorate (AR) — المحافظة</label><input type="text" id="sm-name-ar" placeholder="القاهرة" dir="rtl"/></div>
+        </div>
+        <div class="form-row">
+          <div class="fg"><label>Shipping Cost (جنيه)</label><input type="number" id="sm-price" min="0" placeholder="50"/></div>
+          <div class="fg"><label>Delivery Duration — المدة</label><input type="text" id="sm-days" placeholder="2-3 أيام"/></div>
+        </div>
       <div class="fg">
         <label>Status</label>
         <div class="roast-admin-toggle" id="sm-active-toggle">
@@ -375,13 +375,13 @@
           <button class="roast-admin-btn" data-val="false">Inactive</button>
         </div>
       </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('shipping-modal')">Cancel</button>
-      <button class="btn btn-gold" id="save-ship-btn">Save Method</button>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal('shipping-modal')">Cancel</button>
+        <button class="btn btn-gold" id="save-ship-btn">Save Governorate</button>
+      </div>
     </div>
   </div>
-</div>
 
 <!-- ══ QTY MODAL ══ -->
 <div class="modal-bg" id="qty-modal">
@@ -1100,7 +1100,7 @@ async function renderShipping() {
   catch(e) { console.warn('API unavailable:', e.message); }
   const listEl = document.getElementById('shipping-list');
   listEl.innerHTML = '';
-  const SHIP_ICONS = ['🚶', '🚚', '⚡', '🛵', '✈️', '🏍️'];
+  const SHIP_ICONS = ['📍', '🗺️', '🏙️', '🏘️'];
   ships.forEach((s, i) => {
     const card = document.createElement('div');
     card.className = `ship-editor-card ${s.active ? 'active-card' : 'inactive-card'}`;
@@ -1122,7 +1122,7 @@ async function renderShipping() {
     listEl.appendChild(card);
   });
   if (ships.length === 0) {
-    listEl.innerHTML = '<p style="color:var(--txt2);font-size:.88rem;text-align:center;padding:2rem">No shipping methods. Add one above.</p>';
+    listEl.innerHTML = '<p style="color:var(--txt2);font-size:.88rem;text-align:center;padding:2rem">No governorates added. Add one above.</p>';
   }
 }
 
@@ -1130,7 +1130,7 @@ window.openEditShipping = async function(sid) {
   let ships = [];
   try { ships = await apiGetAllShipping(); } catch(e) { console.warn(e.message); }
   const s = sid ? ships.find(x => x.id === sid) : null;
-  document.getElementById('ship-modal-title').textContent = s ? `Edit: ${s.name}` : 'Add Shipping Method';
+  document.getElementById('ship-modal-title').textContent = s ? `Edit: ${s.name}` : 'Add Governorate';
   document.getElementById('sm-id').value      = s ? s.id : '';
   document.getElementById('sm-name').value    = s ? s.name : '';
   document.getElementById('sm-name-ar').value = s ? s.nameAr : '';
