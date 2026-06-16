@@ -334,3 +334,11 @@ async function apiToggleProduct(pid) {
   const product = await apiGetProductById(pid);
   return apiUpdateProduct(pid, { active: !product.active });
 }
+
+async function apiClearOrders() {
+  const { error } = await supabaseClient.from('orders').delete().not('id', 'is', null);
+  if (error) {
+    console.error('Error clearing orders:', error);
+    throw error;
+  }
+}

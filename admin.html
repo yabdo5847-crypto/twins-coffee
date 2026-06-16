@@ -1351,8 +1351,24 @@ window.viewOrder = function(id) {
   openModal('order-details-modal');
 };
 
-document.getElementById('clear-orders-btn').addEventListener('click', () => {
-  toast('Bulk delete is disabled for safety', 'info');
+document.getElementById('clear-orders-btn').addEventListener('click', async () => {
+  if (confirm('⚠️ هل أنت متأكد من مسح جميع الطلبات نهائياً؟ هذا الإجراء لا يمكن التراجع عنه!')) {
+    try {
+      const btn = document.getElementById('clear-orders-btn');
+      btn.textContent = 'Clearing...';
+      btn.disabled = true;
+      await apiClearOrders();
+      toast('All orders have been cleared.', 'success');
+      renderOrders();
+      renderOverview();
+      btn.textContent = 'Clear All Orders';
+      btn.disabled = false;
+    } catch (err) {
+      toast('Failed to clear orders.', 'error');
+      document.getElementById('clear-orders-btn').textContent = 'Clear All Orders';
+      document.getElementById('clear-orders-btn').disabled = false;
+    }
+  }
 });
 
 /* ══════════════════════════════════════════
