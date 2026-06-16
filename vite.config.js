@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [
     viteStaticCopy({
       targets: [
-        { src: 'src/js', dest: 'src' },
+        { src: 'src/js', dest: '' },
         { src: '*.jpeg', dest: '' },
         { src: '*.png', dest: '' },
         { src: '*.ico', dest: '' }
