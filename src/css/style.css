@@ -28,6 +28,11 @@
   --txt2:        #666666;
   --txt3:        #999999;
   
+  --gold:        #C89B5E;
+  --brand:       #C89B5E;
+  --red:         #e74c3c;
+  --green:       #27ae60;
+  
   --nav-h:       80px;
   
   /* Minimal Border Radii (Sharp/Editorial) */
@@ -2388,11 +2393,11 @@ body[data-theme="dark"] .pd-sl-arrow { background: rgba(30,30,30,0.85); color: #
   .btn-hero-primary,.btn-hero-ghost { width:100%; max-width:320px; }
   .why-grid { grid-template-columns:1fr; }
   .journey-grid { grid-template-columns:1fr; }
-  .products-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .p-card-info { padding: 1.25rem 1rem; }
-  .p-card-title { font-size: 1.1rem; letter-spacing: 0.05em; }
-  .p-card-price { font-size: 1.1rem; margin-bottom: 0.75rem; }
-  .p-card-rating { font-size: 0.8rem; margin-bottom: 0.75rem; }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+  .p-card-info { padding: 1rem 0.5rem; }
+  .p-card-title { font-size: 0.9rem; letter-spacing: 0; }
+  .p-card-price { font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .p-card-rating { font-size: 0.7rem; margin-bottom: 0.5rem; }
   .btn-outline.btn-full { padding: 0.6rem 0.25rem; font-size: 0.7rem; }
   .adm-stats { grid-template-columns:1fr 1fr; }
   .footer-bottom { flex-direction:column; gap:.75rem; text-align:center; }

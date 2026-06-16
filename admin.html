@@ -587,8 +587,12 @@ async function renderOverview() {
 ══════════════════════════════════════════ */
 async function renderProducts() {
   let products = [];
+  let allCats = [];
   try { products = await apiGetAllProducts(); }
   catch(e) { console.warn('API unavailable:', e.message); }
+  try { allCats = await apiGetAllCategories(); }
+  catch(e) {}
+  
   const tbody = document.getElementById('products-body');
   tbody.innerHTML = '';
 
@@ -596,7 +600,10 @@ async function renderProducts() {
     const minPrice = Math.min(...p.sizes.map(s => s.price));
     const maxPrice = Math.max(...p.sizes.map(s => s.price));
     const priceStr = minPrice === maxPrice ? `${minPrice}` : `${minPrice}–${maxPrice}`;
-    const totalStock = p.sizes.reduce((s, sz) => s + sz.stock, 0);
+    
+    let catLabel = p.category;
+    const foundCat = allCats.find(c => c.slug === p.category || String(c.id) === String(p.category));
+    if (foundCat) catLabel = foundCat.name;
 
     const stockBadges = p.sizes.map((sz, si) => `
       <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.25rem">
@@ -622,7 +629,7 @@ async function renderProducts() {
           ${p.coffeeType === 'choice' ? '☕ محوج/ساده' : p.coffeeType === 'plain' ? '☕ سادة' : p.coffeeType === 'cardamom' ? '☕ محوج' : p.hasType ? '☕ محوج/ساده' : ''} ${p.hasRoast ? '🔥 وسط/غامق' : ''}
         </div>
       </td>
-      <td><span class="tag">${p.category === 'coffee' ? '☕ Coffee' : '🎁 Merch'}</span></td>
+      <td><span class="tag">🏷️ ${catLabel}</span></td>
       <td>${stockBadges}</td>
       <td><strong>${priceStr} جنيه</strong></td>
       <td>
@@ -634,9 +641,9 @@ async function renderProducts() {
       </td>
       <td>
         <div class="act-row">
-          <button class="btn btn-ghost btn-sm" onclick="openEditProduct(${p.id})">✏️ Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="openEditProduct(${p.id})">⚙️ Edit</button>
           <button class="btn ${p.active ? 'btn-danger' : 'btn-success'} btn-sm" onclick="toggleProduct(${p.id})">
-            ${p.active ? '🙈 Hide' : '👁 Show'}
+            ${p.active ? '👁️‍🗨️ Hide' : '👁️ Show'}
           </button>
           <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id})" title="Delete product permanently">🗑️</button>
         </div>
