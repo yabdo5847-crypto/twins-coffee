@@ -323,15 +323,7 @@ section { padding:7rem 0; }
   text-decoration:none;
   flex-shrink:0;
 }
-.nav-logo-img { width:36px; height:36px; object-fit:contain; }
-.navbar .nav-logo-img {
-  filter: invert(1);
-  mix-blend-mode: multiply;
-}
-body[data-theme="dark"] .navbar .nav-logo-img {
-  filter: none;
-  mix-blend-mode: screen;
-}
+.nav-logo-img { width:36px; height:36px; object-fit:contain; border-radius:50%; }
 .logo-text {
   font-family:'Cormorant Garamond',serif;
   font-size:1.15rem;
