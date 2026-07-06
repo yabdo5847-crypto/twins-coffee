@@ -256,12 +256,12 @@ async function apiCreateOrder(orderData) {
     status: 'pending'
   };
   
-  const { data, error } = await supabaseClient.from('orders').insert([payload]).select().single();
+  const { error } = await supabaseClient.from('orders').insert([payload]);
   if (error) {
     console.error('Order creation failed:', error);
     throw error;
   }
-  return data;
+  return payload;
 }
 async function apiGetOrders() {
   let dbOrders = [];
