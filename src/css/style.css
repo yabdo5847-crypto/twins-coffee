@@ -2410,7 +2410,40 @@ body[data-theme="dark"] .pd-sl-arrow { background: rgba(30,30,30,0.85); color: #
 
   .story-content { padding:3rem 1.5rem; }
   .story-stats { gap:1.5rem; }
-  .pd-cta { grid-template-columns:1fr; }
+  .pd-back { padding:0.6rem 1rem; font-size:.72rem; }
+  .pd-grid { padding:0 0 1.5rem; gap:0; }
+  .pd-slider-wrap { border-radius:0; aspect-ratio:4/5; margin-bottom:0; }
+  .pd-thumbs { display:none; }
+  .pd-info { padding:1.25rem 1rem 0; }
+  .pd-badge-row { margin-bottom:0.6rem; }
+  .pd-name { font-size:clamp(18px,5vw,24px); margin-bottom:0.2rem; }
+  .pd-name-ar { font-size:.82rem; margin-bottom:0.5rem; }
+  .pd-stars { margin-bottom:0.5rem; }
+  .pd-stars svg { width:13px; height:13px; }
+  .pd-price { margin-bottom:0.75rem; padding-bottom:0.75rem; }
+  .pd-price-num { font-size:1.6rem; }
+  .pd-price-cur { font-size:.85rem; }
+  .pd-price-note { font-size:.72rem; }
+  .pd-options { gap:0.75rem; margin-bottom:0.75rem; }
+  .opt-lbl { font-size:.68rem; margin-bottom:0.5rem; }
+  .opt-pill { padding:.45rem .9rem; font-size:.78rem; }
+  .type-toggle-btn { padding:.55rem .75rem; font-size:.78rem; }
+  .roast-card { padding:.7rem .5rem; }
+  .roast-card-ico { font-size:1rem; }
+  .roast-card-ar { font-size:.75rem; }
+  .roast-card-en { font-size:.55rem; }
+  .pd-selected-summary { padding:.75rem 1rem; font-size:.78rem; margin-bottom:0.5rem; }
+  .qty-row { margin-bottom:0.75rem; gap:1rem; }
+  .qty-ctrl { padding:.3rem .6rem; }
+  .qty-btn { width:26px; height:26px; font-size:1rem; }
+  .qty-val { font-size:.88rem; min-width:20px; }
+  .qty-lbl { font-size:.72rem; }
+  .pd-cta { grid-template-columns:1fr; gap:.5rem; padding:0; }
+  .pd-cta .btn { width:100%; padding:0.9rem 1rem; font-size:.82rem; }
+  .pd-hint { font-size:.72rem; margin-top:0.5rem; }
+  .pd-tabs { margin-top:1rem; }
+  .pd-tab-btn { padding:.65rem .75rem; font-size:.68rem; letter-spacing:.06em; }
+  .pd-tab-content { padding:.75rem 0; font-size:.8rem; }
   .cats-scroll { gap:1rem; }
   .cat-card { flex:0 0 200px; }
   .product-slider-wrap { aspect-ratio:4/3; min-height:360px; max-height:520px; }
@@ -2438,6 +2471,20 @@ body[data-theme="dark"] .pd-sl-arrow { background: rgba(30,30,30,0.85); color: #
   .btn-outline.btn-full { padding: 0.6rem 0.25rem; font-size: 0.7rem; }
   .adm-stats { grid-template-columns:1fr 1fr; }
   .footer-bottom { flex-direction:column; gap:.75rem; text-align:center; }
+
+  .pd-back { padding:0.5rem 0.75rem; font-size:.68rem; }
+  .pd-grid { padding:0 0 1.25rem; gap:0; }
+  .pd-slider-wrap { border-radius:0; aspect-ratio:1; }
+  .pd-info { padding:1rem 0.85rem 0; }
+  .pd-name { font-size:clamp(17px,5vw,22px); margin-bottom:0.15rem; }
+  .pd-name-ar { font-size:.78rem; margin-bottom:0.4rem; }
+  .pd-price { margin-bottom:0.6rem; padding-bottom:0.6rem; }
+  .pd-price-num { font-size:1.4rem; }
+  .pd-options { gap:0.6rem; margin-bottom:0.6rem; }
+  .pd-selected-summary { padding:.6rem .85rem; font-size:.75rem; }
+  .pd-cta .btn { padding:0.85rem 1rem; font-size:.78rem; }
+  .pd-tab-btn { padding:.55rem .6rem; font-size:.64rem; letter-spacing:.04em; }
+  .pd-tab-content { font-size:.78rem; line-height:1.6; }
 
   .slider-slide-content { padding:1.5rem 1.25rem; }
   .slider-title { font-size:1.5rem; }
