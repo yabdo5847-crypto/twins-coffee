@@ -260,21 +260,21 @@
         </div>
       </div>
       <div class="fg">
-        <label>Featured? (Home Page)</label>
+        <span class="opt-lbl">Featured? (Home Page)</span>
         <div class="roast-admin-toggle" id="m-featured-toggle">
           <button class="roast-admin-btn" data-val="true">Yes — نعم</button>
           <button class="roast-admin-btn sel" data-val="false">No</button>
         </div>
       </div>
       <div class="fg">
-        <label>Best Seller? (Home Page Slider)</label>
+        <span class="opt-lbl">Best Seller? (Home Page Slider)</span>
         <div class="roast-admin-toggle" id="m-bestseller-toggle">
           <button class="roast-admin-btn" data-val="true">Yes — نعم</button>
           <button class="roast-admin-btn sel" data-val="false">No</button>
         </div>
       </div>
       <div class="fg">
-        <label>Active (Visible in Store)?</label>
+        <span class="opt-lbl">Active (Visible in Store)?</span>
         <div class="roast-admin-toggle" id="m-active-toggle">
           <button class="roast-admin-btn sel" data-val="true">Active — نشط</button>
           <button class="roast-admin-btn" data-val="false">Hidden</button>
@@ -282,13 +282,13 @@
       </div>
       <!-- Sizes & Stock -->
       <div class="fg">
-        <label>Sizes, Prices &amp; Stock</label>
+        <span class="opt-lbl">Sizes, Prices &amp; Stock</span>
         <div class="size-rows" id="m-size-rows"></div>
         <button class="btn btn-ghost btn-sm" id="add-size-btn" style="margin-top:.55rem">+ Add Size</button>
       </div>
       <!-- Image / Video Upload with Drag & Drop -->
       <div class="fg">
-        <label>Product Images &amp; Videos</label>
+        <span class="opt-lbl">Product Images &amp; Videos</span>
         <div class="drop-zone" id="m-drop-zone">
           <div class="drop-zone-icon">📂</div>
           <div class="drop-zone-text">Drag &amp; drop photos or videos here<br/><span>or click to browse files</span></div>
@@ -301,7 +301,7 @@
       </div>
       <!-- Merch Color Options (shown only for merch category) -->
       <div class="fg" id="m-colors-section" style="display:none">
-        <label>Available Colors (Merch)</label>
+        <span class="opt-lbl">Available Colors (Merch)</span>
         <div class="color-admin-rows" id="m-color-rows"></div>
         <button class="btn btn-ghost btn-sm" id="add-color-btn" style="margin-top:.55rem">+ Add Color</button>
       </div>
@@ -354,7 +354,7 @@
         <p id="cat-upload-status" style="font-size:0.75rem;color:var(--txt2);margin-top:0.25rem"></p>
       </div>
       <div class="fg">
-        <label>Status</label>
+        <span class="opt-lbl">Status</span>
         <div class="roast-admin-toggle" id="cm-active-toggle">
           <button class="roast-admin-btn sel" data-val="true">Active</button>
           <button class="roast-admin-btn" data-val="false">Hidden</button>
@@ -386,7 +386,7 @@
           <div class="fg"><label for="sm-days">Delivery Duration — المدة</label><input type="text" id="sm-days" name="sm-days" placeholder="2-3 أيام"/></div>
         </div>
       <div class="fg">
-        <label>Status</label>
+        <span class="opt-lbl">Status</span>
         <div class="roast-admin-toggle" id="sm-active-toggle">
           <button class="roast-admin-btn sel" data-val="true">Active — نشط</button>
           <button class="roast-admin-btn" data-val="false">Inactive</button>
@@ -796,7 +796,7 @@ function renderVariantImageInputs(variantImages, hasType, hasRoast) {
     container.innerHTML += `
       <div style="display:flex; flex-direction:column; gap:0.25rem;">
         <label style="font-size:0.75rem; color:var(--gold)">${v.label}</label>
-        <input type="text" class="f-input v-img-input" data-vkey="${v.key}" placeholder="Image URL..." value="${val}" style="font-size:0.8rem; padding:0.4rem;"/>
+        <input type="text" class="f-input v-img-input" data-vkey="${v.key}" placeholder="Image URL..." value="${val}" style="font-size:0.8rem; padding:0.4rem;" aria-label="Image for ${v.label}" name="variant-img-${v.key}"/>
       </div>
     `;
   });
@@ -832,9 +832,9 @@ function renderSizeRows(sizes) {
     row.className = 'size-row';
     row.innerHTML = `
       <span class="size-row-lbl">#${i+1}</span>
-      <div class="fg"><input type="text" placeholder="Label" value="${sz.label}" data-field="label" data-idx="${i}"/></div>
-      <div class="fg"><input type="number" placeholder="Price" value="${sz.price}" min="0" data-field="price" data-idx="${i}"/></div>
-      <div class="fg"><input type="number" placeholder="Stock" value="${sz.stock}" min="0" data-field="stock" data-idx="${i}"/></div>
+      <div class="fg"><input type="text" placeholder="Label" value="${sz.label}" data-field="label" data-idx="${i}" aria-label="Size label ${i+1}" name="size-label-${i}"/></div>
+      <div class="fg"><input type="number" placeholder="Price" value="${sz.price}" min="0" data-field="price" data-idx="${i}" aria-label="Size price ${i+1}" name="size-price-${i}"/></div>
+      <div class="fg"><input type="number" placeholder="Stock" value="${sz.stock}" min="0" data-field="stock" data-idx="${i}" aria-label="Size stock ${i+1}" name="size-stock-${i}"/></div>
       <button onclick="this.closest('.size-row').remove()" style="color:var(--red);font-size:1rem;padding:.25rem;cursor:pointer">✕</button>`;
     wrap.appendChild(row);
   });
@@ -913,8 +913,8 @@ function renderColorRows(colors) {
     const row = document.createElement('div');
     row.className = 'color-admin-row';
     row.innerHTML = `
-      <input type="color" value="${c.hex || '#000000'}" data-field="hex" data-idx="${i}" title="Pick color"/>
-      <div class="fg" style="flex:1"><input type="text" placeholder="Color name (e.g. Black)" value="${c.name || ''}" data-field="name" data-idx="${i}"/></div>
+      <input type="color" value="${c.hex || '#000000'}" data-field="hex" data-idx="${i}" title="Pick color" aria-label="Color picker ${i+1}" name="color-hex-${i}"/>
+      <div class="fg" style="flex:1"><input type="text" placeholder="Color name (e.g. Black)" value="${c.name || ''}" data-field="name" data-idx="${i}" aria-label="Color name ${i+1}" name="color-name-${i}"/></div>
       <button onclick="this.closest('.color-admin-row').remove()" style="color:var(--red);font-size:1rem;padding:.25rem;cursor:pointer;flex-shrink:0">✕</button>`;
     wrap.appendChild(row);
   });
