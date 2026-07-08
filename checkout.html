@@ -94,15 +94,15 @@
         <div class="co-section-title">Customer Info — بيانات العميل</div>
         <div style="display:flex;flex-direction:column;gap:.85rem">
           <div class="form-row">
-            <div class="fg"><label>First Name — الاسم الأول</label><input type="text" id="f-fname" placeholder="Ahmed" required/></div>
-            <div class="fg"><label>Last Name — الاسم الأخير</label><input type="text" id="f-lname" placeholder="Ali"/></div>
+            <div class="fg"><label for="f-fname">First Name — الاسم الأول</label><input type="text" id="f-fname" name="f-fname" placeholder="Ahmed" required/></div>
+            <div class="fg"><label for="f-lname">Last Name — الاسم الأخير</label><input type="text" id="f-lname" name="f-lname" placeholder="Ali"/></div>
           </div>
-          <div class="fg"><label>Phone — الهاتف</label><input type="tel" id="f-phone" placeholder="01X XXXX XXXX" pattern="^(\+?2?0?1[0125][0-9]{8})$" title="Egyptian phone: 01XXXXXXXXX" required/></div>
-          <div class="fg"><label>Email — البريد الإلكتروني</label><input type="email" id="f-email" placeholder="you@email.com"/></div>
-          <div class="fg"><label>Address — العنوان</label><input type="text" id="f-addr" placeholder="Street, Building" required/></div>
+          <div class="fg"><label for="f-phone">Phone — الهاتف</label><input type="tel" id="f-phone" name="f-phone" placeholder="01X XXXX XXXX" pattern="^(\+?2?0?1[0125][0-9]{8})$" title="Egyptian phone: 01XXXXXXXXX" required/></div>
+          <div class="fg"><label for="f-email">Email — البريد الإلكتروني</label><input type="email" id="f-email" name="f-email" placeholder="you@email.com"/></div>
+          <div class="fg"><label for="f-addr">Address — العنوان</label><input type="text" id="f-addr" name="f-addr" placeholder="Street, Building" required/></div>
           <div class="form-row">
-            <div class="fg"><label>City — المحافظة</label><select id="f-city" required><option value="" disabled selected>Select Governorate / اختر المحافظة</option></select></div>
-            <div class="fg"><label>Zip / Postal</label><input type="text" id="f-zip" placeholder="12345"/></div>
+            <div class="fg"><label for="f-city">City — المحافظة</label><select id="f-city" name="f-city" required><option value="" disabled selected>Select Governorate / اختر المحافظة</option></select></div>
+            <div class="fg"><label for="f-zip">Zip / Postal</label><input type="text" id="f-zip" name="f-zip" placeholder="12345"/></div>
           </div>
           <div style="margin-top:.5rem">
             <button class="btn btn-ghost btn-sm" id="step2-back">← Back</button>
