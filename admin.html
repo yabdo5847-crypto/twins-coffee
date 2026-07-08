@@ -22,8 +22,8 @@
     <h2>Admin Login</h2>
     <p>لوحة تحكم المتجر — Store Dashboard</p>
     <form id="login-form" style="display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem;text-align:left">
-      <div class="fg"><label>Email</label><input type="email" id="admin-email" placeholder="admin@thetwinscoffee.com" required autocomplete="username"/></div>
-      <div class="fg"><label>Password</label><input type="password" id="admin-pass" placeholder="••••••••" required autocomplete="current-password"/></div>
+      <div class="fg"><label for="admin-email">Email</label><input type="email" id="admin-email" name="admin-email" placeholder="admin@thetwinscoffee.com" required autocomplete="username"/></div>
+      <div class="fg"><label for="admin-pass">Password</label><input type="password" id="admin-pass" name="admin-pass" placeholder="••••••••" required autocomplete="current-password"/></div>
       <button type="submit" class="btn btn-gold btn-full btn-lg" id="login-btn">Login →</button>
       <p id="login-error" style="font-size:.78rem;color:var(--red);display:none;margin-top:.25rem"></p>
     </form>
@@ -222,25 +222,25 @@
     <div class="modal-body">
       <input type="hidden" id="m-pid"/>
       <div class="form-row">
-        <div class="fg"><label>Name (EN)</label><input type="text" id="m-name" placeholder="Product name"/></div>
-        <div class="fg"><label>Name (AR) — الاسم</label><input type="text" id="m-name-ar" placeholder="اسم المنتج" dir="rtl"/></div>
+        <div class="fg"><label for="m-name">Name (EN)</label><input type="text" id="m-name" name="m-name" placeholder="Product name"/></div>
+        <div class="fg"><label for="m-name-ar">Name (AR) — الاسم</label><input type="text" id="m-name-ar" name="m-name-ar" placeholder="اسم المنتج" dir="rtl"/></div>
       </div>
-      <div class="fg"><label>Description</label><textarea id="m-desc" rows="3" placeholder="Product description…"></textarea></div>
+      <div class="fg"><label for="m-desc">Description</label><textarea id="m-desc" name="m-desc" rows="3" placeholder="Product description…"></textarea></div>
       <div class="form-row">
         <div class="fg">
-          <label>Category</label>
+          <label for="m-cat">Category</label>
           <select id="m-cat" class="f-input">
             <!-- Dynamically populated via openEditProduct() -->
           </select>
         </div>
         <div class="fg">
-          <label>Badge (e.g. Best Seller)</label>
-          <input type="text" id="m-badge" class="f-input" placeholder="Best Seller, Classic, New..."/>
+          <label for="m-badge">Badge (e.g. Best Seller)</label>
+          <input type="text" id="m-badge" name="m-badge" class="f-input" placeholder="Best Seller, Classic, New..."/>
         </div>
       </div>
       <div class="form-row">
         <div class="fg">
-          <label>Coffee Type (نوع القهوة)</label>
+          <label for="m-coffee-type">Coffee Type (نوع القهوة)</label>
           <select id="m-coffee-type" class="f-input">
             <option value="choice">Let Buyer Choose (محوج/ساده)</option>
             <option value="plain">Strictly Plain (ساده فقط)</option>
@@ -249,7 +249,7 @@
           </select>
         </div>
         <div class="fg">
-          <label>Roast Level (درجة التحميص)</label>
+          <label for="m-roast-level">Roast Level (درجة التحميص)</label>
           <select id="m-roast-level" class="f-input">
             <option value="choice">Let Buyer Choose (فاتح/وسط/غامق)</option>
             <option value="light">Light Only (فاتح فقط)</option>
@@ -296,7 +296,8 @@
         </div>
         <div class="drop-preview" id="m-drop-preview"></div>
         <div style="margin-top:.5rem;font-size:.7rem;color:var(--txt3)">Or enter file paths manually (comma-separated):</div>
-        <input type="text" id="m-images" placeholder="img1.jpg, img2.jpg, video.mp4"/>
+        <label for="m-images" class="sr-only">Image paths</label>
+        <input type="text" id="m-images" name="m-images" placeholder="img1.jpg, img2.jpg, video.mp4"/>
       </div>
       <!-- Merch Color Options (shown only for merch category) -->
       <div class="fg" id="m-colors-section" style="display:none">
@@ -332,21 +333,21 @@
     <div class="modal-body">
       <input type="hidden" id="cm-id"/>
       <div class="fg">
-        <label>Name (English)</label>
-        <input type="text" id="cm-name" class="f-input" placeholder="e.g. Coffee"/>
+        <label for="cm-name">Name (English)</label>
+        <input type="text" id="cm-name" name="cm-name" class="f-input" placeholder="e.g. Coffee"/>
       </div>
       <div class="fg">
-        <label>Name (Arabic)</label>
-        <input type="text" id="cm-name-ar" class="f-input" placeholder="e.g. قهوة"/>
+        <label for="cm-name-ar">Name (Arabic)</label>
+        <input type="text" id="cm-name-ar" name="cm-name-ar" class="f-input" placeholder="e.g. قهوة"/>
       </div>
       <div class="fg">
-        <label>Slug (URL friendly)</label>
-        <input type="text" id="cm-slug" class="f-input" placeholder="e.g. coffee"/>
+        <label for="cm-slug">Slug (URL friendly)</label>
+        <input type="text" id="cm-slug" name="cm-slug" class="f-input" placeholder="e.g. coffee"/>
       </div>
       <div class="fg">
-        <label>Image URL</label>
+        <label for="cm-image">Image URL</label>
         <div style="display:flex;gap:0.5rem;align-items:center">
-          <input type="text" id="cm-image" class="f-input" placeholder="/uploads/img.jpg" style="flex:1"/>
+          <input type="text" id="cm-image" name="cm-image" class="f-input" placeholder="/uploads/img.jpg" style="flex:1"/>
           <button class="btn btn-outline" style="padding:0.6rem" onclick="document.getElementById('cat-image-upload').click()">Upload</button>
           <input type="file" id="cat-image-upload" style="display:none" accept="image/*"/>
         </div>
@@ -377,12 +378,12 @@
       <div class="modal-body">
         <input type="hidden" id="sm-id"/>
         <div class="form-row">
-          <div class="fg"><label>Governorate (EN)</label><input type="text" id="sm-name" placeholder="Cairo"/></div>
-          <div class="fg"><label>Governorate (AR) — المحافظة</label><input type="text" id="sm-name-ar" placeholder="القاهرة" dir="rtl"/></div>
+          <div class="fg"><label for="sm-name">Governorate (EN)</label><input type="text" id="sm-name" name="sm-name" placeholder="Cairo"/></div>
+          <div class="fg"><label for="sm-name-ar">Governorate (AR) — المحافظة</label><input type="text" id="sm-name-ar" name="sm-name-ar" placeholder="القاهرة" dir="rtl"/></div>
         </div>
         <div class="form-row">
-          <div class="fg"><label>Shipping Cost (جنيه)</label><input type="number" id="sm-price" min="0" placeholder="50"/></div>
-          <div class="fg"><label>Delivery Duration — المدة</label><input type="text" id="sm-days" placeholder="2-3 أيام"/></div>
+          <div class="fg"><label for="sm-price">Shipping Cost (جنيه)</label><input type="number" id="sm-price" name="sm-price" min="0" placeholder="50"/></div>
+          <div class="fg"><label for="sm-days">Delivery Duration — المدة</label><input type="text" id="sm-days" name="sm-days" placeholder="2-3 أيام"/></div>
         </div>
       <div class="fg">
         <label>Status</label>
@@ -411,8 +412,8 @@
       <input type="hidden" id="qm-sidx"/>
       <p style="font-size:.88rem;color:var(--txt2)" id="qm-label"></p>
       <div class="fg">
-        <label>New Stock Quantity</label>
-        <input type="number" id="qm-stock" min="0" placeholder="0"/>
+        <label for="qm-stock">New Stock Quantity</label>
+        <input type="number" id="qm-stock" name="qm-stock" min="0" placeholder="0"/>
       </div>
     </div>
     <div class="modal-foot">
@@ -637,6 +638,7 @@ async function renderProducts() {
         <div class="qty-inline-wrap">
           <button class="qty-inline-btn" onclick="adjustStock(${p.id},${si},-1)">−</button>
           <input class="qty-inline-val" type="number" value="${sz.stock}" min="0"
+            aria-label="Stock for ${sz.label}" name="stock-${p.id}-${si}"
             onchange="setStockDirect(${p.id},${si},this.value)" style="width:44px"/>
           <button class="qty-inline-btn" onclick="adjustStock(${p.id},${si},1)">+</button>
         </div>
@@ -1233,7 +1235,7 @@ function buildStatusSelect(orderId, currentStatus) {
   const opts = statuses.map(s =>
     `<option value="${s}"${s === (currentStatus||'pending') ? ' selected' : ''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`
   ).join('');
-  return `<select onchange="updateOrderStatus('${orderId}', this.value)" style="font-size:.72rem;padding:.2rem .4rem;border-radius:6px;border:1px solid var(--brd);background:var(--surf2);color:var(--txt1);cursor:pointer">${opts}</select>`;
+  return `<select aria-label="Order status" name="order-status-${orderId}" onchange="updateOrderStatus('${orderId}', this.value)" style="font-size:.72rem;padding:.2rem .4rem;border-radius:6px;border:1px solid var(--brd);background:var(--surf2);color:var(--txt1);cursor:pointer">${opts}</select>`;
 }
 
 window.updateOrderStatus = async function(orderId, newStatus) {
